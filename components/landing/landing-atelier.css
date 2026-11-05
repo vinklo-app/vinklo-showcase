@@ -1,0 +1,107 @@
+/* =========================================================================
+   Landing — capa «atelier» (2026-10-05)
+   Referencias del propietario: invite-atelier.com (estructura, aire, cinta,
+   colección de estilos, panel en navegador, detalles, barra fija) y
+   cordially.io (capítulo cinematográfico a sangre con frase gigante).
+   Marca v8 intacta: Playfair / Plus Jakarta / JetBrains Mono, papel, tinta
+   y arcilla como único acento. Solo transform, opacity y clip-path animan.
+   ========================================================================= */
+
+/* --- Rótulo pequeño (versalitas mono muy espaciadas) ------------------- */
+.ll-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 1.25rem;
+  font-family: var(--ll-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--clay);
+}
+
+/* --- Hero: aire, luz ambiente y grano de papel ------------------------- */
+.ll-hero {
+  position: relative;
+  isolation: isolate;
+  padding-top: clamp(3rem, 8vw, 7rem);
+}
+.ll-hero::before {
+  /* Dos luces muy suaves (arcilla y oliva) detrás del texto y del móvil:
+     profundidad sin color plano. Desbordan el contenedor; .ll-home recorta. */
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -12rem -40vw -6rem;
+  pointer-events: none;
+  background:
+    radial-gradient(38rem 28rem at 78% 42%, color-mix(in srgb, var(--clay) 13%, transparent), transparent 70%),
+    radial-gradient(34rem 26rem at 18% 22%, color-mix(in srgb, var(--olive) 9%, transparent), transparent 72%),
+    radial-gradient(30rem 22rem at 60% 95%, color-mix(in srgb, var(--gold) 8%, transparent), transparent 70%);
+}
+.ll-hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -12rem -40vw -6rem;
+  pointer-events: none;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.55  0 0 0 0 0.45  0 0 0 0 0.38  0 0 0 0.09 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@starting-style {
+  .ll-show-swap {
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @starting-style {
+    .ll-show-swap {
+      filter: none;
+    }
+  }
+}
+
+.ll-funnel {
+  margin: 0;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border-radius: var(--ll-radius-xl);
+  background: color-mix(in srgb, var(--paper) 6%, var(--ink));
+  border: 1px solid color-mix(in srgb, var(--paper) 12%, transparent);
+  box-shadow: 0 3rem 5rem -3rem #000;
+}
+.ll-funnel figcaption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+}
+
+.ll-funnel ol {
+  display: grid;
+  gap: 1.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ll-funnel li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.45rem 1rem;
+  font-size: 0.9375rem;
+}
+
+.ll-crm-icon {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.8rem;
+  background: color-mix(in srgb, var(--clay) 22%, var(--ink));
+  color: color-mix(in srgb, var(--clay) 35%, #f6dccd);
+}
+

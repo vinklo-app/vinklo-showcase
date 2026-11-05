@@ -1,0 +1,597 @@
+/* =====================================================================
+   Modo Read — plantilla de lectura compartida por las guías (/guias/*) y
+   los documentos legales (/aviso-legal, /privacidad, /terminos).
+   Refresh 2026-10-03, agente E. Cero colores ni fuentes nuevas: todo sale
+   de las variables de app/globals.css (--paper, --ink, --ink-muted, --clay,
+   --olive, --gold, --line, --line-strong, --radius-*, --d-*, --ease-out) y
+   de --font-serif / --font-sans / --font-mono del layout raíz.
+   Prefijo `rd-` en todas las clases: la hoja es global al importarse.
+   Movimiento (Emil Kowalski): solo opacity/transform, nunca `all`, hover
+   solo con puntero fino, :active scale(.97), reduced-motion sin transform.
+   ===================================================================== */
+
+.rd-page {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  padding-block: clamp(2rem, 3vw + 1rem, 4rem) clamp(3rem, 5vw, 6rem);
+  overflow-x: clip;
+}
+.rd-page :is(a, button, summary):focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* --- Contenedor: 16 px de gutter en móvil, 32 px a partir de 720 ---- */
+.rd-wrap {
+  width: min(100% - 2rem, 72rem);
+  margin-inline: auto;
+}
+@media (min-width: 720px) {
+  .rd-wrap {
+    width: min(100% - 4rem, 72rem);
+  }
+}
+
+/* --- Rejilla: cabecera + índice lateral + columna de lectura --------
+   Móvil: todo apilado (cabecera, índice compacto, artículo).
+   ≥1024: índice pegajoso a la izquierda, columna de 68ch a la derecha. */
+.rd-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 2rem;
+}
+.rd-head,
+.rd-article,
+.rd-aside {
+  min-width: 0;
+}
+.rd-article {
+  max-width: 68ch;
+}
+.rd-head {
+  max-width: 68ch;
+}
+@media (min-width: 1024px) {
+  .rd-layout {
+    grid-template-columns: 12rem minmax(0, 68ch);
+    column-gap: clamp(3rem, 6vw, 6rem);
+    justify-content: center;
+  }
+  .rd-head {
+    grid-column: 2;
+  }
+  .rd-aside {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: start;
+    position: sticky;
+    top: 1.5rem;
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
+  }
+  .rd-article {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  /* Sin índice: una sola columna centrada. */
+  .rd-layout--single {
+    grid-template-columns: minmax(0, 68ch);
+  }
+  .rd-layout--single .rd-head,
+  .rd-layout--single .rd-article {
+    grid-column: 1;
+  }
+  .rd-layout--single .rd-article {
+    grid-row: 2;
+  }
+  .rd-layout--wide {
+    grid-template-columns: minmax(0, 72ch);
+  }
+  .rd-layout--wide .rd-head,
+  .rd-layout--wide .rd-article {
+    grid-column: 1;
+    max-width: 72ch;
+  }
+}
+
+/* --- Cabecera del documento ---------------------------------------- */
+.rd-eyebrow {
+  color: var(--ink-muted);
+}
+.rd-eyebrow a {
+  color: inherit;
+  text-decoration: none;
+  /* Miga de 44 px táctiles sin mover la línea: el relleno se compensa. */
+  display: inline-block;
+  padding: 0.9rem 0.25rem;
+  margin: -0.9rem -0.25rem;
+}
+.rd-crumb-sep {
+  margin-inline: 0.5em;
+  opacity: 0.6;
+}
+.rd-h1 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(2.25rem, 1.4rem + 3.6vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  margin-top: 1rem;
+  color: var(--ink);
+}
+.rd-h1 em {
+  font-style: italic;
+  color: var(--clay);
+}
+.rd-lead {
+  margin-top: 1.25rem;
+  max-width: 55ch;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+.rd-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+.rd-meta > * + *::before {
+  content: "·";
+  margin-right: 0.75rem;
+}
+
+/* --- Índice ----------------------------------------------------------- */
+.rd-toc {
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+}
+.rd-toc-label {
+  color: var(--ink-muted);
+}
+.rd-toc ol {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+.rd-toc li + li {
+  border-top: 1px solid var(--line);
+}
+.rd-toc a {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem; /* 44px táctil */
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  color: var(--ink);
+  text-decoration: none;
+  text-underline-offset: 0.2em;
+}
+@media (min-width: 1024px) {
+  .rd-toc {
+    border-top: 0;
+    padding-top: 0.25rem;
+  }
+  .rd-toc li + li {
+    border-top: 0;
+  }
+  .rd-toc a {
+    min-height: 2.75rem; /* también en escritorio: 44 px */
+    font-size: 0.875rem;
+    color: var(--ink-muted);
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .rd-toc a:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+}
+
+/* --- Prosa ------------------------------------------------------------ */
+.rd-prose {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.rd-prose > * + * {
+  margin-top: 1.25rem;
+}
+.rd-prose h2 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 1.875rem);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  color: var(--ink);
+  margin-top: 2.75rem;
+  scroll-margin-top: 1.5rem;
+}
+.rd-prose h2 + * {
+  margin-top: 0.875rem;
+}
+.rd-prose section + section {
+  margin-top: 2.75rem;
+}
+.rd-prose section {
+  scroll-margin-top: 1.5rem;
+}
+.rd-prose section > h2 {
+  margin-top: 0;
+}
+.rd-prose section > * + * {
+  margin-top: 0.875rem;
+}
+/* Preguntas frecuentes de las guías: h3 por pregunta (fuera del índice). */
+.rd-prose .rd-faq h3 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.3;
+  text-wrap: balance;
+  color: var(--ink);
+}
+.rd-prose .rd-faq h3 + p {
+  margin-top: 0.5rem;
+}
+.rd-prose strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+.rd-prose a {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+@media (hover: hover) and (pointer: fine) {
+  .rd-prose a:hover {
+    text-decoration-color: var(--clay);
+    color: var(--clay);
+  }
+}
+.rd-prose ul,
+.rd-prose ol {
+  padding-left: 1.25rem;
+}
+.rd-prose ul {
+  list-style: disc;
+}
+.rd-prose ol {
+  list-style: decimal;
+}
+.rd-prose li + li {
+  margin-top: 0.5rem;
+}
+.rd-prose li::marker {
+  color: var(--ink-muted);
+}
+.rd-prose figure {
+  margin-block: 2rem;
+}
+
+/* Capturas del producto en las guías (GuiaFigure). Ancho de la columna,
+   nunca más: sin scroll horizontal a 360 px. Móvil: a tamaño teléfono. */
+.rd-prose .rd-figure {
+  margin-block: 2.25rem;
+}
+.rd-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--paper);
+  box-shadow: var(--shadow-md);
+}
+.rd-figure figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+.rd-figure--phone {
+  max-width: min(17.5rem, 78%);
+  margin-inline: auto;
+}
+.rd-figure--phone img {
+  border-radius: 1.5rem;
+}
+.rd-figure--phone figcaption {
+  text-align: center;
+}
+
+/* Tablas más anchas que el móvil: desplazamiento horizontal dentro de la
+   figura (nunca de la página) y una señal visible mientras no cabe. */
+.rd-scroll {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+.rd-scroll:focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: -2px;
+}
+
+/* Dato pendiente del titular ([NIF], [DOMICILIO]…): resaltado SOLO en
+   desarrollo (ver Placeholder en read-mode.tsx); en producción es texto. */
+.rd-ph {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  padding: 0 0.3em;
+  background: color-mix(in oklab, var(--clay) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--clay) 45%, transparent);
+  border-radius: 3px;
+}
+
+/* --- Listado de guías (filas con filete, sin cajas) ------------------ */
+.rd-list {
+  list-style: none;
+  margin: 2.5rem 0 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.rd-list li {
+  border-bottom: 1px solid var(--line);
+}
+.rd-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.375rem 1.5rem;
+  padding-block: 1.5rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+@media (min-width: 640px) {
+  .rd-row {
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+  }
+  .rd-row-num {
+    grid-row: 1 / span 2;
+  }
+}
+.rd-row-num {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  color: var(--gold); /* numeración editorial: solo texto XL (DESIGN §2) */
+}
+.rd-row-title {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(1.375rem, 1.1rem + 1vw, 1.75rem);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+.rd-row-teaser {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+@media (hover: hover) and (pointer: fine) {
+  .rd-row:hover .rd-row-title {
+    text-decoration: underline;
+  }
+}
+
+/* --- Cierre: CTA y pie de documento ---------------------------------- */
+.rd-cta {
+  margin-top: 3.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+.rd-cta p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink-muted);
+  max-width: 48ch;
+  text-wrap: pretty;
+}
+.rd-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-top: 1.25rem;
+}
+.rd-foot {
+  margin-top: 3.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  font-size: 0.875rem;
+}
+.rd-foot a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: var(--ink-muted);
+  font-weight: 500;
+  text-decoration: none;
+  text-underline-offset: 0.2em;
+}
+.rd-foot a[aria-current="page"] {
+  color: var(--ink);
+  font-weight: 600;
+}
+@media (hover: hover) and (pointer: fine) {
+  .rd-foot a:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+}
+
+/* --- Botones ---------------------------------------------------------- */
+.rd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem; /* 48px */
+  padding: 0 1.25rem;
+  background: var(--ciruela);
+  color: #fff;
+  border: 0;
+  border-radius: var(--radius-lg);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    opacity var(--d-ui) var(--ease-out),
+    transform var(--d-ui) var(--ease-out);
+}
+.rd-btn:active {
+  transform: scale(0.97);
+  transition-duration: var(--d-micro);
+}
+.rd-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  text-underline-offset: 0.25em;
+}
+@media (hover: hover) and (pointer: fine) {
+  .rd-btn:hover {
+    opacity: 0.88;
+  }
+  .rd-link:hover {
+    text-decoration: underline;
+  }
+}
+
+/* --- Preguntas frecuentes (/preguntas): <details> con filetes ------- */
+.rd-faq-list {
+  border-bottom: 1px solid var(--line);
+}
+.rd-faq-item {
+  border-top: 1px solid var(--line);
+}
+.rd-faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 2.75rem;
+  padding-block: 1.1rem;
+  cursor: pointer;
+  list-style: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.rd-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+.rd-faq-item h2 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  color: var(--ink);
+}
+/* Signo «+» que gira a «×» al abrir (solo transform, 200 ms). */
+.rd-faq-item summary::after {
+  content: "+";
+  flex: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--clay);
+  transition: transform 200ms var(--ease-out);
+}
+.rd-faq-item[open] summary::after {
+  transform: rotate(45deg);
+}
+.rd-faq-item p {
+  max-width: 62ch;
+  padding-bottom: 1.25rem;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+/* La lista ya cierra con su filete: el CTA no dibuja otro. */
+.rd-faq-list + .rd-cta {
+  margin-top: 2.5rem;
+  padding-top: 0;
+  border-top: 0;
+}
+.rd-cta p a {
+  color: var(--ink);
+  font-weight: 600;
+  text-underline-offset: 0.2em;
+}
+@media (hover: hover) and (pointer: fine) {
+  .rd-faq-item summary:hover h2 {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+}
+
+/* --- Reduced motion: se conservan los fundidos, fuera el transform --- */
+@media (prefers-reduced-motion: reduce) {
+  .rd-page .rd-btn {
+    transition-property: opacity;
+  }
+  .rd-page .rd-btn:active {
+    transform: none;
+  }
+  .rd-faq-item summary::after {
+    transition: none;
+  }
+}
+
+/* Tabla comparativa dentro de una guía (GEO 2026-10-05): filetes, sin cajas. */
+.rd-table {
+  width: 100%;
+  min-width: 30rem;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+.rd-table th,
+.rd-table td {
+  padding: 0.625rem 0.75rem 0.625rem 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.rd-table thead th {
+  color: var(--ink-muted);
+  font-weight: 600;
+  border-bottom-color: var(--line-strong);
+}
+.rd-table tbody th {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* /en/faq (1-nov-2026): aviso bajo el pie de que los legales están en español. */
+.rd-foot-note { margin-top: 0.75rem; font-size: 0.85rem; color: var(--ink-muted); }

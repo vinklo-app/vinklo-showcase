@@ -1,0 +1,1254 @@
+/* =========================================================================
+   Landing — formato cordially.io (2026-10-06)
+   Capítulos oscuros a sangre alternando con papel crema; titulares serif
+   enormes y apretados; píldoras; versalitas muy espaciadas; tarjetas de
+   radio grande. Marca v9 «Ciruela y perla» desde el 9-oct-2026 (DESIGN.md):
+   superficies claras en perla, ciruela solo en acciones, selección y
+   detalles; un único capítulo oscuro (la frase) en tinta ciruela. Solo
+   transform/opacity animan.
+   ========================================================================= */
+
+.lc-home {
+  --lc-dark: var(--ciruela-tinta);
+  --lc-dark-2: #3a2d42;
+  --lc-cream: var(--perla-2);
+  --lc-paper: var(--perla);
+  --lc-on-dark: var(--perla);
+  --lc-on-dark-muted: color-mix(in srgb, var(--perla) 80%, var(--ciruela-tinta));
+  --lc-clay-light: var(--ciruela-claro);
+  --lc-radius: 1.125rem;
+  background: var(--lc-paper);
+}
+
+/* --- Tipografía --------------------------------------------------------- */
+.lc-display {
+  font-family: var(--ll-serif);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+.lc-display em {
+  font-style: italic;
+  color: inherit;
+}
+[data-tone="dark"] .lc-display em {
+  color: var(--lc-clay-light);
+}
+.lc-h2 {
+  margin: 0;
+  font-size: min(clamp(2.2rem, 1.3rem + 2.8vw, 4rem), 11vw);
+  line-height: 1.04;
+  max-width: 20ch;
+}
+.lc-kicker {
+  margin: 0 0 1.25rem;
+  font-family: var(--ll-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--lc-on-dark-muted);
+}
+.lc-kicker--clay {
+  color: var(--clay);
+}
+.lc-sub {
+  max-width: 38rem;
+  margin: 1.25rem 0 0;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
+.lc-sub a {
+  color: var(--ink);
+}
+
+/* --- Píldoras ------------------------------------------------------------ */
+.lc-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0 1.4rem;
+  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  font-size: 0.975rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform var(--d-micro) var(--ease-out), background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+.lc-pill:active {
+  transform: scale(0.97);
+  transition-duration: 80ms;
+}
+.lc-pill--solid {
+  background: var(--lc-on-dark);
+  color: var(--lc-dark);
+}
+
+.lc-pill--ink {
+  background: var(--ciruela);
+  color: #fff;
+}
+@media (hover: hover) and (pointer: fine) {
+  .lc-pill--solid:hover { background: #fff; }
+
+  .lc-pill--ink:hover { background: var(--ciruela-hover); }
+}
+.lc-pill:focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 3px;
+}
+
+/* Un solo margen lateral y un solo ancho de contenido para toda la landing
+   (6-oct-2026): con la barra lateral de Arc o una ventana de Chrome sin
+   maximizar (1000–1300 px) los bloques quedaban pegados al borde o
+   desalineados entre sí. */
+.lc-home,
+.lc-nav {
+  --lc-gutter: max(clamp(1rem, 4vw, 3rem), env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+  --lc-max: 84rem;
+}
+.lc-home .ll-container {
+  width: min(100% - 2 * var(--lc-gutter), var(--lc-max) - 2 * var(--lc-gutter));
+}
+.lc-home > footer > div {
+  max-width: var(--lc-max);
+  padding-inline: var(--lc-gutter);
+}
+
+/* --- Cabecera flotante ---------------------------------------------------- */
+.lc-nav {
+  position: fixed;
+  z-index: 50;
+  inset: 0 0 auto;
+  /* Bajo la Dynamic Island / notch (viewport-fit=cover): la barra empieza
+     después del área segura superior. */
+  padding: max(0.75rem, env(safe-area-inset-top, 0px)) var(--lc-gutter) 0.75rem;
+  transition: background-color 250ms ease, color 250ms ease;
+}
+.lc-nav[data-scrolled] {
+  background: color-mix(in srgb, var(--lc-paper) 82%, transparent);
+  -webkit-backdrop-filter: saturate(170%) blur(18px);
+  backdrop-filter: saturate(170%) blur(18px);
+}
+.lc-nav[data-scrolled][data-on="dark"] {
+  background: color-mix(in srgb, var(--lc-dark) 70%, transparent);
+}
+.lc-nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: calc(var(--lc-max) - 2 * var(--lc-gutter));
+  margin: 0 auto;
+}
+.lc-brand {
+  display: grid;
+  align-content: center;
+  min-height: 44px; /* táctil */
+  gap: 0.1rem;
+  color: var(--lc-on-dark);
+  text-decoration: none;
+}
+.lc-nav[data-on="light"] .lc-brand { color: var(--ink); }
+.lc-brand-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.lc-brand-word svg { width: 1.4rem; height: 1.4rem; }
+.lc-brand-i { color: var(--clay); }
+.lc-nav[data-on="dark"] .lc-brand-i { color: var(--lc-clay-light); }
+
+.lc-nav-links {
+  display: none;
+  gap: 1.75rem;
+  margin-left: auto;
+}
+.lc-nav-links a {
+  color: var(--lc-on-dark-muted);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+.lc-nav[data-on="light"] .lc-nav-links a { color: var(--ink-muted); }
+.lc-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-left: auto;
+}
+@media (min-width: 900px) { .lc-nav-links + .lc-nav-actions { margin-left: 1rem; } }
+.lc-nav-login {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.4rem;
+  color: var(--lc-on-dark);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.lc-nav .lc-pill { min-height: 2.75rem; padding: 0 1.1rem; font-size: 0.9rem; }
+.lc-nav[data-on="light"] .lc-nav-login { color: var(--ink); }
+/* Enlace a la otra versión (ES · EN): mismo trazo que «Entrar», más discreto. */
+.lc-nav-lang { font-size: 0.85rem; letter-spacing: 0.04em; opacity: 0.8; }
+
+.lc-nav[data-on="light"] .lc-pill--solid { background: var(--ciruela); color: #fff; }
+@media (hover: hover) and (pointer: fine) {
+  .lc-nav[data-on="light"] .lc-pill--solid:hover { background: var(--ciruela-hover); }
+}
+
+@media (min-width: 900px) {
+  .lc-nav-links { display: flex; }
+}
+@media (max-width: 520px) {
+  .lc-nav .lc-pill--solid { padding: 0 0.9rem; font-size: 0.85rem; }
+}
+
+/* --- 1 · Hero oscuro ----------------------------------------------------- */
+.lc-hero {
+  position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  display: block;
+  padding: 0;
+  color: var(--lc-on-dark);
+  background: var(--lc-dark);
+  overflow: hidden;
+}
+/* El envoltorio con parallax (landing-hero-motion.tsx) ocupa todo el hero. */
+.lc-hero-wrap {
+  position: relative;
+  display: grid;
+  align-items: center;
+  min-height: 100svh;
+  padding: calc(7.5rem + env(safe-area-inset-top, 0px)) var(--lc-gutter) max(4rem, env(safe-area-inset-bottom, 0px));
+}
+.lc-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.lc-hero-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.07) 1px, transparent 1.4px) 0 0 / 22px 22px,
+    linear-gradient(90deg, rgba(20, 14, 10, 0.86) 0%, rgba(20, 14, 10, 0.6) 48%, rgba(20, 14, 10, 0.35) 100%),
+    linear-gradient(180deg, rgba(20, 14, 10, 0.35), rgba(20, 14, 10, 0.1) 40%, rgba(20, 14, 10, 0.75));
+}
+.lc-hero-inner {
+  display: grid;
+  gap: 3rem;
+  width: 100%;
+  max-width: calc(var(--lc-max) - 2 * var(--lc-gutter));
+  margin: 0 auto;
+}
+/* Dos columnas desde tableta: en una sola, la maqueta caía bajo el pliegue y
+   media pantalla quedaba vacía. */
+@media (min-width: 760px) {
+  .lc-hero-inner { grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); align-items: center; gap: 2rem; }
+}
+@media (min-width: 1040px) {
+  .lc-hero-inner { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 3rem; }
+}
+.lc-hero-title {
+  margin: 0;
+  font-size: min(clamp(3.2rem, 1.6rem + 5.4vw, 6.6rem), 15vw);
+  max-width: 12ch;
+  color: var(--lc-on-dark);
+}
+.lc-hero-lead {
+  max-width: 34rem;
+  margin: 1.5rem 0 0;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--lc-on-dark-muted);
+}
+.lc-idea {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 38rem;
+  margin-top: 2rem;
+  padding: 0.4rem 0.4rem 0.4rem 1.25rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #fff 12%, transparent);
+  border: 1px solid color-mix(in srgb, #fff 22%, transparent);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+.lc-idea input {
+  flex: 1;
+  min-width: 0;
+  min-height: 2.75rem;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: var(--lc-on-dark);
+  font-size: 1rem;
+}
+.lc-idea input::placeholder { color: color-mix(in srgb, var(--lc-on-dark) 60%, transparent); }
+.lc-idea:focus-within { border-color: var(--lc-clay-light); }
+@media (max-width: 560px) {
+  .lc-idea { flex-direction: column; align-items: stretch; border-radius: 1.5rem; padding: 0.75rem; }
+  .lc-idea .lc-pill { width: 100%; }
+}
+
+/* Maqueta del hero: ver «Hero con el producto» más abajo (P2-1). */
+.lc-hero-mock { position: relative; min-height: 34rem; }
+.lc-browser {
+  position: absolute;
+  left: 0;
+  top: 4rem;
+  width: min(100%, 30rem);
+  border-radius: 1.1rem;
+  overflow: hidden;
+  background: color-mix(in srgb, #fff 10%, transparent);
+  border: 1px solid color-mix(in srgb, #fff 16%, transparent);
+  box-shadow: 0 2.5rem 5rem -2rem rgba(0, 0, 0, 0.7);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.lc-browser-body {
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  background: linear-gradient(160deg, #efe4d4, #e2d3bf);
+}
+
+.lc-seal {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 4.8rem;
+  height: 4.8rem;
+  margin-top: 1.5rem;
+  border-radius: 50%;
+  background: var(--ciruela);
+  box-shadow: inset 0 0 0 0.3rem rgba(255, 255, 255, 0.08), 0 0.6rem 1.2rem -0.5rem rgba(36, 33, 42, 0.45);
+  color: var(--perla);
+  font-family: var(--ll-serif);
+  font-style: italic;
+  font-size: 1.5rem;
+}
+.lc-seal em { font-style: italic; margin: 0 0.05em; }
+.lc-seal--sm { width: 3.6rem; height: 3.6rem; font-size: 1.1rem; margin: 0; }
+
+/* Columna estrecha (ventanas medianas): el navegador asoma menos para que
+   el móvil (siempre a tamaño completo: si encoge, la invitación se pisa) no
+   lo tape entero. */
+@media (min-width: 1040px) and (max-width: 1279.98px) {
+  .lc-browser { width: 72%; top: 5rem; }
+}
+/* Tableta en dos columnas: solo el móvil, centrado en su columna. */
+@media (min-width: 760px) and (max-width: 1039.98px) {
+  .lc-browser { display: none; }
+}
+@media (max-width: 759.98px) {
+  .lc-browser { top: 5rem; width: 82%; }
+}
+@media (max-width: 520px) {
+  .lc-browser { display: none; }
+}
+
+/* --- Capítulos oscuros ---------------------------------------------------- */
+.lc-chapter {
+  position: relative;
+  overflow: hidden;
+  background: var(--lc-dark);
+  color: var(--lc-on-dark);
+  padding: clamp(7rem, 16vw, 12rem) var(--lc-gutter);
+}
+.lc-switch-section {
+  position: relative;
+  height: 220vh;
+  color: var(--ink);
+  background: var(--perla);
+}
+.lc-switch-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 6rem var(--lc-gutter) 3rem;
+  overflow: hidden;
+}
+.lc-switch-title,
+.lc-switch-sub { animation: lc-swap-in 420ms var(--ease-out) both; }
+@keyframes lc-swap-in {
+  from { opacity: 0; filter: blur(6px); transform: translateY(0.4rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lc-switch-title, .lc-switch-sub { animation: none; }
+}
+.lc-switch {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  max-width: 64rem;
+  margin: 0 auto;
+}
+.lc-switch-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 44px;
+  margin-bottom: 2rem;
+  padding: 0 0.4rem;
+  background: none;
+  border: 0;
+  color: var(--lc-on-dark);
+  font-family: var(--ll-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.lc-switch-track {
+  position: relative;
+  width: 3rem;
+  height: 1.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #fff 18%, transparent);
+  border: 1px solid color-mix(in srgb, #fff 30%, transparent);
+  transition: background-color 200ms ease;
+}
+.lc-switch-thumb {
+  position: absolute;
+  top: 0.15rem;
+  left: 0.15rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background: var(--lc-on-dark);
+  transition: transform 260ms var(--ease-out);
+}
+.lc-switch[data-on] .lc-switch-track { background: var(--clay); border-color: var(--clay); }
+.lc-switch[data-on] .lc-switch-thumb { transform: translateX(1.4rem); }
+.lc-switch-toggle:focus-visible { outline: 2px solid var(--lc-clay-light); outline-offset: 4px; border-radius: 999px; }
+.lc-switch-title {
+  margin: 0;
+  font-family: var(--ll-serif);
+  font-weight: 400;
+  font-size: min(clamp(2.6rem, 1.2rem + 4.6vw, 5.6rem), 12vw);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+.lc-switch-title em { font-style: italic; color: var(--lc-clay-light); }
+.lc-switch-sub {
+  max-width: 36rem;
+  margin: 1.75rem 0 0;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--lc-on-dark-muted);
+}
+/* --- Secciones de papel -------------------------------------------------- */
+.lc-section {
+  padding-block: clamp(5rem, 11vw, 9rem);
+}
+.lc-paper {
+  background: var(--lc-paper);
+  color: var(--ink);
+}
+.lc-container {
+  max-width: var(--lc-max);
+  margin: 0 auto;
+  padding-inline: var(--lc-gutter);
+}
+.lc-section-head { margin-bottom: 1rem; }
+
+/* --- 4 · Frase con imágenes incrustadas -------------------------------- */
+.lc-statement {
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+/* Móvil: menos aire bajo la frase (#21; dejaba ~230 px vacíos). */
+@media (max-width: 899.98px) {
+  .lc-statement { padding-bottom: 4rem; }
+}
+.lc-statement-text {
+  max-width: 62rem;
+  margin: 0;
+  font-size: min(clamp(2.2rem, 1.2rem + 3vw, 4rem), 10vw);
+  line-height: 1.1;
+  color: var(--lc-on-dark);
+}
+.lc-inline-img {
+  display: inline-block;
+  width: 1.9em;
+  height: 0.72em;
+  margin: 0 0.12em;
+  vertical-align: -0.04em;
+  border-radius: 0.36em;
+}
+.lc-inline-img {
+  background-image: url("/landing/portada-contraluz.webp");
+  background-size: 260% auto;
+  box-shadow: 0 0.2em 0.6em -0.2em rgba(20, 14, 24, 0.6);
+}
+
+/* --- 5 · Bento ------------------------------------------------------------ */
+.lc-bento {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-flow: dense;
+  gap: 1rem;
+  margin: 3rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 720px) { .lc-bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1080px) { .lc-bento { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; } }
+.lc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.6rem;
+  border-radius: var(--lc-radius);
+  background: #fff;
+  border: 1px solid var(--line);
+  box-shadow: 0 1.5rem 3rem -2.5rem rgba(36, 33, 42, 0.3);
+}
+.lc-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  font-family: var(--ll-serif);
+  font-weight: 400;
+  font-size: 1.55rem;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.lc-card > p {
+  margin: 0;
+  font-size: 0.975rem;
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
+.lc-card-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--clay) 12%, var(--lc-paper));
+  color: var(--clay);
+}
+.lc-card-icon svg { width: 1.15rem; height: 1.15rem; }
+.lc-mini-rows { display: grid; gap: 0.5rem; margin-top: auto; padding-top: 0.75rem; }
+.lc-mini-rows span {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  padding: 0 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--lc-paper);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.lc-mini-rows b {
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--clay) 12%, var(--lc-paper));
+  color: var(--clay);
+  font-size: 0.75rem;
+}
+.lc-mini-rows i {
+  margin-left: auto;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-style: normal;
+  font-size: 0.75rem;
+  background: color-mix(in srgb, var(--exito) 12%, #fff);
+  color: var(--exito);
+}
+.lc-mini-rows i[data-s="ab"] { background: color-mix(in srgb, var(--ciruela) 10%, #fff); color: var(--ciruela); }
+
+.lc-mini-rail { margin: auto 0 0; padding: 0.75rem 0 0 1rem; list-style: none; border-left: 1px solid var(--line-strong); display: grid; gap: 0.85rem; }
+.lc-mini-rail li { position: relative; display: grid; font-weight: 600; }
+.lc-mini-rail li::before { content: ""; position: absolute; left: -1.33rem; top: 0.35rem; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--clay); }
+.lc-mini-rail small { font-family: var(--ll-mono); font-size: 0.7rem; letter-spacing: 0.18em; color: var(--ink-muted); font-weight: 500; }
+.lc-mini-envelope { display: grid; place-items: center; margin-top: auto; min-height: 8rem; border-radius: 0.875rem; background: var(--perla-2); }
+.lc-mini-tables { display: flex; gap: 0.75rem; margin-top: auto; padding-top: 0.75rem; }
+.lc-mini-tables span {
+  display: grid;
+  place-items: center;
+  width: 4.4rem;
+  height: 4.4rem;
+  border-radius: 50%;
+  border: 2px solid var(--line-strong);
+  font-family: var(--ll-serif);
+  font-size: 1.05rem;
+}
+.lc-mini-tables span[data-over] { border-color: var(--clay); color: var(--clay); }
+
+/* --- 8 · Preguntas a dos columnas ------------------------------------- */
+.lc-faq { border-top: 1px solid var(--line); }
+.lc-faq-grid { display: grid; gap: 3rem; }
+@media (min-width: 1040px) { .lc-faq-grid { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); } .lc-faq-head { position: sticky; top: 7rem; align-self: start; } }
+.lc-faq-head .lc-pill { margin-top: 2rem; }
+.lc-faq-list { display: grid; }
+.lc-faq-item { border-bottom: 1px solid var(--line); }
+.lc-faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 4.25rem;
+  font-family: var(--ll-serif);
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  list-style: none;
+}
+.lc-faq-item summary::-webkit-details-marker { display: none; }
+.lc-faq-item p { margin: 0 0 1.5rem; max-width: 40rem; font-size: 1rem; line-height: 1.65; color: var(--ink-muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  .lc-switch-thumb, .lc-pill { transition-property: background-color, color, border-color; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .lc-nav[data-scrolled] { background: var(--lc-paper); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .lc-nav[data-scrolled][data-on="dark"] { background: var(--lc-dark); }
+  .lc-idea, .lc-browser { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+
+/* Ajustes tras la primera revisión en navegador */
+.lc-seal > span { white-space: nowrap; line-height: 1; }
+
+.lc-only-sm { display: none; }
+.lc-hide-sm-inline { display: inline; }
+@media (max-width: 520px) {
+  .lc-only-sm { display: inline; }
+  .lc-hide-sm-inline { display: none; }
+  .lc-nav-login { padding: 0 0.25rem; }
+}
+
+/* --- Movimiento (6-oct-2026) -------------------------------------------- */
+/* Titulares palabra a palabra: 45 ms por palabra, tope 500 ms. */
+.ll-home[data-motion] [data-reveal="words"] { opacity: 1; transform: none; filter: none; transition: none; }
+.ll-home[data-motion] [data-reveal="words"] .lc-w {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.35em);
+  transition: opacity 560ms var(--ease-out), transform 760ms var(--ease-out);
+  transition-delay: min(calc(var(--i, 0) * 45ms), 500ms);
+}
+.ll-home[data-motion] [data-reveal="words"][data-revealed] .lc-w { opacity: 1; transform: none; }
+.ll-home[data-motion="reduce"] [data-reveal="words"] .lc-w { transform: none; transition-duration: 300ms; transition-delay: 0ms; }
+/* Hover con física solo con ratón: tarjetas y móviles responden al cursor. */
+@media (hover: hover) and (pointer: fine) {
+  .lc-card { transition: transform 320ms var(--ease-out), box-shadow 320ms var(--ease-out); }
+  .lc-card:hover { transform: translateY(-4px); box-shadow: 0 2rem 3.5rem -2rem rgba(36, 33, 42, 0.4); }
+
+  .lc-faq-item { transition: background-color 200ms ease; }
+  .lc-faq-item:hover { background: #fff; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lc-card { transition: none; }
+}
+
+/* --- Bento vivo (6-oct-2026): las tarjetas de invitados y del día llenan
+   su alto con contenido que se anima al entrar (LandingMotion pone
+   data-revealed en la tarjeta). Sin JS o con reduced-motion: estado final. */
+@property --lc-n { syntax: "<integer>"; inherits: false; initial-value: 21; }
+.lc-live, .lc-day { display: grid; gap: 0.75rem; margin-top: auto; padding-top: 0.75rem; }
+.lc-live-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.lc-live-count { font-family: var(--ll-serif); font-size: 1.9rem; letter-spacing: -0.03em; }
+.lc-live-num { font-weight: 400; counter-reset: lc var(--lc-n); }
+.lc-live-num::before { content: counter(lc); font-variant-numeric: tabular-nums; }
+.lc-live-of { font-size: 0.8rem; color: var(--ink-muted); }
+.lc-live-bar { display: block; height: 6px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 8%, transparent); overflow: hidden; }
+.lc-live-bar i { display: block; height: 100%; width: 62%; border-radius: inherit; background: var(--exito); transform-origin: left; }
+.lc-live-rows { padding-top: 0; }
+.lc-live-state { position: relative; display: grid; margin-left: auto; }
+.lc-live-state i { grid-area: 1 / 1; margin-left: 0; justify-self: end; white-space: nowrap; }
+.lc-live-state i[data-s="env"] { background: color-mix(in srgb, var(--ink) 7%, var(--lc-paper)); color: var(--ink-muted); opacity: 0; }
+.lc-day-place { display: flex; align-items: center; gap: 0.7rem; padding: 0.65rem 0.75rem; border-radius: 1rem; background: var(--lc-paper); border: 1px solid var(--line); font-size: 0.85rem; }
+.lc-day-place b { display: block; font-weight: 600; }
+.lc-day-place small { color: var(--ink-muted); }
+.lc-day-pin { flex: none; width: 2.2rem; height: 2.2rem; border-radius: 0.7rem; background:
+  radial-gradient(circle at 50% 42%, var(--clay) 0 0.32rem, transparent 0.34rem),
+  repeating-linear-gradient(35deg, var(--separador) 0 6px, var(--perla-2) 6px 12px); }
+.lc-day-go { margin-left: auto; font-weight: 600; font-size: 0.75rem; text-decoration: underline; text-underline-offset: 3px; }
+.lc-day-rail { gap: 0.55rem; padding-top: 0.25rem; position: relative; border-left-color: transparent; }
+.lc-day-rail::before { content: ""; position: absolute; left: -1px; top: 0.4rem; bottom: 0.4rem; width: 1px; background: var(--line-strong); transform-origin: top; }
+.lc-day-cal { justify-self: start; padding: 0.35rem 0.75rem; border-radius: 999px; background: color-mix(in srgb, var(--exito) 12%, #fff); color: var(--exito); font-size: 0.75rem; font-weight: 600; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-live-num { animation: lc-count 1.6s var(--ease-out) 0.35s both; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-live-bar i { animation: lc-bar 1.6s var(--ease-out) 0.35s both; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-live-rows > span,
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-day-rail li {
+    animation: lc-row-in 520ms var(--ease-out) calc(0.25s + var(--row) * 90ms) both;
+  }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-live-state i[data-s="env"] { animation: lc-state-out 1.4s ease calc(0.25s + var(--row, 0) * 90ms) both; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-live-state i:not([data-s="env"]) { animation: lc-state-in 1.4s ease calc(0.25s + var(--row, 0) * 90ms) both; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-day-rail::before { animation: lc-rail 1.1s var(--ease-out) 0.2s both; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-day-place { animation: lc-row-in 520ms var(--ease-out) 0.1s both; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-day-cal { animation: lc-pop 420ms var(--ease-out) 1.1s both; }
+}
+@keyframes lc-count { from { --lc-n: 0; } }
+@keyframes lc-bar { from { transform: scaleX(0); } }
+@keyframes lc-row-in { from { opacity: 0; transform: translateY(0.6rem); } }
+@keyframes lc-rail { from { transform: scaleY(0); } }
+@keyframes lc-pop { from { opacity: 0; transform: scale(0.94); } }
+@keyframes lc-state-out { 0%, 55% { opacity: 1; } 75%, 100% { opacity: 0; } }
+@keyframes lc-state-in { 0%, 55% { opacity: 0; transform: scale(0.9); } 80%, 100% { opacity: 1; transform: none; } }
+/* El estado va dentro de la fila: sin el estilo de píldora de las filas. */
+.lc-mini-rows .lc-live-state { min-height: 0; padding: 0; border: 0; background: none; gap: 0; flex: none; }
+.lc-live, .lc-day { min-width: 0; }
+
+/* Tres móviles: caben sin carrusel en escritorio. */
+
+/* --- Fotos en la frase: tres por hueco, se suceden con fundido y zoom. --- */
+.lc-statement-text .lc-inline-img {
+  position: relative;
+  overflow: hidden;
+  width: 2.1em;
+  height: 0.78em;
+  background: var(--ciruela-tinta);
+  background-image: none;
+  vertical-align: -0.06em;
+}
+.lc-inline-frame {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+}
+.lc-inline-frame:first-child { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .lc-inline-frame {
+    animation: lc-inline 7.8s ease-in-out infinite both;
+    animation-delay: calc(var(--lc-i) * 2.6s + var(--lc-offset, 0s));
+  }
+  .lc-inline-frame:first-child { opacity: 0; }
+}
+@keyframes lc-inline {
+  0% { opacity: 0; transform: scale(1.12); }
+  8%, 33% { opacity: 1; }
+  41%, 100% { opacity: 0; transform: scale(1); }
+}
+
+/* --- Plantillas (cordially «Explore Templates»): tarjetas de foto. ------ */
+.lc-tpl {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(78%, 1fr);
+  gap: 1.25rem;
+  margin: 2.5rem 0 0;
+  padding: 0 0 0.5rem;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.lc-tpl::-webkit-scrollbar { display: none; }
+@media (min-width: 900px) {
+  .lc-tpl { grid-auto-flow: row; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; gap: 1.75rem; }
+}
+.lc-tpl-card { scroll-snap-align: start; }
+.lc-tpl-link { display: grid; gap: 0.5rem; color: var(--ink); text-decoration: none; }
+.lc-tpl-photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 4.6;
+  overflow: hidden;
+  border-radius: 1.6rem;
+  background: var(--perla-2);
+  box-shadow: 0 1.5rem 3rem -2rem rgba(36, 33, 42, 0.4);
+  margin-bottom: 0.75rem;
+}
+.lc-tpl-photo img { object-fit: cover; transition: transform 900ms var(--ease-out); }
+.lc-tpl-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 40%);
+  pointer-events: none;
+}
+.lc-tpl-go {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--ink);
+  box-shadow: 0 0.5rem 1rem -0.5rem rgba(36, 33, 42, 0.35);
+  transition: transform 260ms var(--ease-out);
+}
+.lc-tpl-kicker { font-family: var(--ll-mono); font-size: 0.7rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--texto-2); }
+.lc-tpl-title { font-family: var(--ll-serif); font-size: clamp(1.9rem, 1.4rem + 1vw, 2.4rem); line-height: 1; letter-spacing: -0.03em; }
+.lc-tpl-desc { max-width: 26rem; font-size: 1rem; line-height: 1.55; color: var(--ink-muted); }
+@media (hover: hover) and (pointer: fine) {
+  .lc-tpl-link:hover .lc-tpl-photo img { transform: scale(1.04); }
+  .lc-tpl-link:hover .lc-tpl-go { transform: translateX(3px); }
+}
+.lc-tpl-link:focus-visible { outline: 2px solid var(--clay); outline-offset: 6px; border-radius: 1.6rem; }
+
+/* Móvil: sin desenfoques de fondo (caros en la GPU del iPhone al desplazar). */
+@media (pointer: coarse) {
+  .lc-nav[data-scrolled],
+.lc-idea,
+.lc-browser { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  .lc-nav[data-scrolled][data-on="dark"] { background: color-mix(in srgb, var(--lc-dark) 94%, transparent); }
+  .lc-nav[data-scrolled]:not([data-on="dark"]) { background: color-mix(in srgb, var(--lc-paper) 96%, transparent); }
+}
+
+/* =====================================================================
+   7-oct-2026: landing sobre papel crema, mensajes nuevos y solo cuatro
+   bloques (hero, vuestra web, una cosa más, preguntas).
+   ===================================================================== */
+.lc-home {
+  --lc-paper: var(--perla);
+  --hi-paper: var(--perla);
+  --hi-ink: var(--texto);
+  --hi-muted: var(--texto-2);
+  --hi-clay: var(--ciruela);
+  --hi-clay-soft: color-mix(in srgb, var(--ciruela) 42%, transparent);
+  background: var(--lc-paper);
+}
+.lc-hero--paper { background: var(--lc-paper); color: var(--ink); }
+.lc-hero--paper .lc-hero-bg { display: none; }
+.lc-hero--paper .lc-hero-title { color: var(--ink); font-size: min(clamp(2.4rem, 1.4rem + 2.8vw, 4.25rem), 11vw); line-height: 1.02; max-width: 17ch; }
+.lc-hero--paper .lc-hero-title em { color: var(--clay); }
+.lc-hero--paper .lc-hero-lead { color: var(--ink-muted); font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem); }
+.lc-hero-cta { margin: 2rem 0 0; }
+
+.lc-hero--paper .lc-browser--bare .lc-env-back { box-shadow: 0 2rem 3rem -1.5rem rgba(36, 33, 42, 0.3), inset 0 0 0 1px rgba(120, 90, 60, 0.12); }
+
+/* Vuestra web: idea en una frase bajo las plantillas. */
+.lc-idea-block { margin-top: 3rem; }
+.lc-idea--paper { display: block; max-width: 40rem; margin: 0; padding: 0; border: 0; background: none; border-radius: 0; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.lc-idea-label { display: block; margin-bottom: 0.9rem; font-family: var(--ll-serif); font-size: clamp(1.15rem, 1rem + 0.5vw, 1.45rem); color: var(--ink); }
+.lc-idea-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.4rem 0.4rem 1.1rem; border-radius: 1rem; background: #fff; border: 1px solid var(--line-strong); }
+.lc-idea-row:focus-within { border-color: var(--clay); }
+.lc-idea-row input { flex: 1; min-width: 0; min-height: 2.75rem; border: 0; background: transparent; font: inherit; font-size: 1rem; color: var(--ink); outline: none; }
+@media (max-width: 560px) {
+  .lc-idea-row { flex-direction: column; align-items: stretch; border-radius: 1rem; padding: 0.6rem; }
+  .lc-idea-row .lc-pill { width: 100%; }
+}
+
+/* Una cosa más. */
+.lc-more { padding-top: clamp(5rem, 14vw, 10rem); }
+.lc-more-inner { max-width: 46rem; margin-left: max(0px, calc((100% - var(--lc-max)) / 2)); }
+.lc-more .lc-sub + .lc-sub { margin-top: 0.75rem; }
+.lc-more .hi-notify { margin-top: 2rem; max-width: 34rem; font-family: var(--ll-serif); font-size: 1.15rem; }
+.lc-more .hi-field { gap: 0.75rem; }
+.lc-more .hi-cta { font-size: 1.05rem; }
+.lc-home > footer { background: var(--lc-paper); }
+
+/* --- Capítulos antes oscuros, ahora sobre papel (7-oct-2026). Mismo
+   diseño y movimiento; solo cambian fondo y colores del texto. --------- */
+.lc-home .lc-chapter,
+.lc-home .lc-flight {
+  background: var(--lc-paper);
+  color: var(--ink);
+}
+.lc-home .lc-statement-text,
+.lc-home .lc-flight-title { color: var(--ink); }
+.lc-home .lc-flight-body { color: var(--ink-muted); }
+.lc-home .lc-flight-title em { color: inherit; }
+.lc-home .lc-flight-copy .lc-kicker { color: var(--clay); }
+.lc-home .lc-flight-track { background: color-mix(in srgb, var(--ink) 12%, transparent); }
+.lc-home .lc-flight-track i { background: var(--clay); }
+.lc-home .lc-flight-dots span { border-color: color-mix(in srgb, var(--ink) 25%, transparent); }
+.lc-home .lc-flight-dots span[data-on] { box-shadow: 0 0 0 2px var(--lc-paper), 0 0 0 3.5px var(--ink); }
+.lc-home .lc-flight-phone { box-shadow: 0 2.5rem 4rem -2rem rgba(36, 33, 42, 0.4); }
+
+/* =====================================================================
+   Pasada 7-oct-2026 (noche): hero con el lacre y líneas (vercel.com),
+   «Sabréis» con iconos, contraste en los objetos flotantes y en el campo
+   de la idea, «Próximamente» destacado y cierre con la palabra de cartel.
+   Lo principal en claro; los acentos oscuros, donde suman.
+   ===================================================================== */
+
+/* Campo de la idea: el texto de ejemplo se lee. */
+.lc-idea-row input::placeholder { color: var(--texto-2); opacity: 1; }
+
+/* «Próximamente» en su cajita. */
+.lc-more-kicker { display: flex; flex-wrap: wrap; align-items: center; gap: 0.9rem; }
+.lc-soon {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.8rem;
+  border-radius: 0.5rem;
+  background: var(--perla-2);
+  color: var(--ciruela);
+  font-family: var(--ll-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+}
+
+/* La frase «vive en los detalles»: el único capítulo oscuro de la landing,
+   en tinta ciruela (v9) con texto perla y la cursiva en ciruela claro. */
+.lc-home .lc-statement { background: var(--lc-dark); color: var(--lc-on-dark); }
+.lc-home .lc-statement .lc-statement-text { color: var(--lc-on-dark); }
+.lc-home .lc-statement .lc-statement-text em { color: var(--lc-clay-light); }
+.lc-home .lc-statement .lc-inline-img { box-shadow: 0 0.2em 0.6em -0.2em rgba(20, 14, 24, 0.6); }
+/* «Hacedla vuestra» (v9, 9-oct-2026). Mismo comportamiento: el interruptor
+   se enciende solo pasada la mitad del capítulo y se puede pulsar. Los dos
+   estados son claros: apagado = perla con el control en reposo (pista con
+   borde de control, botón a la izquierda); encendido = tinte perla-2 de la
+   misma familia, pista ciruela con el botón a la derecha y su marca, y el
+   titular cambia. Una curva de marca al fondo (BrandCurve), nunca bajo el
+   texto: en móvil se retira. */
+.lc-home .lc-switch-section { background: var(--perla); color: var(--ink); transition: background-color 600ms var(--ease-out); }
+.lc-home .lc-switch-section[data-on] { background: var(--perla-2); }
+.lc-home .lc-switch-toggle { color: var(--ink); }
+.lc-home .lc-switch-title { color: var(--ink); font-size: min(clamp(2.3rem, 1.3rem + 3.2vw, 4.25rem), 11vw); line-height: 1.04; }
+.lc-home .lc-switch-title em { color: inherit; }
+.lc-home .lc-switch-section[data-on] .lc-switch-title em { color: var(--ciruela); }
+.lc-home .lc-switch-sub { color: var(--ink-muted); }
+.lc-home .lc-switch-track { background: #fff; border: 1px solid var(--borde-control); transition: background-color 200ms ease, border-color 200ms ease; }
+.lc-home .lc-switch-thumb { display: grid; place-items: center; top: 0.125rem; left: 0.125rem; background: var(--texto-2); color: #fff; }
+.lc-home .lc-switch-thumb svg { width: 0.75rem; height: 0.75rem; opacity: 0; transition: opacity 160ms ease; }
+.lc-home .lc-switch[data-on] .lc-switch-track { background: var(--ciruela); border-color: var(--ciruela); }
+.lc-home .lc-switch[data-on] .lc-switch-thumb { background: #fff; color: var(--ciruela); }
+.lc-home .lc-switch[data-on] .lc-switch-thumb svg { opacity: 1; }
+.lc-home .lc-switch-toggle:focus-visible { outline: 2px solid var(--ciruela); outline-offset: 4px; border-radius: 0.75rem; }
+.lc-home .lc-switch { z-index: 2; }
+.lc-home .lc-switch-curve { position: absolute; z-index: 0; right: -27rem; top: 12%; width: 40rem; }
+@media (max-width: 1199.98px) { .lc-home .lc-switch-curve { display: none; } }
+/* El titular cambia con un cruce (14-oct-2026): los dos textos apilados en
+   la misma celda (sin salto de altura). El que se va sube y se desvanece
+   rápido; el que llega sube desde abajo un instante después, con un leve
+   desenfoque que se aclara (une los dos estados en vez de un corte). */
+.lc-home .lc-switch-title, .lc-home .lc-switch-sub { animation: none; }
+.lc-swap-stack { display: grid; }
+.lc-swap-stack > .lc-swap-item { grid-area: 1 / 1; align-self: center; }
+.lc-swap-item {
+  opacity: 0;
+  filter: blur(4px);
+  transform: translateY(0.6rem); /* espera abajo: entra subiendo */
+  pointer-events: none;
+  transition:
+    opacity 280ms var(--ease-out),
+    filter 280ms var(--ease-out),
+    transform 280ms var(--ease-out);
+}
+.lc-swap-item[data-active] {
+  opacity: 1;
+  filter: blur(0);
+  transform: none;
+  pointer-events: auto;
+  transition:
+    opacity 560ms var(--ease-out) 140ms,
+    filter 560ms var(--ease-out) 140ms,
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1) 140ms;
+}
+/* El que se va sale hacia arriba; luego vuelve, ya invisible, a esperar abajo. */
+.lc-swap-item[data-leaving] { transform: translateY(-0.6rem); }
+.lc-switch-sub .lc-swap-item[data-active] { transition-delay: 220ms; }
+/* El interruptor viaja con una curva más amable y algo más lenta. */
+.lc-home .lc-switch-thumb { transition: transform 420ms cubic-bezier(0.34, 1.32, 0.64, 1), background-color 300ms ease, color 300ms ease; }
+.lc-home .lc-switch-track { transition: background-color 360ms ease, border-color 360ms ease; }
+.lc-home .lc-switch-toggle:active .lc-switch-thumb { scale: 1.12; }
+@media (prefers-reduced-motion: reduce) {
+  .lc-swap-item, .lc-swap-item[data-active] { transform: none; filter: none; transition: opacity 200ms ease; transition-delay: 0ms; }
+  .lc-home .lc-switch-thumb { transition: background-color 200ms ease; }
+  .lc-home .lc-switch-section { transition: none; }
+}
+
+/* --- Bento con más vida (7-oct-2026): cada tarjeta cuenta su gesto al
+   entrar. Solo con movimiento completo; sin él, estado final. ----------- */
+.lc-wa { position: relative; }
+.lc-wa-typing { display: none; }
+/* Mini sobre (14-oct-2026): sobre reconocible —fondo, tarjeta dentro,
+   bolsillo delantero, solapa y lacre con las iniciales—. Estado de reposo:
+   CERRADO y lacrado (lo que dice el texto). */
+.lc-mini-envelope { position: relative; overflow: hidden; padding: 3rem 0 1.4rem; }
+.lc-menv { position: relative; width: min(13rem, 80%); aspect-ratio: 16 / 10; perspective: 600px; }
+.lc-menv-back { position: absolute; inset: 0; border-radius: 0.35rem; background: #e9e2d8; box-shadow: 0 0.8rem 1.4rem -0.9rem rgba(36, 33, 42, 0.45); }
+.lc-mini-card { position: absolute; left: 9%; right: 9%; top: 8%; bottom: 14%; display: grid; place-items: center; border-radius: 0.25rem; background: #fff; text-align: center; font-family: var(--ll-serif); font-size: 1rem; white-space: nowrap; color: var(--ink); box-shadow: 0 0.3rem 0.7rem -0.4rem rgba(36, 33, 42, 0.3); z-index: 1; }
+.lc-mini-card em { color: var(--ciruela); }
+.lc-menv-pocket { position: absolute; inset: 0; z-index: 2; border-radius: 0.35rem; background:
+    linear-gradient(to top right, #f6f1ea 49.6%, transparent 50%) left bottom / 50.2% 100% no-repeat,
+    linear-gradient(to top left, #f3ede5 49.6%, transparent 50%) right bottom / 50.2% 100% no-repeat,
+    #f8f4ee;
+  clip-path: polygon(0 0, 50% 64%, 100% 0, 100% 100%, 0 100%); }
+.lc-mini-flap { position: absolute; left: 0; right: 0; top: 0; height: 68%; z-index: 3; background: linear-gradient(to bottom, #efe8de, #e2d9cc); clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: 50% 0; backface-visibility: visible; filter: drop-shadow(0 1px 1px rgba(36, 33, 42, 0.12)); }
+.lc-menv-seal.lc-seal { position: absolute; left: 50%; top: 66%; z-index: 4; width: 2.9rem; height: 2.9rem; font-size: 0.95rem; translate: -50% -50%; }
+.lc-mini-tables span { position: relative; overflow: hidden; }
+.lc-mini-tables span::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(color-mix(in srgb, var(--clay) 22%, transparent) var(--fill, 80%), transparent 0); z-index: -1; }
+.lc-mini-tables span:nth-child(1) { --fill: 80%; }
+.lc-mini-tables span:nth-child(2) { --fill: 100%; }
+.lc-mini-tables span:nth-child(3) { --fill: 100%; }
+@property --fill { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .ll-home[data-motion="full"] .lc-wa-typing {
+    position: absolute; left: 2.2rem; top: 3.1rem; z-index: 2;
+    display: inline-flex; gap: 4px; padding: 0.6rem 0.8rem; border-radius: 1rem; background: #d9fdd3;
+    animation: lc-typing-out 0.2s ease 1.6s both paused;
+  }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-wa-typing { animation-play-state: running; }
+  .lc-wa-typing i { width: 6px; height: 6px; border-radius: 50%; background: #5f7a68; animation: lc-dot 0.9s ease-in-out infinite; }
+  .lc-wa-typing i:nth-child(2) { animation-delay: 0.15s; }
+  .lc-wa-typing i:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes lc-dot { 50% { transform: translateY(-3px); opacity: 0.5; } }
+  @keyframes lc-typing-out { to { opacity: 0; visibility: hidden; } }
+  .ll-home[data-motion="full"] .lc-wa-bubble { opacity: 0; transform: translateY(0.5rem) scale(0.97); transform-origin: 0 0; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-wa-bubble { animation: lc-pop-in 520ms var(--ease-out) 1.75s both; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-wa-bubble p { animation: lc-row-in 420ms var(--ease-out) both; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-wa-bubble p:nth-child(1) { animation-delay: 1.95s; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-wa-bubble p:nth-child(2) { animation-delay: 2.1s; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-wa-bubble p:nth-child(3) { animation-delay: 2.25s; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-wa-bubble p:nth-child(4) { animation-delay: 2.4s; }
+  @keyframes lc-pop-in { to { opacity: 1; transform: none; } }
+
+  /* Ciclo de 7 s en bucle: cerrado y lacrado (casi la mitad del tiempo),
+     el lacre cede, la solapa se abre en 3D, la tarjeta sube con los
+     nombres, se queda, baja, la solapa cierra y el lacre vuelve. */
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-menv-seal { animation: lc-menv-seal 7s cubic-bezier(0.65, 0, 0.35, 1) 0.6s infinite both; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-mini-flap { animation: lc-menv-flap 7s cubic-bezier(0.65, 0, 0.35, 1) 0.6s infinite both; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-mini-card { animation: lc-menv-card 7s cubic-bezier(0.22, 1, 0.36, 1) 0.6s infinite both; }
+  @keyframes lc-menv-seal {
+    0%, 30% { opacity: 1; transform: scale(1); }
+    34% { opacity: 1; transform: scale(0.9); }
+    40% { opacity: 0; transform: scale(1.18); }
+    88% { opacity: 0; transform: scale(1.18); }
+    94%, 100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes lc-menv-flap {
+    0%, 38% { transform: rotateX(0deg); z-index: 3; }
+    50% { transform: rotateX(178deg); z-index: 0; }
+    80% { transform: rotateX(178deg); z-index: 0; }
+    90%, 100% { transform: rotateX(0deg); z-index: 3; }
+  }
+  @keyframes lc-menv-card {
+    0%, 46% { transform: translateY(0); }
+    58% { transform: translateY(-42%); }
+    74% { transform: translateY(-42%); }
+    82%, 100% { transform: translateY(0); }
+  }
+
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-mini-rows:not(.lc-live-rows) > span { animation: lc-row-in 520ms var(--ease-out) both; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-mini-rows:not(.lc-live-rows) > span:nth-child(1) { animation-delay: 0.35s; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-mini-rows:not(.lc-live-rows) > span:nth-child(2) { animation-delay: 0.5s; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-mini-rows:not(.lc-live-rows) b { animation: lc-ping 1.6s ease 1s 2; }
+  @keyframes lc-ping { 30% { transform: scale(1.25); box-shadow: 0 0 0 6px color-mix(in srgb, var(--clay) 18%, transparent); } }
+
+  .ll-home[data-motion="full"] .lc-mini-tables span::before { --fill: 0%; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-mini-tables span::before { animation: lc-fill 1.2s var(--ease-out) both; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-mini-tables span:nth-child(1)::before { animation-delay: 0.4s; --to: 80%; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-mini-tables span:nth-child(2)::before { animation-delay: 0.6s; --to: 100%; }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-mini-tables span:nth-child(3)::before { animation-delay: 0.8s; --to: 100%; }
+  @keyframes lc-fill { to { --fill: var(--to, 100%); } }
+  .ll-home[data-motion="full"] .lc-card[data-revealed] .lc-mini-tables span[data-over] { animation: lc-shake 500ms ease 1.9s both; }
+  @keyframes lc-shake { 25% { transform: translateX(-3px); } 50% { transform: translateX(3px); } 75% { transform: translateX(-2px); } }
+}
+
+/* --- Cierre y pie (landing-finale.tsx) --------------------------------- */
+.lc-finale { position: relative; overflow: hidden; background: var(--lc-paper); color: var(--ink); }
+.lc-finale-top {
+  display: grid;
+  gap: 2.5rem;
+  max-width: calc(var(--lc-max) - 2 * var(--lc-gutter));
+  margin: 0 auto;
+  padding: clamp(4rem, 9vw, 7rem) var(--lc-gutter) 0;
+}
+@media (min-width: 900px) { .lc-finale-top { grid-template-columns: minmax(0, 1fr) auto; align-items: start; } }
+.lc-finale-logo { margin: 0; font-family: var(--ll-serif); font-style: italic; font-size: 2.1rem; line-height: 1; letter-spacing: -0.03em; }
+.lc-finale-line { max-width: 26rem; margin: 1rem 0 0; font-family: var(--ll-sans, inherit); font-weight: 400; font-size: 1.05rem; line-height: 1.6; color: var(--ink-muted); }
+.lc-finale-mail { display: inline-flex; align-items: center; min-height: 44px; margin-top: 0.5rem; font-size: 0.95rem; color: var(--ink); text-underline-offset: 3px; }
+/* Dos filas (producto y legales), cada una en línea y con salto si no cabe. */
+.lc-finale-links { display: grid; gap: 0.25rem; align-content: start; }
+/* Enlaces de 44 px de alto (táctil); el hueco entre filas lo da su propia altura. */
+.lc-finale-links ul { display: flex; flex-wrap: wrap; gap: 0 1.5rem; margin: 0; padding: 0; list-style: none; }
+.lc-finale-links a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); text-decoration: none; font-size: 1rem; }
+@media (hover: hover) and (pointer: fine) { .lc-finale-links a:hover { text-decoration: underline; text-underline-offset: 4px; } }
+
+.lc-finale-stage { position: relative; isolation: isolate; padding: clamp(4rem, 9vw, 7rem) var(--lc-gutter) 1.5rem; text-align: center; }
+.lc-finale-actions { position: relative; z-index: 2; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; }
+
+.lc-finale-copy { position: relative; z-index: 2; margin: 1rem 0 0; text-align: left; font-family: var(--ll-mono); font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--texto-2); }
+
+@media (max-width: 560px) { .lc-finale-copy { text-align: center; } }
+/* La marca se escribe siempre en minúscula (DESIGN §4: nunca «VINKLO»). */
+.lc-finale-copy-word { text-transform: none; letter-spacing: 0.04em; }
+/* El cierre usa el logo de la marca (como .lc-brand-word), no la cursiva. */
+.lc-finale-logo {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+.lc-finale-logo { gap: 0.45rem; font-size: 1.9rem; }
+.lc-finale-logo svg { width: 1.6rem; height: 1.6rem; }
+.lc-finale-i { color: var(--clay); }
+
+/* Sin palabra de cartel: el pie termina en los botones y el copyright. */
+.lc-finale-stage { padding-top: clamp(3rem, 6vw, 4.5rem); padding-bottom: 2rem; }
+.lc-finale-copy { margin-top: clamp(3rem, 6vw, 4.5rem); text-align: center; }
+/* Cifras del recorrido en una sola línea. */
+.lc-flight-card-head b, .lc-flight-state { white-space: nowrap; }
+.lc-flight-state { flex: none; }
+
+/* Hero: la «V» de vinklo y sus tres líneas (restaurada 12-oct-2026). */
+.lc-hero--paper .lc-hero-inner { align-items: center; }
+.lc-mark {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 17rem);
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 26rem;
+}
+.lc-mark-stage { position: relative; display: grid; place-items: center; aspect-ratio: 1; }
+
+.lc-mark-lines { display: grid; gap: 0.25rem; margin: 0; padding: 0; list-style: none; }
+.lc-mark-line {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  font: inherit;
+  font-size: 1.05rem;
+  line-height: 1.45;
+  color: var(--ink);
+  cursor: default;
+  transition: color 220ms ease, opacity 220ms ease;
+}
+.lc-mark-lead { font-weight: 600; }
+.lc-mark-rest {
+  display: inline;
+  opacity: 0;
+  font-size: 0;
+  transition: opacity 260ms ease;
+}
+.lc-mark-rest::before { content: ": "; }
+.lc-mark-line[data-on] .lc-mark-rest { opacity: 1; font-size: inherit; color: var(--ink-muted); }
+.lc-mark-lines[data-active] .lc-mark-line:not([data-on]) { color: color-mix(in srgb, var(--ink) 45%, transparent); }
+.lc-mark-line:focus-visible { outline: 2px solid var(--clay); outline-offset: 4px; border-radius: 0.3rem; }
+@media (max-width: 1039.98px) {
+  .lc-mark { grid-template-columns: 1fr; min-height: 0; justify-items: center; text-align: center; }
+  .lc-mark-stage { width: min(18rem, 70vw); }
+  .lc-mark-line { text-align: center; }
+  .lc-mark-rest { opacity: 1; font-size: inherit; color: var(--ink-muted); display: block; }
+  .lc-mark-rest::before { content: none; }
+  .lc-mark-rest::first-letter { text-transform: uppercase; }
+}
+
+/* La «V» del hero: cada parte se enciende con su línea (vercel.com). */
+.lc-mark-v { position: relative; width: 62%; overflow: visible; }
+.lc-mark-part { stroke: var(--ink); stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; transition: stroke 300ms ease, filter 300ms ease, opacity 300ms ease; }
+.lc-mark-dot { fill: var(--clay); transition: fill 300ms ease, filter 300ms ease, opacity 300ms ease; }
+.lc-mark-stage[data-part] :is(.lc-mark-part, .lc-mark-dot) { opacity: 0.28; }
+.lc-mark-stage[data-part="0"] [data-i="0"],
+.lc-mark-stage[data-part="1"] [data-i="1"],
+.lc-mark-stage[data-part="2"] [data-i="2"] {
+  opacity: 1;
+  stroke: var(--clay);
+  fill: var(--clay);
+}
+.lc-mark-stage[data-part="0"] [data-i="0"], .lc-mark-stage[data-part="1"] [data-i="1"] { fill: none; }
+
+/* «Sabréis…» del hero con sus iconos al pasar (restaurado 13-oct-2026, tal
+   cual estaba; el orden importa: cada bloque matiza al anterior). */
+.lc-know {
+  max-width: 34rem;
+  margin: 1rem 0 0;
+  font-family: var(--ll-serif);
+  font-size: clamp(1.15rem, 1rem + 0.5vw, 1.45rem);
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+/* «Sabréis» con iconos. */
+.lc-know-item { white-space: nowrap; }
+.lc-know-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 1.6em;
+  height: 1.6em;
+  margin-right: 0.3em;
+  vertical-align: -0.38em;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid var(--line-strong);
+  color: var(--clay);
+  transition: transform 220ms var(--ease-out), background-color 220ms ease;
+}
+.lc-know-icon svg { width: 0.85em; height: 0.85em; }
+@media (hover: hover) and (pointer: fine) {
+  .lc-know-item:hover .lc-know-icon { transform: translateY(-2px) rotate(-6deg); background: color-mix(in srgb, var(--clay) 10%, #fff); }
+}
+
+/* «Sabréis»: el icono aparece encima de la frase al pasar el ratón. */
+.lc-know-item {
+  position: relative;
+  white-space: normal;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: color-mix(in srgb, var(--clay) 55%, transparent);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.22em;
+  cursor: default;
+  outline: none;
+  border-radius: 0.2em;
+}
+.lc-know-item:focus-visible { box-shadow: 0 0 0 2px var(--clay); }
+.lc-know .lc-know-icon {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 0.15em);
+  width: 2.1em;
+  height: 2.1em;
+  margin: 0;
+  translate: -50% 0.4em;
+  scale: 0.85;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 0.6rem 1.2rem -0.6rem rgba(36, 33, 42, 0.35);
+  transition: opacity 180ms ease, translate 260ms var(--ease-out), scale 260ms var(--ease-out);
+}
+.lc-know .lc-know-icon svg { width: 1em; height: 1em; }
+.lc-know-item:focus-visible .lc-know-icon { opacity: 1; translate: -50% 0; scale: 1; transform: none; }
+@media (hover: hover) and (pointer: fine) {
+  .lc-know-item:hover .lc-know-icon { opacity: 1; translate: -50% 0; scale: 1; transform: none; }
+  .lc-know-item:hover { text-decoration-style: solid; color: var(--clay); }
+}
+@media (prefers-reduced-motion: reduce) { .lc-know .lc-know-icon { transition: opacity 120ms ease; translate: -50% 0; scale: 1; } }
+
+/* Cada frase es un bloque en línea: el icono se coloca sobre ella (en un
+   inline que parte línea, el navegador lo llevaba a la primera línea). */
+.lc-know-item { display: inline-block; white-space: nowrap; }

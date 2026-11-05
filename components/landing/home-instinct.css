@@ -1,0 +1,127 @@
+/* Home formato instinct.com (home-instinct.tsx). Perla (marca v9), una
+   serif, columna de ~640 px a la izquierda; ciruela solo en subrayados y CTA. */
+.hi {
+  --hi-paper: var(--perla);
+  --hi-ink: var(--texto);
+  --hi-muted: var(--texto-2);
+  --hi-clay: var(--ciruela);
+  --hi-clay-soft: color-mix(in srgb, var(--ciruela) 42%, transparent);
+  --hi-gutter: max(1.25rem, env(safe-area-inset-left, 0px));
+  min-height: 100svh;
+  background: var(--hi-paper);
+  color: var(--hi-ink);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.25rem, 1.05rem + 0.9vw, 1.875rem);
+  line-height: 1.38;
+  letter-spacing: -0.005em;
+}
+.hi a { color: inherit; }
+.hi-nav,
+.hi-main,
+.hi-footer {
+  width: min(100% - 2 * var(--hi-gutter), 40rem);
+  margin-left: max(var(--hi-gutter), 12vw);
+}
+@media (max-width: 760px) {
+  .hi-nav, .hi-main, .hi-footer { margin-left: var(--hi-gutter); }
+}
+.hi-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(1rem + env(safe-area-inset-top, 0px)) 0 0.5rem;
+  font-size: 1rem;
+}
+.hi-logo { font-family: var(--font-sans), system-ui, sans-serif; font-weight: 700; font-size: 1.15rem; letter-spacing: -0.02em; text-decoration: none; }
+.hi-logo span { color: var(--hi-clay); }
+.hi-link { text-decoration: none; }
+.hi-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+.hi-screen { padding-block: clamp(1rem, 4vh, 3rem); }
+.hi-screen p { margin: 0 0 0.85em; }
+.hi-first { padding-top: 0.75rem; }
+
+.hi-h1 {
+  margin: 0 0 0.6em;
+  font-weight: 400;
+  font-size: 1.22em;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+@media (min-width: 761px) {
+  .hi-screen { padding-block: clamp(3rem, 10vh, 7rem); }
+  .hi-first { padding-top: clamp(2rem, 7vh, 5rem); }
+}
+
+.hi-cta:focus-visible,
+.hi a:focus-visible,
+.hi button:focus-visible,
+.hi input:focus-visible {
+  outline: 2px solid var(--hi-clay);
+  outline-offset: 3px;
+}
+
+/* CTA: texto subrayado con flecha. */
+.hi-cta {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+  min-height: 44px;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--hi-clay);
+  text-decoration: underline;
+  text-decoration-thickness: 0.07em;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+.hi-cta span { text-decoration: none; display: inline-block; transition: transform 200ms var(--ease-out, ease-out); }
+@media (hover: hover) and (pointer: fine) { .hi-cta:hover span { transform: translateX(3px); } }
+.hi-cta-line { margin-top: 1.1em !important; }
+
+.hi-field { display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--borde-control); padding-bottom: 0.25rem; }
+.hi-field:focus-within { border-bottom-color: var(--hi-clay); }
+.hi-field input {
+  flex: 1;
+  min-width: 0;
+  min-height: 2.75rem;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  outline: none;
+}
+.hi-field input::placeholder { color: var(--texto-2); }
+.hi-field > button:not(.hi-cta) { flex: none; width: 2.75rem; height: 2.75rem; border: 0; background: none; font: inherit; color: var(--hi-clay); cursor: pointer; }
+
+.hi-notify { margin-top: 1.5rem; }
+.hi-notify .hi-field { flex-wrap: wrap; }
+.hi-notify .hi-cta { white-space: nowrap; }
+/* La etiqueta entera es el objetivo táctil: 44 px mínimo (#22). */
+.hi-consent { display: flex; gap: 0.6rem; align-items: flex-start; min-height: 44px; margin-top: 0.75rem; font-family: var(--font-sans), system-ui, sans-serif; font-size: 0.8rem; line-height: 1.45; color: var(--hi-muted); }
+.hi-consent input { width: 1.1rem; height: 1.1rem; margin-top: 0.1rem; accent-color: var(--hi-clay); flex: none; }
+/* Relleno vertical en el enlace en línea: área de 44 px sin mover el texto. */
+.hi-consent a { padding-block: 0.8rem; text-decoration: underline; text-underline-offset: 3px; }
+.hi-error { font-family: var(--font-sans), system-ui, sans-serif; font-size: 0.85rem; color: var(--error); margin-top: 0.5rem !important; }
+.hi-done { color: var(--exito); }
+
+.hi-footer {
+  padding: clamp(3rem, 10vh, 6rem) 0 calc(2rem + env(safe-area-inset-bottom, 0px));
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.8;
+  color: var(--hi-muted);
+}
+.hi-footer a { text-decoration: none; display: inline-block; padding: 13px 3px; margin: -13px -3px; }
+.hi-footer a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hi-cta span { animation: none !important; transition: opacity 120ms ease !important; transform: none !important; }
+}
+.hi-faq { margin-top: 2rem; }
+.hi-faq-q { margin: 0 0 0.35em; font-size: 1em; font-weight: 400; color: var(--hi-clay); }
+

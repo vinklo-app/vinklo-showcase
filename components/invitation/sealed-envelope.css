@@ -1,0 +1,467 @@
+/* =====================================================================
+   Apertura «sobre» (sealed-envelope.tsx). Todo sale de la paleta de la
+   boda (--papel, --tinta, --cava, --rubor que fija el renderer): ningún
+   color propio. Movimiento solo con transform/opacity.
+
+   Apertura (13-oct-2026): una sola línea de tiempo de --seal-t (2500 ms,
+   OPEN_MS en el componente); cada pieza tiene su tramo en porcentajes.
+     0–120 ms     el lacre cede al toque
+     125–750      se parte en dos y los trozos se levantan
+     275–1100     la solapa gira en 3D (cara exterior → forro)
+     950–1600     la tarjeta sube y sale del sobre (por detrás del frente)
+     1600         la tarjeta pasa delante; el sobre se desvanece
+     1600–1950    la tarjeta se centra y crece a la vista; respira
+     2025–2325    el papel llena la pantalla; el texto se funde
+     2275–2500    fundido a la portada; al final, «abierto»
+   ===================================================================== */
+
+.sp-seal {
+  --seal-ease: cubic-bezier(0.23, 1, 0.32, 1);
+  /* Valores de reserva si no se pudo medir (los fija el componente al tocar):
+     sin ellos la transformación sería inválida y la tarjeta volvería al sobre. */
+  --card-dx: 0px;
+  --card-dy: 0px;
+  --card-hero: 1.25;
+  --card-fill-x: 4;
+  --card-fill-y: 6;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  container-type: inline-size;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1.5rem;
+  padding: calc(2rem + env(safe-area-inset-top, 0px)) 1.25rem calc(2rem + env(safe-area-inset-bottom, 0px));
+  background:
+    radial-gradient(120% 80% at 50% 45%, var(--papel) 40%, color-mix(in oklab, var(--rubor) 70%, var(--papel)) 100%);
+  color: var(--tinta);
+  text-align: center;
+  overscroll-behavior: contain;
+  /* La tarjeta crece más que la pantalla: que no ensanche la página. */
+  overflow: clip;
+}
+
+/* El envoltorio no altera el layout del reproductor. */
+.sp-seal-content {
+  display: contents;
+}
+
+/* Preview (wizard/panel): dentro del móvil, no sobre toda la página. */
+.sp-shell-preview {
+  position: relative;
+}
+.sp-shell-preview .sp-seal {
+  position: absolute;
+  z-index: 5;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.sp-seal-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cava-texto, var(--cava));
+}
+
+/* «Para Carmen» (enlace personal): encima del antetítulo, en la letra de los
+   nombres y sin versalitas. Va dentro de .sp-seal-eyebrow: sale con él. */
+.sp-seal-for {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.125rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--tinta);
+  text-wrap: balance;
+  max-width: 24ch;
+  margin-inline: auto;
+}
+
+/* --- El sobre --------------------------------------------------------- */
+.sp-seal-envelope {
+  position: relative;
+  width: min(84cqi, 24rem);
+  aspect-ratio: 7 / 5;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  perspective: 900px;
+  /* Los z-index de las capas (y el salto de la tarjeta) quedan aquí dentro. */
+  isolation: isolate;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 220ms var(--seal-ease);
+}
+.sp-seal-envelope:focus-visible {
+  outline: 2px solid var(--cava);
+  outline-offset: 8px;
+  border-radius: 10px;
+}
+.sp-seal-envelope > span {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+}
+
+/* Flores en relieve (mismo dibujo que el sobre de la landing): sombra y
+   brillo neutros sobre el papel de la paleta. */
+.sp-seal-back,
+.sp-seal-pocket,
+.sp-seal-flap {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120' fill='none' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cg transform='translate(1.4 1.7)' stroke='%237d6648' stroke-opacity='.55' fill='%237d6648' fill-opacity='.1'%3E%3Cpath d='M14 104 C30 84 40 70 46 46 M30 82 c-10 -2 -16 -10 -15 -18 c9 1 15 8 15 18Z M38 64 c9 -3 15 -11 14 -19 c-9 2 -14 9 -14 19Z M44 52 c-8 -4 -11 -12 -9 -19 c8 3 11 10 9 19Z'/%3E %3Cg transform='translate(82 30)'%3E%3Ccircle r='3'/%3E%3Cellipse cx='0' cy='-8' rx='4' ry='6'/%3E%3Cellipse cx='0' cy='-8' rx='4' ry='6' transform='rotate(72)'/%3E%3Cellipse cx='0' cy='-8' rx='4' ry='6' transform='rotate(144)'/%3E%3Cellipse cx='0' cy='-8' rx='4' ry='6' transform='rotate(216)'/%3E%3Cellipse cx='0' cy='-8' rx='4' ry='6' transform='rotate(288)'/%3E%3C/g%3E %3Cpath d='M78 112 c4 -10 12 -16 22 -18 M92 98 c-1 -7 3 -12 9 -14 c1 7 -3 12 -9 14Z M100 74 c5 -2 9 0 10 4 c-5 2 -9 0 -10 -4Z'/%3E%3C/g%3E%3Cg stroke='%23fffaf2' stroke-opacity='.95' fill='%23fffaf2' fill-opacity='.35'%3E%3Cpath d='M14 104 C30 84 40 70 46 46 M30 82 c-10 -2 -16 -10 -15 -18 c9 1 15 8 15 18Z M38 64 c9 -3 15 -11 14 -19 c-9 2 -14 9 -14 19Z M44 52 c-8 -4 -11 -12 -9 -19 c8 3 11 10 9 19Z'/%3E %3Cg transform='translate(82 30)'%3E%3Ccircle r='3'/%3E%3Cellipse cx='0' cy='-8' rx='4' ry='6'/%3E%3Cellipse cx='0' cy='-8' rx='4' ry='6' transform='rotate(72)'/%3E%3Cellipse cx='0' cy='-8' rx='4' ry='6' transform='rotate(144)'/%3E%3Cellipse cx='0' cy='-8' rx='4' ry='6' transform='rotate(216)'/%3E%3Cellipse cx='0' cy='-8' rx='4' ry='6' transform='rotate(288)'/%3E%3C/g%3E %3Cpath d='M78 112 c4 -10 12 -16 22 -18 M92 98 c-1 -7 3 -12 9 -14 c1 7 -3 12 -9 14Z M100 74 c5 -2 9 0 10 4 c-5 2 -9 0 -10 -4Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: clamp(5rem, 24cqi, 7.5rem) clamp(5rem, 24cqi, 7.5rem);
+}
+.sp-seal-back {
+  z-index: 1;
+  background-color: color-mix(in oklab, var(--rubor) 84%, var(--tinta));
+  box-shadow:
+    0 1px 0 color-mix(in oklab, var(--tinta) 6%, transparent),
+    0 18px 40px -18px color-mix(in oklab, var(--tinta) 45%, transparent),
+    0 4px 12px -6px color-mix(in oklab, var(--tinta) 20%, transparent);
+}
+
+/* La tarjeta: papel (se estira hasta llenar la pantalla) y, encima, el
+   texto (solo escala uniforme y se funde antes de estirarse el papel). */
+.sp-seal-envelope > :is(.sp-seal-card, .sp-seal-card-face) {
+  inset: 6% 7% 8%;
+  border-radius: 3px;
+}
+.sp-seal-envelope > .sp-seal-card {
+  z-index: 3;
+  background: var(--papel);
+  box-shadow: 0 1px 2px color-mix(in oklab, var(--tinta) 12%, transparent);
+}
+.sp-seal-envelope > .sp-seal-card-face {
+  z-index: 4;
+  container-type: inline-size;
+  display: grid;
+  place-items: center;
+  padding: 9% 10%;
+  color: var(--tinta);
+  /* Filete fino como el de una tarjeta impresa. */
+  outline: 1px solid color-mix(in oklab, var(--cava) 38%, transparent);
+  outline-offset: -7px;
+}
+.sp-seal-card-names {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1rem, 10cqi, 2rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+/* Frente: los dos laterales y el faldón inferior. */
+.sp-seal-pocket {
+  z-index: 5;
+  background-color: color-mix(in oklab, var(--rubor) 92%, var(--tinta));
+  clip-path: polygon(0 0, 50% 54%, 100% 0, 100% 100%, 0 100%);
+  filter: drop-shadow(0 -1px 1px color-mix(in oklab, var(--tinta) 22%, transparent));
+}
+
+/* Solapa superior: gira sobre el borde de arriba. Dos caras hermanas
+   (exterior y forro) con el mismo giro: cada una solo se ve de frente,
+   así que el forro aparece pasados los 90° y queda detrás de la tarjeta. */
+.sp-seal-flap,
+.sp-seal-flap-inner {
+  clip-path: polygon(0 0, 100% 0, 50% 60%);
+  transform-origin: 50% 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.sp-seal-flap {
+  z-index: 6;
+  background-color: color-mix(in oklab, var(--rubor) 78%, var(--papel));
+  filter: drop-shadow(0 2px 2px color-mix(in oklab, var(--tinta) 25%, transparent));
+}
+.sp-seal-envelope > .sp-seal-flap-inner {
+  z-index: 2;
+  /* Forro liso, algo más claro, con sombra junto al pliegue. */
+  background:
+    linear-gradient(to bottom, color-mix(in oklab, var(--tinta) 10%, transparent), transparent 50%),
+    color-mix(in oklab, var(--rubor) 55%, var(--papel));
+  transform: rotateY(180deg);
+}
+/* Luz que cambia al girar (solo opacidad). */
+.sp-seal-flap::after,
+.sp-seal-flap-inner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.sp-seal-flap::after {
+  background: linear-gradient(to bottom, transparent, color-mix(in oklab, var(--tinta) 40%, transparent));
+}
+.sp-seal-flap-inner::after {
+  background: color-mix(in oklab, var(--tinta) 45%, transparent);
+}
+
+/* --- El lacre (SVG compartido, wax-seal.tsx) con la paleta ------------- */
+.sp-seal-envelope > :is(.sp-seal-wax, .sp-seal-shard) {
+  --wax-color: var(--cava);
+  --wax-color-light: color-mix(in oklab, var(--cava) 68%, white);
+  --wax-color-dark: color-mix(in oklab, var(--cava) 72%, black);
+  --wax-color-well: color-mix(in oklab, var(--cava) 90%, black);
+  --wax-color-ink: color-mix(in oklab, var(--papel) 90%, var(--cava));
+  position: absolute;
+  inset: auto;
+  left: 50%;
+  top: 60%;
+  width: clamp(4rem, 24cqi, 6rem);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 0;
+  z-index: 7;
+}
+.sp-seal-envelope > .sp-seal-wax {
+  filter: drop-shadow(0 0.35rem 0.45rem color-mix(in oklab, var(--cava) 45%, black));
+  transition: transform 260ms var(--seal-ease);
+}
+/* Los dos trozos del lacre (solo existen al abrir; los descubre la animación). */
+.sp-seal-envelope > .sp-seal-shard {
+  opacity: 0;
+}
+.sp-seal-shard-l {
+  clip-path: polygon(0 0, 53% 0, 47% 21%, 55% 40%, 46% 61%, 54% 80%, 49% 100%, 0 100%);
+}
+.sp-seal-shard-r {
+  clip-path: polygon(53% 0, 100% 0, 100% 100%, 49% 100%, 54% 80%, 46% 61%, 55% 40%, 47% 21%);
+}
+
+.sp-seal-names {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.375rem, 6.5cqi, 2rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  max-width: 22ch;
+}
+.sp-seal-amp {
+  font-family: var(--font-script), Georgia, serif;
+  font-style: italic;
+  color: var(--cava);
+}
+.sp-seal-hint {
+  font-size: 0.8125rem;
+  color: color-mix(in oklab, var(--tinta) 62%, var(--papel));
+  animation: sp-seal-breathe 2.6s ease-in-out infinite;
+}
+@keyframes sp-seal-breathe {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sp-seal[data-state="closed"] .sp-seal-envelope:hover {
+    transform: translateY(-3px);
+  }
+  .sp-seal[data-state="closed"] .sp-seal-envelope:hover .sp-seal-wax {
+    transform: scale(1.04);
+  }
+}
+.sp-seal[data-state="closed"] .sp-seal-envelope:active {
+  transform: scale(0.97);
+  transition-duration: 80ms;
+}
+
+/* --- Abrir ------------------------------------------------------------ */
+.sp-seal[data-state="opening"] {
+  --seal-flap-ease: cubic-bezier(0.65, 0, 0.35, 1);
+  /* Sin pointer-events: none: un toque a mitad de apertura no debe caer en
+     la portada de debajo; lo recoge el overlay y no hace nada. */
+  animation: sp-seal-fade var(--seal-t) linear both;
+}
+.sp-seal[data-state="opening"] .sp-seal-wax {
+  animation: sp-seal-wax-press var(--seal-t) linear both;
+}
+.sp-seal[data-state="opening"] .sp-seal-shard-l {
+  animation: sp-seal-shard-l var(--seal-t) linear both;
+}
+.sp-seal[data-state="opening"] .sp-seal-shard-r {
+  animation: sp-seal-shard-r var(--seal-t) linear both;
+}
+.sp-seal[data-state="opening"] .sp-seal-flap {
+  /* Un filtro en una pieza que gira en 3D se repinta en cada fotograma. */
+  filter: none;
+  animation:
+    sp-seal-flap-open var(--seal-t) linear both,
+    sp-seal-flap-face-out var(--seal-t) linear both;
+}
+.sp-seal[data-state="opening"] .sp-seal-flap::after {
+  animation: sp-seal-flap-shade var(--seal-t) linear both;
+}
+.sp-seal[data-state="opening"] .sp-seal-flap-inner {
+  animation:
+    sp-seal-flap-inner-open var(--seal-t) linear both,
+    sp-seal-lining-in var(--seal-t) linear both;
+}
+.sp-seal[data-state="opening"] .sp-seal-flap-inner::after {
+  animation: sp-seal-lining-shade var(--seal-t) linear both;
+}
+.sp-seal[data-state="opening"] :is(.sp-seal-back, .sp-seal-pocket) {
+  animation: sp-seal-envelope-out var(--seal-t) linear both;
+}
+.sp-seal[data-state="opening"] .sp-seal-card {
+  /* Fuera del sobre se despega del fondo (en cerrado no cambia nada). */
+  box-shadow:
+    0 1px 2px color-mix(in oklab, var(--tinta) 12%, transparent),
+    0 14px 28px -18px color-mix(in oklab, var(--tinta) 45%, transparent);
+  animation:
+    sp-seal-card-move var(--seal-t) linear both,
+    sp-seal-card-front var(--seal-t) linear both;
+}
+.sp-seal[data-state="opening"] .sp-seal-card-face {
+  animation:
+    sp-seal-face-move var(--seal-t) linear both,
+    sp-seal-face-front var(--seal-t) linear both;
+}
+.sp-seal[data-state="opening"] .sp-seal-eyebrow {
+  animation: sp-seal-eyebrow-out var(--seal-t) linear both;
+}
+.sp-seal[data-state="opening"] .sp-seal-names {
+  animation: sp-seal-names-out var(--seal-t) linear both;
+}
+.sp-seal[data-state="opening"] .sp-seal-hint {
+  animation: sp-seal-hint-out var(--seal-t) linear both;
+}
+/* La barra de la web aparece con la portada, no antes (fuera del overlay:
+   no hereda --seal-t; 2500 ms = OPEN_MS). */
+.sp-shell:has(.sp-seal[data-state="opening"]) .wl-nav {
+  animation: sp-seal-nav-in var(--seal-t, 2500ms) linear both;
+}
+
+/* 1% = 25 ms. */
+@keyframes sp-seal-wax-press {
+  0% { transform: scale(1); opacity: 1; animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1); }
+  4.8% { transform: scale(0.9); opacity: 1; }
+  5%, 100% { transform: scale(0.9); opacity: 0; }
+}
+@keyframes sp-seal-shard-l {
+  0%, 4.8% { transform: scale(0.9); opacity: 0; }
+  5% { transform: scale(0.9); opacity: 1; animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1); }
+  13% { transform: translate(-7%, 1%) rotate(-7deg) scale(0.92); opacity: 1; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+  30%, 100% { transform: translate(-30%, -26%) rotate(-26deg) scale(1.06); opacity: 0; }
+}
+@keyframes sp-seal-shard-r {
+  0%, 4.8% { transform: scale(0.9); opacity: 0; }
+  5% { transform: scale(0.9); opacity: 1; animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1); }
+  13% { transform: translate(8%, 2%) rotate(9deg) scale(0.92); opacity: 1; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+  31%, 100% { transform: translate(32%, -20%) rotate(30deg) scale(1.06); opacity: 0; }
+}
+@keyframes sp-seal-flap-open {
+  0%, 11% { transform: rotateX(0deg); animation-timing-function: var(--seal-flap-ease); }
+  44%, 100% { transform: rotateX(180deg); }
+}
+@keyframes sp-seal-flap-inner-open {
+  0%, 11% { transform: rotateX(0deg) rotateY(180deg); animation-timing-function: var(--seal-flap-ease); }
+  44%, 100% { transform: rotateX(180deg) rotateY(180deg); }
+}
+/* Cambio de cara justo de canto (90°). backface-visibility no basta: WebKit
+   sigue pintando la cara de atrás sin un contexto 3D (preserve-3d), que aquí
+   no se usa para que valgan los z-index. */
+@keyframes sp-seal-flap-face-out {
+  0%, 27.4% { opacity: 1; }
+  27.5%, 100% { opacity: 0; }
+}
+@keyframes sp-seal-lining-in {
+  0%, 27.4% { opacity: 0; }
+  27.5%, 60% { opacity: 1; animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1); }
+  74%, 100% { opacity: 0; }
+}
+/* La cara exterior se oscurece al ponerse de canto; el forro se aclara al abrirse. */
+@keyframes sp-seal-flap-shade {
+  0%, 11% { opacity: 0; }
+  27.5%, 100% { opacity: 0.6; }
+}
+@keyframes sp-seal-lining-shade {
+  0%, 27.5% { opacity: 0.5; }
+  40%, 100% { opacity: 0; }
+}
+@keyframes sp-seal-envelope-out {
+  0%, 60% { opacity: 1; animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1); }
+  74%, 100% { opacity: 0; }
+}
+@keyframes sp-seal-card-move {
+  0%, 38% { transform: translate(0, 0) scale(1); animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1); }
+  64% { transform: translate(0, -100%) scale(1); animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1); }
+  78%, 81% { transform: translate(var(--card-dx), var(--card-dy)) scale(var(--card-hero)); animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); }
+  93%, 100% { transform: translate(var(--card-dx), var(--card-dy)) scale(var(--card-fill-x), var(--card-fill-y)); }
+}
+@keyframes sp-seal-face-move {
+  0%, 38% { transform: translate(0, 0) scale(1); opacity: 1; animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1); }
+  64% { transform: translate(0, -100%) scale(1); opacity: 1; animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1); }
+  78%, 80% { transform: translate(var(--card-dx), var(--card-dy)) scale(var(--card-hero)); opacity: 1; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+  87%, 100% { transform: translate(var(--card-dx), var(--card-dy)) scale(calc(var(--card-hero) * 1.08)); opacity: 0; }
+}
+/* Sale del bolsillo por detrás del frente; ya fuera, pasa delante. */
+@keyframes sp-seal-card-front {
+  0%, 63.9% { z-index: 3; }
+  64%, 100% { z-index: 9; }
+}
+@keyframes sp-seal-face-front {
+  0%, 63.9% { z-index: 4; }
+  64%, 100% { z-index: 10; }
+}
+@keyframes sp-seal-eyebrow-out {
+  0%, 8% { transform: translateY(0); opacity: 1; animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1); }
+  28%, 100% { transform: translateY(-6px); opacity: 0; }
+}
+@keyframes sp-seal-names-out {
+  0%, 56% { transform: translateY(0); opacity: 1; animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1); }
+  70%, 100% { transform: translateY(6px); opacity: 0; }
+}
+@keyframes sp-seal-hint-out {
+  0% { opacity: 1; }
+  6%, 100% { opacity: 0; }
+}
+@keyframes sp-seal-fade {
+  0%, 91% { opacity: 1; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+  100% { opacity: 0; }
+}
+@keyframes sp-seal-nav-in {
+  0%, 91% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-seal,
+  .sp-seal *,
+  .sp-seal *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .sp-seal {
+    transition: opacity 160ms linear !important;
+  }
+  .sp-seal[data-state="opening"] {
+    opacity: 0;
+  }
+  .sp-shell:has(.sp-seal[data-state="opening"]) .wl-nav {
+    animation: none;
+  }
+  .sp-seal-hint {
+    opacity: 1;
+  }
+}
+
+/* Sobre liso (opening "sobre-liso"): mismo sobre, sin flores en relieve. */
+.sp-seal[data-variant="liso"] :is(.sp-seal-back, .sp-seal-pocket, .sp-seal-flap) { background-image: none; }
+
+/* Con el sobre cerrado no asoma la barra de la web («Confirmar», monograma):
+   la maqueta web crea su propio contexto de apilado y la barra quedaba
+   por encima del sobre. */
+.sp-shell:has(.sp-seal[data-state="closed"]) .wl-nav {
+  visibility: hidden;
+}

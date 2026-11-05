@@ -1,0 +1,234 @@
+/* Escenas v2 en la Story (scenes/content.tsx) y fotos compartidas con la
+   maqueta web (scenes/photo.tsx). Colores: solo los tokens del tema. */
+
+.sp-photo-img {
+  object-fit: cover;
+}
+.sp-photo-frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 0.35rem;
+  background: var(--rubor);
+}
+.sp-photo-missing {
+  position: absolute;
+  inset: 0;
+  background: var(--rubor);
+}
+.sp-photo-caption {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  text-align: center;
+  color: color-mix(in oklab, var(--tinta) 72%, transparent);
+}
+
+.sp-content-intro {
+  font-size: clamp(1.375rem, 1rem + 2.4cqi, 2rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  color: color-mix(in oklab, var(--tinta) 80%, transparent);
+}
+.sp-content-intro + .sp-h2 {
+  margin-top: 1rem;
+}
+.sp-content-sub {
+  margin-top: 0.75rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: color-mix(in oklab, var(--tinta) 76%, transparent);
+}
+
+/* Historia */
+.sp-chapters {
+  margin: 1.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 2.25rem;
+}
+.sp-chapter-kicker {
+  font-size: clamp(1.375rem, 1rem + 1.8cqi, 1.875rem);
+  line-height: 1.1;
+}
+.sp-chapter-body {
+  margin-top: 0.625rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: color-mix(in oklab, var(--tinta) 84%, transparent);
+  white-space: pre-line;
+}
+.sp-photo-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.sp-photo-row[data-count="1"] {
+  grid-template-columns: minmax(0, 18rem);
+}
+.sp-polaroid {
+  padding: 0.5rem 0.5rem 0.75rem;
+  border-radius: 0.4rem;
+  background: var(--papel);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--tinta) 8%, transparent),
+    0 0.75rem 1.5rem -1rem color-mix(in oklab, var(--tinta) 45%, transparent);
+}
+.sp-polaroid .sp-photo-frame {
+  border-radius: 0.2rem;
+}
+
+/* Galería */
+.sp-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.sp-photo-grid li:nth-child(3n + 1) {
+  grid-column: span 2;
+}
+
+/* Detalles y preguntas */
+.sp-cards,
+.sp-faq-list {
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.625rem;
+}
+.sp-card,
+.sp-faq-item {
+  border-radius: 1rem;
+  background: color-mix(in oklab, var(--papel) 70%, var(--rubor));
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--tinta) 9%, transparent);
+}
+.sp-card-summary,
+.sp-faq-q {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.25rem 1rem;
+  min-height: 3.25rem;
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  list-style: none;
+  outline: none;
+}
+.sp-card-summary::-webkit-details-marker,
+.sp-faq-q::-webkit-details-marker {
+  display: none;
+}
+.sp-card-summary:focus-visible,
+.sp-faq-q:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--cava) 45%, transparent);
+  border-radius: 1rem;
+}
+.sp-card-title,
+.sp-faq-q > span:first-child {
+  font-size: 1.25rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--tinta);
+}
+.sp-card-teaser {
+  grid-column: 1;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: color-mix(in oklab, var(--tinta) 72%, transparent);
+}
+.sp-plus {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  position: relative;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--tinta) 22%, transparent);
+  transition: transform 220ms var(--ease-out);
+}
+.sp-plus::before,
+.sp-plus::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.75rem;
+  height: 1.5px;
+  background: var(--tinta);
+  translate: -50% -50%;
+}
+.sp-plus::after {
+  rotate: 90deg;
+}
+details[open] > summary .sp-plus {
+  transform: rotate(45deg);
+}
+.sp-card-body,
+.sp-faq-a {
+  padding: 0 1rem 1rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: color-mix(in oklab, var(--tinta) 84%, transparent);
+  white-space: pre-line;
+}
+.sp-card-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--tinta);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sp-plus {
+    transition: none;
+  }
+}
+
+/* --- Entrada en la Story (misma coreografía que portada/lugar/agenda) ---
+   Título y frase primero, luego cada capítulo, foto, tarjeta o pregunta con
+   40 ms de escalón (tope 8). Con reduced-motion no se mueve nada. */
+.sp-content > * { --sp-i: 0; }
+.sp-content > :nth-child(2) { --sp-i: 1; }
+.sp-content > :nth-child(3) { --sp-i: 2; }
+.sp-content :is(.sp-chapters, .sp-photo-grid, .sp-cards, .sp-faq-list) > :nth-child(1) { --sp-li: 0; }
+.sp-content :is(.sp-chapters, .sp-photo-grid, .sp-cards, .sp-faq-list) > :nth-child(2) { --sp-li: 1; }
+.sp-content :is(.sp-chapters, .sp-photo-grid, .sp-cards, .sp-faq-list) > :nth-child(3) { --sp-li: 2; }
+.sp-content :is(.sp-chapters, .sp-photo-grid, .sp-cards, .sp-faq-list) > :nth-child(4) { --sp-li: 3; }
+.sp-content :is(.sp-chapters, .sp-photo-grid, .sp-cards, .sp-faq-list) > :nth-child(5) { --sp-li: 4; }
+.sp-content :is(.sp-chapters, .sp-photo-grid, .sp-cards, .sp-faq-list) > :nth-child(6) { --sp-li: 5; }
+.sp-content :is(.sp-chapters, .sp-photo-grid, .sp-cards, .sp-faq-list) > :nth-child(n + 7) { --sp-li: 6; }
+@media (prefers-reduced-motion: no-preference) {
+  .sp[data-hydrated][data-view="story"] .sp-scene:not([data-state="active"]) .sp-content > :not(ul, ol),
+  .sp[data-hydrated][data-view="story"] .sp-scene:not([data-state="active"]) .sp-content :is(.sp-chapters, .sp-photo-grid, .sp-cards, .sp-faq-list) > li {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0s linear var(--sp-scene-out), transform 0s linear var(--sp-scene-out);
+  }
+  .sp[data-hydrated][data-view="story"] .sp-scene[data-state="active"] .sp-content > :not(ul, ol) {
+    transition:
+      opacity 280ms var(--ease-out) calc(40ms + var(--sp-i) * 50ms),
+      transform 280ms var(--ease-out) calc(40ms + var(--sp-i) * 50ms);
+  }
+  .sp[data-hydrated][data-view="story"] .sp-scene[data-state="active"] .sp-content :is(.sp-chapters, .sp-photo-grid, .sp-cards, .sp-faq-list) > li {
+    transition:
+      opacity 260ms var(--ease-out) calc(140ms + var(--sp-li, 6) * 40ms),
+      transform 260ms var(--ease-out) calc(140ms + var(--sp-li, 6) * 40ms);
+  }
+  .sp[data-instant] .sp-content > *,
+  .sp[data-instant] .sp-content li { transition: none !important; }
+}

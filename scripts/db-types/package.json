@@ -1,0 +1,8 @@
+{
+  "name": "vinklo-db-types-tool",
+  "private": true,
+  "description": "Generador de lib/supabase/database.types.ts (scripts/gen-db-types.sh). postgres-meta = el que usa `supabase gen types` en Supabase CLI 2.109.1; el lockfile fija también prettier, que da formato a la salida.",
+  "dependencies": {
+    "@supabase/postgres-meta": "0.96.6"
+  }
+}

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Símbolo vinklo (v9 «Ciruela y perla», 2026-10-09): la misma V abierta en texto con el punto de la ı en ciruela, sobre perla -->
+  <rect width="100" height="100" rx="22" fill="#F8F7FA"/>
+  <path d="M20 30 L50 78 L80 30" stroke="#24212A" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="50" cy="22" r="5" fill="#573B62"/>
+</svg>

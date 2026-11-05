@@ -1,0 +1,145 @@
+/* Módulos (autobuses y alojamiento) en la Story y en la web. Solo tokens del tema. */
+.mod-kicker {
+  margin-top: 1.5rem;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cava-texto, var(--tinta));
+}
+.mod-stops {
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.5rem;
+}
+.mod-stop {
+  display: grid;
+  grid-template-columns: 4.25rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  background: color-mix(in oklab, var(--papel) 70%, var(--rubor));
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--tinta) 9%, transparent);
+}
+/* Sin hora, el texto sigue en su columna (nunca «—» de relleno). */
+.mod-stop-text {
+  grid-column: 2;
+}
+.mod-stop-time {
+  font-size: 1.375rem;
+  font-style: italic;
+  line-height: 1;
+  color: var(--tinta);
+}
+.mod-stop-text b {
+  display: block;
+  font-weight: 600;
+  color: var(--tinta);
+}
+.mod-stop-text small {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.875rem;
+  color: color-mix(in oklab, var(--tinta) 72%, transparent);
+}
+.mod-return {
+  margin-top: 0.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: color-mix(in oklab, var(--tinta) 84%, transparent);
+}
+.mod-hotels {
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.75rem;
+}
+.mod-hotel {
+  padding: 1.1rem 1.15rem 1rem;
+  border-radius: 1rem;
+  background: color-mix(in oklab, var(--papel) 70%, var(--rubor));
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--tinta) 9%, transparent);
+  text-align: left;
+}
+.mod-hotel-name {
+  font-size: 1.375rem;
+  line-height: 1.15;
+  color: var(--tinta);
+}
+.mod-hotel-note {
+  margin-top: 0.4rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: color-mix(in oklab, var(--tinta) 80%, transparent);
+  white-space: pre-line;
+}
+.mod-hotel-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-top: 0.85rem;
+}
+.mod-code {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0.35rem 0.3rem 0.8rem;
+  border-radius: 999px;
+  border: 1px dashed color-mix(in oklab, var(--tinta) 35%, transparent);
+  background: var(--papel);
+}
+.mod-code-label {
+  font-size: 0.75rem;
+  color: color-mix(in oklab, var(--tinta) 65%, transparent);
+}
+.mod-code-value {
+  /* Código que el invitado copia: mono del sistema (sin webfont) para que
+     0/O y 1/l se distingan; .sp-shell lleva --font-mono a la sans (P1-4). */
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9375rem;
+  letter-spacing: 0.06em;
+  color: var(--tinta);
+}
+.mod-code-copy {
+  min-height: 2rem;
+  padding: 0 0.8rem;
+  border-radius: 999px;
+  border: 0;
+  background: var(--tinta);
+  color: var(--papel);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 140ms var(--ease-out, ease-out);
+}
+.mod-code-copy:active { transform: scale(0.97); }
+.mod-code-copy:focus-visible { outline: 2px solid var(--cava); outline-offset: 2px; }
+.mod-hotel-by {
+  font-size: 0.8125rem;
+  color: color-mix(in oklab, var(--tinta) 72%, transparent);
+}
+.mod-hotel-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin-top: 0.35rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--tinta);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+/* Web: hoteles en rejilla y paradas centradas en la columna. */
+.wl-modules .mod-bus, .wl-modules .mod-hotels { width: 100%; max-width: 40rem; margin-inline: auto; text-align: left; }
+@container (min-width: 48rem) {
+  .wl-modules .mod-hotels { max-width: none; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container (min-width: 60rem) {
+  .wl-modules .mod-hotels[data-count="3"], .wl-modules .mod-hotels[data-count="5"], .wl-modules .mod-hotels[data-count="6"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

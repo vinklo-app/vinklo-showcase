@@ -1,0 +1,52 @@
+/*
+ * Acompañantes con nombre, mesa infantil y restricciones de mesas (§4.3, §3.5).
+ * Plano de mesas, «Sentar automáticamente» y ficha del invitado. Móvil primero:
+ * objetivos de 44 px y campos de 16 px.
+ */
+
+/* Plano: nombres de quien se sienta con cada invitado y niños sentados aparte. */
+.pn-seat-names { font-size: 0.75rem; color: var(--ink-muted); overflow-wrap: anywhere; }
+.pn-seat-visitor { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "face text" "move move"; cursor: default; }
+.pn-seat-visitor > .pn-btn { grid-area: move; justify-self: start; min-height: 44px; }
+@container (min-width: 30rem) {
+  .pn-seat-visitor { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "face text move"; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .pn-seat-visitor { cursor: default; padding-left: calc(16px + 0.6rem); }
+}
+/* .pn-seat-move trae grid-area: move (de la fila del invitado): aquí, a todo el ancho. */
+.pn-seat-pin { grid-area: auto; grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.35rem; margin-top: 0.75rem; min-width: 0; }
+.pn-seat-pin select { min-width: 0; max-width: 100%; }
+.pn-seat-pin-label { font-size: 0.8125rem; font-weight: 600; }
+
+/* «Sentar automáticamente»: casilla con explicación. */
+.pn-auto-check { align-items: flex-start; padding: 0.5rem 0; }
+.pn-auto-check input { margin-top: 0.15rem; }
+.pn-auto-check > span { display: grid; gap: 0.2rem; }
+.pn-auto-check small { color: var(--ink-muted); font-size: 0.8125rem; line-height: 1.4; }
+
+/* Ficha del invitado: acompañantes con nombre y «No sentar con…». */
+.pn-extras { display: grid; gap: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+.pn-extras h3 { margin: 0; font-size: 0.9375rem; font-weight: 600; }
+.pn-extras-block { display: grid; gap: 0.6rem; min-width: 0; }
+.pn-companion-rows { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.pn-companion-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 0.5rem; }
+.pn-companion-row input[type="text"] { width: 100%; min-width: 0; min-height: 44px; border: 1px solid var(--line-strong); border-radius: var(--radius-lg); background: var(--card); padding: 0 0.75rem; font: inherit; font-size: 1rem; color: var(--ink); }
+.pn-companion-row input[type="text"]:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px; }
+.pn-companion-kid { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 44px; font-size: 0.875rem; white-space: nowrap; }
+.pn-companion-kid input { width: 20px; height: 20px; accent-color: var(--ink); }
+.pn-companion-meta { grid-column: 1 / -1; margin-top: -0.25rem; font-size: 0.75rem; color: var(--ink-muted); }
+.pn-icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--ink); }
+.pn-icon-btn:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px; }
+.pn-extras-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.pn-apart-list { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
+.pn-apart-chip { display: inline-flex; align-items: center; gap: 0.25rem; min-height: 44px; padding-left: 0.85rem; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--card); font-size: 0.875rem; max-width: 100%; }
+.pn-apart-chip > span { overflow-wrap: anywhere; }
+.pn-apart-chip button { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 0; background: none; color: var(--ink-muted); border-radius: 999px; }
+.pn-apart-search input { width: 100%; min-height: 44px; border: 1px solid var(--line-strong); border-radius: var(--radius-lg); background: var(--card); padding: 0 0.75rem; font: inherit; font-size: 1rem; color: var(--ink); }
+.pn-apart-results { display: grid; gap: 0.25rem; margin: 0; padding: 0; list-style: none; }
+.pn-apart-results button { display: flex; width: 100%; align-items: center; min-height: 44px; padding: 0 0.75rem; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--card); font: inherit; font-size: 0.9375rem; text-align: left; color: var(--ink); overflow-wrap: anywhere; }
+
+@media (hover: hover) and (pointer: fine) {
+  .pn-apart-results button:hover, .pn-icon-btn:hover { background: var(--paper-2); }
+}

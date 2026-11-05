@@ -1,0 +1,527 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  /* v8: JetBrains Mono (next/font) para etiquetas editoriales y cifras. */
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* Tokens shadcn (Button, Input, Card, Table…) mapeados a la marca v9
+   «Ciruela y perla» (DESIGN.md §2). Los valores salen de los tokens de
+   marca del bloque vinklo de más abajo; aquí solo se reparten los papeles.
+   Las invitaciones de boda NO usan estos valores: ver el bloque
+   «Invitaciones de boda» al final del archivo. */
+:root {
+  --background: var(--perla);
+  --foreground: var(--texto);
+  --card: #FFFFFF;
+  --card-foreground: var(--texto);
+  --popover: #FFFFFF;
+  --popover-foreground: var(--texto);
+  --primary: var(--ciruela);
+  --primary-foreground: #FFFFFF;
+  --secondary: var(--perla-2);
+  --secondary-foreground: var(--texto);
+  --muted: var(--perla-2);
+  --muted-foreground: var(--texto-2);
+  --accent: var(--perla-2);
+  --accent-foreground: var(--texto);
+  --destructive: var(--error);
+  --border: var(--separador);
+  --input: var(--borde-control);
+  --ring: var(--ciruela);
+  --chart-1: var(--separador);
+  --chart-2: var(--texto-2);
+  --chart-3: var(--exito);
+  --chart-4: var(--ciruela);
+  --chart-5: var(--texto);
+  --radius: 0.75rem;
+  --sidebar: var(--perla-2);
+  --sidebar-foreground: var(--texto);
+  --sidebar-primary: var(--ciruela);
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: var(--separador);
+  --sidebar-accent-foreground: var(--texto);
+  --sidebar-border: var(--separador);
+  --sidebar-ring: var(--ciruela);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* ====== vinklo — tokens identidad v9 «Ciruela y perla» (2026-10-09) ====== */
+/* Fuente de verdad: DESIGN.md §2. Contrastes medidos (WCAG 2.x):
+   texto 14,8:1 sobre perla · texto-2 5,8:1 perla / 5,1:1 perla-2 / 6,2:1
+   blanco · ciruela 8,9:1 perla / 7,8:1 perla-2 / 9,5:1 blanco (blanco sobre
+   ciruela 9,5:1; sobre ciruela-hover 11,7:1) · borde-control 3,8:1 perla /
+   4,0:1 blanco / 3,3:1 perla-2 · exito 5,9:1 · aviso 5,9:1 · error 6,5:1.
+   El separador (#DCD4E1, 1,35:1) es decorativo: nunca delimita un control. */
+:root {
+  --perla: #F8F7FA;
+  --perla-2: #ECE7F0;
+  --blanco: #FFFFFF;
+  --ciruela: #573B62;
+  --ciruela-hover: #46304F;
+  /* Superficie oscura (si hace falta): tinta ciruela con texto perla
+     (14,0:1) y acento claro (--ciruela-claro, 8,0:1). Nunca marrón. */
+  --ciruela-tinta: #2E2335;
+  --ciruela-claro: #C9B8D3;
+  --texto: #24212A;
+  --texto-2: #655E6B;
+  --separador: #DCD4E1;
+  --borde-control: #857A8E;
+  /* Semánticos: separados de la marca. Nunca decoran. */
+  --exito: #2F6B45;
+  --aviso: #8A5300;
+  --error: #A3322A;
+
+  /* Nombres v8 (cientos de clases y reglas los usan): ahora son alias de
+     v9. Código nuevo: preferir los nombres v9. */
+  --paper: var(--perla);
+  --paper-2: var(--perla-2);
+  --ink: var(--texto);
+  --ink-muted: var(--texto-2);
+  --clay: var(--ciruela);
+  /* v8 usaba --clay-dark para el hover del CTA Y para error/urgencia; en v9
+     se separan: los hovers usan --ciruela-hover y --clay-dark queda como
+     error. */
+  --clay-dark: var(--error);
+  --olive: var(--exito);
+  /* Numeración editorial: ya no hay oro; las cifras grandes van en ciruela. */
+  --gold: var(--ciruela);
+  --line: var(--separador);
+  --line-strong: var(--borde-control);
+
+  /* Movimiento (Emil Kowalski): solo transform/opacity, nunca ease-in. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --d-micro: 140ms;
+  --d-ui: 220ms;
+  --d-reveal: 560ms;
+
+  /* Sombras teñidas de texto ciruela (nunca negro puro ni marrón). */
+  --shadow-sm: 0 1px 2px rgba(36, 33, 42, 0.05), 0 4px 12px -6px rgba(36, 33, 42, 0.08);
+  --shadow-md: 0 2px 4px rgba(36, 33, 42, 0.04), 0 18px 40px -22px rgba(36, 33, 42, 0.22);
+
+  /* Alias históricos (v6/v7): papel/tinta = lienzo y texto; cava = acción
+     (ciruela); salvia/granate = éxito/error. */
+  --tinta: var(--ink);
+  --papel: var(--paper);
+  --cava: var(--clay);
+  --cava-texto: var(--clay);
+  --gris-etiqueta: var(--ink-muted);
+  --rubor: var(--paper-2);
+  --menta: var(--line);
+  --vainilla: var(--line);
+  --salvia: var(--olive);
+  --granate: var(--clay-dark);
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-clay: var(--clay);
+  --color-clay-dark: var(--clay-dark);
+  --color-olive: var(--olive);
+  --color-gold: var(--gold);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  --color-perla: var(--perla);
+  --color-perla-2: var(--perla-2);
+  --color-ciruela: var(--ciruela);
+  --color-ciruela-hover: var(--ciruela-hover);
+  --color-ciruela-tinta: var(--ciruela-tinta);
+  --color-texto: var(--texto);
+  --color-texto-2: var(--texto-2);
+  --color-separador: var(--separador);
+  --color-borde-control: var(--borde-control);
+  --color-exito: var(--exito);
+  --color-aviso: var(--aviso);
+  --color-error: var(--error);
+
+  --color-tinta: var(--tinta);
+  --color-papel: var(--papel);
+  --color-cava: var(--cava);
+  --color-cava-texto: var(--cava-texto);
+  --color-gris-etiqueta: var(--gris-etiqueta);
+  --color-rubor: var(--rubor);
+  --color-menta: var(--menta);
+  --color-vainilla: var(--vainilla);
+  --color-salvia: var(--salvia);
+  --color-granate: var(--granate);
+}
+
+/* v8: display serif (Playfair vía --font-serif) para titulares y cifras;
+   el cuerpo y la UI siguen en Plus Jakarta Sans; JetBrains Mono para las
+   etiquetas editoriales. font-script resuelve a la itálica serif; en v9
+   las cursivas son moderadas y solo llevan color propio donde lo dice
+   DESIGN.md §3. */
+:root {
+  --font-serif: var(--font-serif-face), Georgia, 'Times New Roman', serif;
+  --font-display: var(--font-serif);
+  --font-script: var(--font-serif);
+}
+.font-script {
+  font-family: var(--font-script), Georgia, serif;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: 0;
+}
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+/* Etiqueta editorial ("Nº 01 — EL SOBRE", "ESPAÑA · 2026"): mono, 11px,
+   tracking .16em, mayúsculas, texto secundario. */
+.font-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+/* Cifras: siempre tabulares para que los contadores no muevan el layout. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+/* Latido suave para el contador de días (página de invitado). */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes v-pulse-kf {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+  }
+  .v-pulse {
+    animation: v-pulse-kf 2.6s ease-in-out infinite;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   PWA / iOS standalone: con viewport-fit=cover el contenido llega al borde
+   superior (bajo la Dynamic Island / notch). En modo app añadimos el
+   safe-area como padding para que la cabecera no quede tapada; en el
+   navegador normal los insets son 0 y esto no cambia nada.
+   ------------------------------------------------------------------------- */
+/* Safe-area SIEMPRE (no solo en PWA standalone): el WebView de Capacitor no
+   reporta display-mode:standalone. El padding del body despeja la isla en las
+   cabeceras en flujo normal (SiteHeader, panel, invitado). En escritorio
+   env() es 0 → no cambia nada. Las cabeceras `position:fixed` (el hero)
+   llevan su propio env() aparte, porque ignoran el padding del body. */
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+/* A sangre en iPhone (6-oct-2026): la landing y la invitación pública llegan
+   hasta arriba (detrás de la Dynamic Island) y hasta abajo; sus barras y
+   escenas llevan su propio env(safe-area-inset-*). El resto del sitio
+   (panel, login…) sigue con el padding del body. */
+body:has(.lc-home),
+body:has([data-invitation-mode="public"]) {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+/* Creador y editor de la web en el móvil (pantalla completa): las franjas
+   de la isla y de la barra de Safari (iOS 26: color del body) continúan el
+   lienzo de la invitación, que empieza en blanco. */
+@media (max-width: 1023.98px) {
+  html:has(.wb-app), body:has(.wb-app), html:has(.pn-me), body:has(.pn-me) { background-color: #fff; }
+}
+/* Al estirar el scroll en iOS (rebote), arriba se ve el color del hero. */
+html:has(.lc-home) {
+  background-color: var(--perla);
+}
+
+/* Barras fijas/pegajosas propias (p. ej. resumen de aportación): respetan el
+   safe-area inferior cuando existe, sin romper el layout cuando es 0. */
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 0px);
+}
+
+/* ====== Utilidades aditivas del refresh 2026-10-03 (prefijo .u-) ========
+   Movimiento según DESIGN.md §5: pulsables con scale(0.97) al pulsar y
+   hover solo con puntero fino. Sin tokens nuevos. */
+.u-pressable {
+  transition:
+    transform var(--d-micro) var(--ease-out),
+    opacity var(--d-ui) var(--ease-out);
+}
+.u-pressable:active {
+  transform: scale(0.97);
+  transition-duration: 80ms;
+}
+@media (hover: hover) and (pointer: fine) {
+  .u-hover-dim:hover {
+    opacity: 0.88;
+  }
+  .u-hover-underline:hover {
+    text-decoration: underline;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .u-pressable {
+    transition: none;
+  }
+}
+
+/* ====== Cabecera pública como material (2026-10-05) =====================
+   Capa flotante: el contenido pasa por debajo desenfocado en vez de chocar
+   con una barra opaca. El filete inferior es un efecto de borde de scroll:
+   solo existe cuando hay contenido debajo (animación ligada al scroll, sin
+   JavaScript). Sin soporte, filete fijo como antes. */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: color-mix(in srgb, var(--paper) 76%, transparent);
+  -webkit-backdrop-filter: saturate(170%) blur(18px);
+  backdrop-filter: saturate(170%) blur(18px);
+  border-bottom: 1px solid var(--line);
+}
+@supports (animation-timeline: scroll()) {
+  .site-header {
+    border-bottom-color: transparent;
+    animation: site-header-edge linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 0 5rem;
+  }
+  @keyframes site-header-edge {
+    to {
+      border-bottom-color: var(--line);
+    }
+  }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .site-header {
+    background: var(--paper);
+  }
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .site-header {
+    background: var(--paper);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border-bottom-color: var(--line-strong);
+    animation: none;
+  }
+}
+
+/* ====== Invitaciones de boda: conservan su diseño (2026-10-09) ==========
+   La marca v9 cambia la interfaz de vinklo, NO las invitaciones que las
+   parejas han elegido. El renderer (components/invitation/renderer.tsx) fija
+   en línea --papel/--tinta/--cava/--cava-texto/--rubor con la paleta de la
+   boda; el resto de tokens que leen sus escenas, el formulario y los bordes
+   por defecto (`* { border-color: var(--border) }`) venían de :root. Aquí se
+   fijan con sus valores v8 literales dentro de la invitación, para que los
+   borradores y las webs publicadas se vean exactamente igual que antes.
+   :where() = especificidad 0: cualquier regla propia de la invitación y el
+   estilo en línea del renderer siguen mandando. No tocar sin comparar
+   /demo y /demo/<plantilla> píxel a píxel. */
+:where(.sp-shell) {
+  --paper: #FAF6F1;
+  --paper-2: #F3ECE3;
+  --ink: #17130F;
+  --ink-muted: #6B5F55;
+  --clay: #9E3B22;
+  --clay-dark: #7E2D18;
+  --olive: #3F5136;
+  --gold: #B07D2B;
+  --line: #E7DDD1;
+  --line-strong: #D3C4B2;
+  --tinta: #17130F;
+  --papel: #FAF6F1;
+  --cava: #9E3B22;
+  --cava-texto: #9E3B22;
+  --gris-etiqueta: #6B5F55;
+  --rubor: #F3ECE3;
+  --menta: #E7DDD1;
+  --vainilla: #E7DDD1;
+  --salvia: #3F5136;
+  --granate: #7E2D18;
+  --background: #FAF6F1;
+  --foreground: #17130F;
+  --card-foreground: #17130F;
+  --popover-foreground: #17130F;
+  --primary: #17130F;
+  --primary-foreground: #FAF6F1;
+  --secondary: #F3ECE3;
+  --secondary-foreground: #17130F;
+  --muted: #F3ECE3;
+  --muted-foreground: #6B5F55;
+  --accent: #F3ECE3;
+  --accent-foreground: #17130F;
+  --destructive: #7E2D18;
+  --border: #E7DDD1;
+  --input: #D3C4B2;
+  --ring: #9E3B22;
+  --radius: 0.625rem;
+  --shadow-sm: 0 1px 2px rgba(23, 19, 15, 0.05), 0 4px 12px -6px rgba(23, 19, 15, 0.08);
+  --shadow-md: 0 2px 4px rgba(23, 19, 15, 0.04), 0 18px 40px -22px rgba(23, 19, 15, 0.22);
+}
+
+
+/* =====================================================================
+   Fondo nacarado de la web pública (9-oct-2026, components/brand/nacar-background.tsx).
+   Capa fija detrás de toda la página: ondas en la familia ciruela sobre
+   perla y una cinta iridiscente suave. Las páginas que la llevan dejan
+   transparentes sus fondos de papel para que se vea.
+   ===================================================================== */
+html:has(.vk-nacar) { background: #F8F7FA; }
+body:has(.vk-nacar) { background: transparent; } /* si el body pinta su fondo, tapa la capa (z-index: -1) */
+.vk-nacar { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.vk-nacar::before,
+.vk-nacar::after { content: ""; position: absolute; inset: -20%; pointer-events: none; }
+.vk-nacar::before {
+  background:
+    radial-gradient(38% 30% at 14% 26%, rgba(190, 166, 208, 0.85), transparent 70%),
+    radial-gradient(34% 28% at 86% 18%, rgba(222, 206, 236, 0.95), transparent 70%),
+    radial-gradient(40% 34% at 84% 80%, rgba(87, 59, 98, 0.32), transparent 72%),
+    radial-gradient(36% 32% at 18% 86%, rgba(238, 210, 228, 0.9), transparent 70%),
+    radial-gradient(28% 24% at 50% 52%, rgba(248, 247, 250, 0.95), transparent 75%);
+  filter: blur(40px) saturate(125%);
+  animation: vk-nacar-drift 26s ease-in-out infinite alternate;
+}
+.vk-nacar::after {
+  background: conic-gradient(from 200deg at 58% 46%,
+    transparent 0deg,
+    rgba(196, 170, 226, 0.85) 36deg,
+    rgba(244, 196, 220, 0.75) 72deg,
+    rgba(250, 222, 196, 0.65) 100deg,
+    rgba(200, 236, 226, 0.6) 128deg,
+    rgba(180, 196, 240, 0.6) 156deg,
+    rgba(190, 166, 208, 0.75) 186deg,
+    transparent 236deg,
+    transparent 360deg);
+  -webkit-mask-image: radial-gradient(68% 52% at 55% 50%, transparent 40%, #000 56%, #000 64%, transparent 80%);
+  mask-image: radial-gradient(68% 52% at 55% 50%, transparent 40%, #000 56%, #000 64%, transparent 80%);
+  filter: blur(26px);
+  opacity: 0.95;
+  animation: vk-nacar-turn 46s linear infinite;
+}
+@keyframes vk-nacar-drift { from { transform: translate3d(-3%, -2%, 0) scale(1); } to { transform: translate3d(3%, 2%, 0) scale(1.06); } }
+@keyframes vk-nacar-turn { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@media (max-width: 640px) {
+  .vk-nacar::before { filter: blur(36px); }
+  .vk-nacar::after { opacity: 0.6; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vk-nacar::before, .vk-nacar::after { animation: none; }
+}
+/* Fondos de papel que pasan a transparentes donde está el nacarado. */
+body:has(.vk-nacar) :is(.ll-home, .lc-home, .lc-paper, .lc-hero--paper, .lc-flight, .lc-finale, .ac-page, .hi, .rd-page) { background: transparent; }
+body:has(.vk-nacar) .lc-home > footer { background: transparent; }
+/* «Hacedla vuestra»: apagado deja ver el nacarado; encendido, un velo ciruela tenue (el cambio de estado se sigue notando). */
+body:has(.vk-nacar) .lc-home .lc-switch-section { background: transparent; }
+body:has(.vk-nacar) .lc-home .lc-switch-section[data-on] { background: rgba(236, 231, 240, 0.7); }
+
+/* /demo: la invitación ocupa la pantalla menos una franja de 44 px (más la
+   barra de inicio) fuera del renderer, en el papel de la plantilla con un
+   filete al 10 % de su tinta: la invitación se ve pura, sin nada encima. */
+/* Cuentas de 100svh exactos: el body pierde su padding de safe-area (lo
+   pondría dos veces) y la página lleva los dos insets: el superior como
+   padding del escenario (en papel: la franja de la isla sigue sin costura)
+   y el inferior dentro de la franja.
+   escenario (inset sup. + invitación) = 100svh − 44 − inset inf.
+   franja = 44 + inset inf.  →  escenario + franja = 100svh. */
+body:has(.demo-bar) { padding-top: 0; padding-bottom: 0; }
+.demo-stage { box-sizing: border-box; height: calc(100svh - 44px - env(safe-area-inset-bottom, 0px)); padding-top: env(safe-area-inset-top, 0px); background: var(--demo-paper); }
+.demo-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: calc(44px + env(safe-area-inset-bottom, 0px)); padding: 0 max(.5rem, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(.5rem, env(safe-area-inset-left, 0px)); background: var(--demo-paper); color: var(--demo-ink); border-top: 1px solid color-mix(in oklab, var(--demo-ink) 10%, transparent); }
+.demo-bar-link { display: inline-flex; align-items: center; gap: .25rem; min-height: 44px; padding: 0 .5rem; font-size: .9375rem; font-weight: 500; white-space: nowrap; color: inherit; border-radius: .5rem; outline: none; transition: opacity 160ms var(--ease-out), scale 160ms var(--ease-out); }
+.demo-bar-link:focus-visible { outline: 2px solid currentColor; outline-offset: -2px; }
+.demo-bar-cta { font-weight: 600; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+@media (hover: hover) and (pointer: fine) {
+  .demo-bar-link:hover { opacity: .7; }
+}
+.demo-bar-link:active { scale: 0.97; }
+@media (prefers-reduced-motion: reduce) {
+  .demo-bar-link { transition: none; }
+}

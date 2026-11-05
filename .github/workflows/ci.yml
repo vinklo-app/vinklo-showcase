@@ -1,0 +1,260 @@
+# CI de vinklo: lint, tipos, tests unitarios y build de producción en cada
+# push a main y a la rama de trabajo y en cada PR; además, las suites SQL
+# sobre un Postgres de pruebas vacío y los tipos generados de la base.
+#
+# Despliegue: producción sale del job `deploy` (al final), con la CLI de
+# Vercel y solo si verify, sql y e2e pasan (activo desde el 18-oct-2026 con
+# el secreto VERCEL_TOKEN). Desde el 5-nov-2026 el proyecto de Vercel no tiene
+# Git conectado; los previews de PR los hace preview.yml. Activación y vuelta
+# atrás en docs/ops/deploy-con-ci.md. Las migraciones de
+# Supabase NUNCA se aplican desde aquí (regla de oro del repo: van a mano y
+# ANTES de subir el código, ver README.md).
+name: CI
+
+on:
+  push:
+    # Producción sale de main; v3 y v2-invitaciones-crm se conservan como
+    # histórico (revisión de código 2026-10-06, R02).
+    branches: [main, v3, v2-invitaciones-crm]
+  pull_request:
+  # Ejecución manual sobre cualquier rama (gh workflow run ci.yml --ref X).
+  # Nunca despliega: el job deploy exige un push a main.
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  # En main no se cancela una ejecución en curso: con el despliegue por CI
+  # activo, cortarla a medias dejaría un deploy sin terminar. Las siguientes
+  # esperan en cola (GitHub conserva solo la más reciente pendiente).
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Lint · tipos · tests · build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # El build necesita estas variables públicas para construir la CSP
+      # (next.config.ts) y las URLs; valores ficticios, no se contacta con
+      # Supabase ni Stripe durante `next build`.
+      NEXT_PUBLIC_SUPABASE_URL: https://ci-placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
+      NEXT_PUBLIC_APP_URL: https://vinklo.es
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Misma major que Vercel (Node 24.x en el proyecto `vinklo`).
+          node-version: 24
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci --no-audit --no-fund
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tipos
+        run: npx tsc --noEmit -p tsconfig.json
+
+      - name: Tests unitarios
+        run: npm test
+
+      - name: Caché de Next.js
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          # Lockfile + código fuente: cambia si cambian dependencias o fuentes;
+          # restore-keys reutiliza la caché del mismo lockfile aunque cambie el código.
+          key: next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('app/**', 'components/**', 'lib/**', 'public/**', 'next.config.ts') }}
+          restore-keys: |
+            next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+
+      - name: Build de producción
+        run: npm run build
+
+      - name: Un solo chunk del renderer (/, /demo, /b)
+        # P1-4: si cambia el orden de imports de la landing, Turbopack emite
+        # otra copia del renderer y el navegador la descarga dos veces.
+        run: node scripts/check-shared-renderer-chunk.mjs
+
+      - name: IA fuera de la carga inicial y secretos solo en servidor
+        run: node scripts/check-ai-client-boundary.mjs
+
+      - name: Auditoría de dependencias de producción
+        # PostCSS corregido mediante override; nuevos avisos altos bloquean CI.
+        run: npm audit --omit=dev --audit-level=high
+
+  sql:
+    name: Suites SQL (migraciones + RLS + RPC)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: vinklo
+          POSTGRES_DB: vinklo_test
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U vinklo" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      # Base efímera del job: nunca Supabase (scripts/test-sql.sh lo rechaza).
+      TEST_DATABASE_URL: postgresql://vinklo@127.0.0.1:5432/vinklo_test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cliente psql
+        run: sudo apt-get update -q && sudo apt-get install -y -q postgresql-client
+      - name: Migraciones y suites
+        run: scripts/test-sql.sh
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: scripts/db-types/package-lock.json
+      - name: Tipos de la base al día (lib/supabase/database.types.ts)
+        # P1-3: regenera los tipos desde las migraciones recién aplicadas
+        # (postgres-meta fijado en scripts/db-types) y falla si difieren.
+        env:
+          DB_TYPES_TOOL_DIR: ${{ runner.temp }}/db-types
+        run: scripts/gen-db-types.sh --check
+
+  e2e:
+    name: Smoke de navegador (Playwright)
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Mismo env ficticio que el build: el smoke no necesita Supabase
+      # (/b/[slug] daría 404; se usa /demo/origen).
+      NEXT_PUBLIC_SUPABASE_URL: https://ci-placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
+      NEXT_PUBLIC_APP_URL: http://localhost:3400
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci --no-audit --no-fund
+
+      - name: Caché de Next.js
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('app/**', 'components/**', 'lib/**', 'public/**', 'next.config.ts') }}
+          restore-keys: |
+            next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+
+      # Se vuelve a construir (el artefacto de verify llevaría .next entero y
+      # NEXT_PUBLIC_APP_URL difiere); la caché de arriba lo hace barato.
+      - name: Build de producción
+        run: npm run build
+
+      - name: Caché de navegadores de Playwright
+        id: pw-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar Chromium
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Instalar dependencias del sistema de Chromium
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Smoke e2e
+        run: npx playwright test
+
+      - name: Informe y trazas si falla
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7
+
+  # ---------------------------------------------------------------------------
+  # Despliegue de producción desde CI (P0-1). DESACTIVADO por defecto: solo
+  # corre en push a main y si existe el secreto VERCEL_TOKEN. Mientras tanto,
+  # vercel.json sigue desplegando main por Git y este job sale «skipped».
+  # Activación / vuelta atrás: docs/ops/deploy-con-ci.md.
+  deploy-gate:
+    name: ¿Despliegue por CI activo?
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      enabled: ${{ steps.check.outputs.enabled }}
+    steps:
+      - name: Comprobar el secreto VERCEL_TOKEN
+        id: check
+        # Los secretos no se pueden leer en el `if` de un job: se resuelve aquí.
+        env:
+          HAS_TOKEN: ${{ secrets.VERCEL_TOKEN != '' }}
+        run: |
+          if [ "$HAS_TOKEN" = "true" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Sin VERCEL_TOKEN: producción la despliega Vercel por Git (vercel.json)."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy:
+    name: Desplegar producción (Vercel CLI)
+    needs: [deploy-gate, verify, sql, e2e]
+    if: needs.deploy-gate.outputs.enabled == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_TELEMETRY_DISABLED: "1"
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          # Misma major que el proyecto en Vercel (Node 24.x).
+          node-version: 24
+
+      - name: Comprobar secretos del proyecto
+        run: |
+          missing=0
+          for name in VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [ -z "${!name}" ]; then echo "::error::Falta el secreto $name (docs/ops/deploy-con-ci.md)"; missing=1; fi
+          done
+          [ "$missing" -eq 0 ] || exit 1
+
+      - name: CLI de Vercel (versión fijada)
+        run: npm install --global --no-audit --no-fund vercel@54.14.2
+
+      # Compila Vercel, no el runner: las variables «Sensitive» (Supabase,
+      # Sentry, claves de servidor) no se pueden bajar con `vercel pull`, y
+      # un build aquí saldría sin ellas. Así el build es el mismo que el de
+      # Git, con todas las variables de producción.
+      - name: Desplegar (vercel deploy --prod, build en Vercel)
+        run: |
+          url="$(vercel deploy --prod --yes --token="$VERCEL_TOKEN")"
+          echo "Desplegado: $url"
+          echo "### Producción desplegada desde CI: $url" >> "$GITHUB_STEP_SUMMARY"

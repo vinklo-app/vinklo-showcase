@@ -1,0 +1,21 @@
+.pn-ai-card { display: grid; gap: 1.25rem; padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--line-strong); border-radius: var(--radius-xl); background: var(--paper-2); }
+.pn-ai-card h2 { margin: .5rem 0; }
+.pn-ai-card p { max-width: 44rem; }
+.pn-ai-open { display: flex; justify-content: space-between; align-items: center; gap: 1rem; width: 100%; min-height: 56px; padding: 1rem; border: 1px solid var(--line-strong); border-radius: var(--radius-lg); color: var(--ink); background: var(--paper); text-align: left; }
+.pn-ai-suggestions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.pn-ai-suggestions .pn-chip { white-space: normal; text-align: left; }
+.pn-ai-toolbar { display: flex; justify-content: flex-end; padding-top: .75rem; }
+.pn-ai-welcome { display: grid; gap: 1rem; padding: 1rem 0 1.5rem; }
+.pn-ai-conversation { display: grid; gap: 1.5rem; overflow-wrap: anywhere; }
+.pn-ai-turn { display: grid; gap: .75rem; }
+.pn-ai-question { justify-self: end; max-width: 92%; padding: .75rem 1rem; border-radius: var(--radius-lg); background: var(--paper-2); white-space: pre-wrap; }
+.pn-ai-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+.pn-ai-proposal { display: grid; justify-items: start; gap: .75rem; padding: 1rem; border: 1px solid var(--line-strong); border-radius: var(--radius-lg); }
+.pn-ai-applied { font-weight: 600; }
+.pn-ai-composer { display: grid; gap: .5rem; padding-top: 1.5rem; }
+.pn-ai-composer label { font-weight: 600; }
+.pn-ai-input { display: flex; align-items: end; gap: .5rem; padding: .5rem; border: 1px solid var(--line-strong); border-radius: var(--radius-lg); background: var(--paper); }
+.pn-ai-input textarea { flex: 1; min-width: 0; resize: vertical; padding: .5rem; border: 0; background: transparent; color: var(--ink); font: inherit; }
+.pn-ai-input button { flex: none; min-width: 44px; min-height: 44px; }
+
+.pn-ai-loading { position: fixed; z-index: 40; bottom: 6rem; left: 50%; translate: -50%; padding: .75rem 1rem; border-radius: var(--radius-lg); background: var(--paper); color: var(--ink); border: 1px solid var(--line-strong); }

@@ -1,0 +1,54 @@
+# vinklo
+
+> vinklo (vinklo.es) es una herramienta web española para crear gratis la web de una boda (invitación digital), compartirla por WhatsApp con un enlace personal para cada invitado y reunir en una lista de invitados las confirmaciones de asistencia, los acompañantes y las respuestas de cada invitado; incluye plano de mesas. En español de España, para bodas en España.
+
+Datos clave:
+- Nombre: vinklo (se escribe en minúsculas; también aparece como «Vinklo»). Web oficial: https://vinklo.es. Contacto: hola@vinklo.es.
+- Qué es: web de boda (invitación digital) + lista de invitados con confirmación de asistencia (RSVP) y plano de mesas. No es una app que haya que descargar: funciona en el navegador del móvil o del ordenador.
+- Para quién: parejas que se casan en España. Los invitados no necesitan cuenta ni app: abren su enlace personal y responden.
+- Precio: crear la invitación y gestionar a los invitados es gratis para los novios.
+- Estado: en beta (2026). Se puede probar el creador sin registrarse; para publicar la invitación se entra con el email.
+- No confundir con otras apps o marcas de nombre parecido de otros países: vinklo.es es un servicio español de invitaciones de boda.
+
+## Qué hace hoy
+
+- Creador guiado con ayuda de IA: los novios responden preguntas cortas (nombres, fecha, lugares, programa, bienvenida) y ven la web tomar forma.
+- Web de la boda en dos maquetas: «Como una Story» (una pantalla tras otra) o «Como una web» (página larga). Puede abrirse como un sobre cerrado.
+- Apartados: historia, fotos y galería, lugares, programa del día, autobuses, hoteles, menú, niños, canción y preguntas frecuentes.
+- Enlace personal para cada invitado, que se comparte por WhatsApp. El mensaje lo envían los novios desde su teléfono; vinklo prepara el texto y permite enviar en serie, filtrando por etiqueta o por lado.
+- Confirmación de asistencia sin cuenta: sí o no, acompañantes (con tope por invitado), alergias y las preguntas de los apartados (autobús, hotel, menú, niños, canción). Al reabrir su enlace, el invitado ve su respuesta anterior y puede cambiarla.
+- Recordatorios ya escritos solo para quien recibió la invitación y no ha respondido.
+- Lista de invitados con pendientes, confirmados y no asistentes, grupos (familias), etiquetas y lado (de quién es invitado). Dos personas pueden gestionar la misma boda.
+- Correo diario a los novios con las respuestas recibidas.
+- Plano de mesas: mesas con plazas, «Sentar automáticamente» (no separa grupos, junta por etiqueta o lado, se puede deshacer) y vistas para imprimir mesas y lista de entrada.
+- Regalos anotados a mano por los novios, con seguimiento de agradecimientos y mensaje de agradecimiento preparado para WhatsApp.
+
+## Qué NO hace hoy
+
+- No cobra ni procesa pagos ni dinero de los invitados: los regalos solo se anotan a mano.
+- No envía WhatsApp por su cuenta ni puede saber si un mensaje se ha entregado o leído; solo registra las respuestas de los invitados y los envíos que marcan los novios.
+- No es una lista de bodas ni un directorio de proveedores.
+
+## Páginas principales
+
+- [Inicio](https://vinklo.es): qué es vinklo.
+- [Crear vuestra web](https://vinklo.es/crear): creador guiado con vista previa, sin registro para probarlo.
+- [Boda de ejemplo](https://vinklo.es/demo): una web de boda de muestra.
+- [Preguntas frecuentes](https://vinklo.es/preguntas): precio, registro, invitaciones por WhatsApp y regalos.
+- [Guías](https://vinklo.es/guias): guías prácticas para organizar la boda.
+
+## Guías
+
+- [Cómo hacer la web de vuestra boda, paso a paso](https://vinklo.es/guias/invitacion-de-boda-digital): qué contar, qué apartados poner y cómo compartirla.
+- [Cómo confirmar asistencia a la boda por WhatsApp sin perder la cuenta](https://vinklo.es/guias/confirmar-asistencia-boda-whatsapp): enlace personal, fecha límite, mensaje y recordatorios.
+- [Lista de invitados de boda: cómo hacerla y gestionarla](https://vinklo.es/guias/lista-de-invitados-boda): por dónde empezar, qué apuntar, grupos, etiquetas y acompañantes.
+- [Cómo organizar las mesas de la boda](https://vinklo.es/guias/como-organizar-las-mesas-de-la-boda): cuándo empezar, a quién sentar junto y el plano para el catering.
+- [Qué poner en la invitación de boda: programa, autobuses y alojamiento](https://vinklo.es/guias/que-poner-en-una-invitacion-de-boda): lo imprescindible y lo práctico, con ejemplos de texto.
+- [¿Cuándo se envían las invitaciones de boda?](https://vinklo.es/guias/cuando-enviar-invitaciones-boda): antelación orientativa, «reserva la fecha», fecha límite y recordatorio.
+- [Invitación de boda digital o de papel: cuál elegir](https://vinklo.es/guias/invitacion-de-boda-digital-o-papel): comparativa y cómo combinarlas.
+
+## Legal
+
+- [Aviso legal](https://vinklo.es/aviso-legal)
+- [Privacidad](https://vinklo.es/privacidad)
+- [Términos](https://vinklo.es/terminos)

@@ -1,0 +1,426 @@
+/* =====================================================================
+   Landing V2 (2026-10-03) — hoy con la marca v9 «Ciruela y perla»
+   (los tokens v8 de abajo son alias de v9, DESIGN.md §2).
+   Handoff: docs/handoffs/2026-10-03-v2/landing.md.
+
+   Cero colores ni fuentes nuevas: todo sale de app/globals.css (--paper,
+   --paper-2, --ink, --ink-muted, --clay, --clay-dark, --olive, --gold,
+   --line, --line-strong, --card, --radius, --ease-out, --d-*) y de las
+   fuentes del layout raíz. Prefijo `ll-`: la hoja es global al importarse.
+
+   Movimiento (Emil Kowalski / DESIGN.md §5): solo transform y opacity;
+   curvas propias (--ease-out); UI ≤ 300 ms; pulsables con scale(0.97);
+   hover solo con puntero fino; reveals una vez; reduced-motion conserva
+   los fundidos y elimina el desplazamiento. Dos bucles en la página: la
+   reproducción del móvil del hero (con pausa visible) y, solo en escritorio,
+   el cambio lento de estilo al frente en «Son tan ellos» (se detiene al
+   elegir un estilo y no arranca con reduced-motion).
+   ===================================================================== */
+
+.ll-home {
+  --ll-radius-md: calc(var(--radius) * 0.8);
+  --ll-radius-lg: var(--radius);
+  --ll-radius-xl: calc(var(--radius) * 1.6);
+  --ll-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ll-serif: var(--font-serif), Georgia, serif;
+  /* Gutter de 16 px, o la muesca en horizontal (viewport-fit=cover en el layout). */
+  --ll-gutter: max(1rem, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  overflow-x: clip;
+}
+.ll-home *,
+.ll-home *::before,
+.ll-home *::after {
+  box-sizing: border-box;
+}
+.ll-home ::selection {
+  background: var(--clay);
+  color: var(--paper);
+}
+.ll-home :is(a, button, textarea, input, summary):focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 3px;
+}
+.ll-home :is(a, button, summary, label) {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.ll-home :is(button, summary) {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none; /* sin el menú de pulsación larga en controles */
+}
+.ll-home main section[id] {
+  /* Al pulsar el menú, el titular de la sección queda justo bajo la cabecera
+     flotante (4.5rem) y no tras todo el padding superior de la sección. */
+  scroll-margin-top: calc(6rem - clamp(5rem, 11vw, 9rem));
+}
+.ll-home main section.lc-more[id] { scroll-margin-top: calc(6rem - clamp(5rem, 14vw, 10rem)); }
+
+/* Cabeceras de sección centradas (9-oct-2026): antilletra, titular y entradilla
+   en el eje de la página, no pegados a la izquierda con media pantalla vacía. */
+.ll-home :is(#estilos .lc-section-head, #todo .lc-container, .lc-more-inner, .lc-faq-head) { text-align: center; }
+.ll-home :is(#estilos .lc-section-head, #todo .lc-container, .lc-more-inner, .lc-faq-head) :is(.lc-sub, .lc-h2) { margin-inline: auto; }
+.ll-home #todo .lc-bento { text-align: left; }
+.ll-home .lc-more-inner { margin-inline: auto; }
+.ll-home .lc-more-kicker { justify-content: center; }
+.ll-home .lc-more .hi-notify { margin-inline: auto; text-align: left; }
+.ll-home .lc-faq-grid { display: block; max-width: 48rem; margin-inline: auto; }
+.ll-home .lc-faq-head { margin-bottom: 2rem; position: static; } /* en una columna no se queda fijo (se montaba sobre la lista al bajar) */
+
+/* --- Contenedor: 16 px de gutter en móvil, 32 px desde 640 ------------- */
+.ll-container {
+  width: min(100% - 2 * var(--ll-gutter), 68rem); /* = interior del SiteHeader (max-w-6xl − px-8) */
+  margin-inline: auto;
+}
+@media (min-width: 640px) {
+  .ll-home {
+    --ll-gutter: max(2rem, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+  }
+}
+
+/* --- Saltar al contenido ---------------------------------------------- */
+.ll-skip {
+  position: absolute;
+  top: 0.5rem;
+  left: 1rem;
+  z-index: 10;
+  padding: 0.8rem 1rem;
+  background: var(--ink);
+  color: var(--paper);
+  /* Oculto de verdad (no solo desplazado): al estirar la página para
+     recargar en Safari se veía asomar por arriba. Solo con el teclado. */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-200%);
+}
+.ll-skip:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* --- Pulsables --------------------------------------------------------- */
+.ll-pressable {
+  transition:
+    transform var(--d-micro) var(--ease-out),
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    opacity 150ms ease;
+}
+.ll-pressable:active {
+  transform: scale(0.97);
+  transition-duration: 80ms;
+}
+
+.ll-btn-clay {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1.25rem;
+  border: 0;
+  max-width: 100%;
+  border-radius: var(--ll-radius-lg);
+  font-weight: 600;
+  text-align: center;
+  text-wrap: balance; /* una línea siempre que quepa; con letra al 200 %, dos antes que salirse */
+  cursor: pointer;
+}
+
+.ll-btn-clay {
+  min-height: 3.25rem;
+  padding: 0 1.5rem;
+  background: var(--clay);
+  color: var(--paper);
+  font-size: 1rem;
+}
+
+.ll-btn-clay svg {
+  transition: transform var(--d-ui) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ll-btn-clay:hover {
+    background: var(--ciruela-hover);
+  }
+
+  .ll-btn-clay:hover svg {
+    transform: translateX(3px);
+  }
+}
+
+/* --- Hero -------------------------------------------------------------- */
+.ll-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "eyebrow" "title" "body" "phone";
+  column-gap: clamp(2.5rem, 6vw, 6rem);
+  padding-top: clamp(2rem, 5vw, 4.5rem);
+  padding-bottom: clamp(4rem, 8vw, 7rem);
+}
+
+@media (min-width: 1000px) {
+  /* Asimetría: el texto arranca arriba a la izquierda; el móvil se apoya
+     abajo a la derecha y empuja contra la sección siguiente (diagonal), en
+     lugar de flotar centrado frente al titular. */
+  .ll-hero {
+    grid-template-columns: minmax(0, 1fr) 22rem;
+    grid-template-areas: "eyebrow phone" "title phone" "body phone";
+    grid-template-rows: auto auto 1fr;
+    align-items: start;
+    padding-bottom: clamp(3rem, 5vw, 4.5rem);
+  }
+}
+
+@starting-style {
+  .ll-meta-swap {
+    opacity: 0;
+  }
+}
+
+/* Entrada del hero: un único momento orquestado al cargar (CSS, sin JS:
+   sin JavaScript también termina visible). 560 ms, escalonado 60 ms. */
+@keyframes ll-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+@keyframes ll-enter-phone {
+  from {
+    opacity: 0;
+    transform: translateY(2rem) scale(0.96);
+  }
+}
+@keyframes ll-fade {
+  from {
+    opacity: 0;
+  }
+}
+.ll-enter {
+  animation: ll-enter var(--d-reveal) var(--ease-out) var(--enter-delay, 0ms) both;
+}
+
+.ll-enter-phone {
+  animation: ll-enter-phone 900ms var(--ease-out) 200ms both;
+}
+
+/* Profundidad del móvil del hero (principios Apple).
+   - Inclinación: sigue al puntero con un muelle críticamente amortiguado
+     (landing-lovable-hero.tsx escribe --ll-tilt-x/y; solo puntero fino y sin
+     movimiento reducido). Decorativa: no cambia nada funcional.
+   - Despedida: al salir de pantalla el móvil se aleja (escala y sube menos
+     que la página), ligado al scroll sin JavaScript donde hay soporte. */
+
+/* La rueda/trackpad sobre el móvil debe poder mover la página. El marco
+   desplaza su contenido (vista «Ver todos los detalles») pero sin
+   `overscroll-behavior: contain`, y las escenas de la Story — que en la
+   invitación pública a pantalla completa sí lo contienen (story-player.css)
+   — aquí encadenan el desplazamiento a la página. Antes, con la Story en
+   pausa (o con reduced-motion), la rueda quedaba atrapada en el móvil. */
+.ll-phone-screen .sp[data-view] .sp-scene {
+  overscroll-behavior: auto;
+}
+.ll-phone-screen {
+  height: 100%;
+  overflow: auto;
+  scrollbar-width: none;
+  border-radius: 1.875rem;
+  background: var(--paper-2);
+}
+.ll-phone-screen::-webkit-scrollbar {
+  display: none;
+}
+/* El renderer compartido (modo preview) trae su progreso y controles de
+   Story; aquí solo se le da altura. Sin selectores a sus internos. */
+.ll-phone-screen > * {
+  min-height: 100%;
+}
+.ll-phone-screen .v-pulse {
+  animation: none;
+}
+
+/* Reproducción: pausar/reanudar + barra de tiempo (movimiento constante:
+   lineal) que se reinicia con cada escena. */
+
+/* Ritmo desigual a propósito: la secuencia arranca pegada al hero (el móvil
+   del hero empuja contra ella), los estilos respiran más y la FAQ, que es
+   utilidad, menos. Sin filete entre todas: las bandas de color separan. */
+
+/* Cómo funciona + lista: la secuencia como un raíl vertical (el filete se
+   dibuja hacia abajo al entrar) junto al panel real que la demuestra. */
+
+/* El panel de la lista: una superficie de producto real, por eso sí es una
+   tarjeta (la elevación dice «esto se toca»). */
+
+@media (min-width: 1000px) {
+  /* La tarjeta del formulario es más alta que la promesa: la columna de
+     texto acompaña al formulario mientras se rellena (sticky) en lugar de
+     quedarse arriba con un hueco debajo. */
+}
+
+.ll-faq-icon {
+  position: relative;
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  transition: transform var(--d-ui) var(--ease-out);
+}
+.ll-faq-icon::before,
+.ll-faq-icon::after {
+  content: "";
+  position: absolute;
+  inset: 50% 0 auto;
+  height: 1.5px;
+  margin-top: -0.75px;
+  background: var(--ink);
+}
+.ll-faq-icon::after {
+  transform: rotate(90deg);
+}
+
+/* Cierre en negativo */
+.ll-close {
+  background: var(--ink);
+  color: var(--paper);
+  padding-block: clamp(5rem, 12vw, 9rem);
+}
+
+.ll-close .ll-btn-clay {
+  margin-top: 2.5rem;
+}
+.ll-close .ll-btn-clay:focus-visible {
+  outline-color: var(--paper);
+}
+
+/* --- Reveals (IntersectionObserver una vez, escalonado 60 ms) -----------
+   Sin JavaScript nada se oculta: el estado inicial solo existe cuando
+   LandingMotion marca la raíz con data-motion. Cada sección tiene su gesto:
+   fade (títulos), rule (el filete de los pasos se dibuja), rise (los
+   móviles suben), row (las filas de invitados entran en cascada). */
+.ll-home[data-motion] [data-reveal] {
+  opacity: 0;
+  transition: opacity var(--d-reveal) var(--ease-out) var(--reveal-delay, 0ms);
+}
+/* fade: el texto no solo aparece, se enfoca y asienta (materializa). */
+.ll-home[data-motion] [data-reveal="fade"] {
+  transform: translateY(0.875rem);
+  filter: blur(8px);
+  transition:
+    opacity var(--d-reveal) var(--ease-out) var(--reveal-delay, 0ms),
+    transform 700ms var(--ease-out) var(--reveal-delay, 0ms),
+    filter var(--d-reveal) var(--ease-out) var(--reveal-delay, 0ms);
+}
+.ll-home[data-motion] [data-reveal="rise"] {
+  transform: translateY(2.5rem);
+  transition:
+    opacity var(--d-reveal) var(--ease-out) var(--reveal-delay, 0ms),
+    transform 700ms var(--ease-out) var(--reveal-delay, 0ms);
+}
+.ll-home[data-motion] [data-reveal="row"] {
+  transform: translateX(-0.5rem);
+  transition:
+    opacity 300ms var(--ease-out) var(--reveal-delay, 0ms),
+    transform 300ms var(--ease-out) var(--reveal-delay, 0ms);
+}
+.ll-home[data-motion] [data-reveal="rule"]::before {
+  transform: scaleY(0);
+  transition: transform 700ms var(--ease-out) var(--reveal-delay, 0ms);
+}
+.ll-home[data-motion] [data-reveal][data-revealed] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+.ll-home[data-motion] [data-reveal="rule"][data-revealed]::before {
+  transform: none;
+}
+.ll-home[data-motion="reduce"] [data-reveal],
+.ll-home[data-motion="reduce"] [data-reveal="rule"]::before {
+  transform: none;
+  filter: none;
+  transition-property: opacity;
+  transition-duration: var(--d-ui);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ll-enter,
+  .ll-enter-phone {
+    animation-name: ll-fade;
+    animation-duration: var(--d-ui);
+  }
+  .ll-pressable {
+    transition-property: background-color, border-color, color, opacity;
+  }
+
+  .ll-skip,
+.ll-faq-icon,
+.ll-btn-clay svg {
+    transition: none;
+  }
+}
+
+/* --- Lo que aparece al responder (pasada nativa) ------------------------
+   El bloque de pareja del formulario y los errores entraban de golpe:
+   fundido + 4 px, 200 ms, --ease-out (como la invitación, §12). Con
+   reduced-motion, solo el fundido. */
+
+@starting-style {
+  .ll-appear {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  @starting-style {
+    .ll-appear {
+      transform: none;
+    }
+  }
+}
+
+/* Fondo nacarado: ahora es global (.vk-nacar en globals.css); la portada
+   y las secciones de papel lo dejan ver. */
+
+
+
+/* --- Hero: titular, una frase, dos llamadas y la «V» de vinklo con sus
+   tres líneas (12-oct-2026: vuelve la «V»; el producto ya se ve justo
+   debajo, en el vuelo). En móvil la «V» no se muestra: llamada a mano. */
+.lc-hero-ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.75rem; margin-top: 2rem; }
+.lc-hero-ctas .lc-hero-cta { margin: 0; }
+/* /en (1-nov-2026): aviso de que el creador y el panel siguen en español. */
+.lc-hero-note { margin: 1rem 0 0; font-size: 0.9rem; color: var(--ink-muted); }
+.lc-hero-demo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ink) 35%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+  border-radius: 0.3rem;
+  transition: text-decoration-color var(--d-ui) ease, transform var(--d-ui) var(--ease-out);
+}
+.lc-hero-demo:focus-visible { outline: 2px solid var(--clay); outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) {
+  .lc-hero-demo:hover { text-decoration-color: var(--clay); }
+}
+/* Entradas del hero: las de siempre (560 ms escalonadas 120/180/240 ms y la
+   «V» en 900 ms; 13-oct-2026, vuelven tras recortarlas a 300 ms). El h1 no
+   se anima (es el LCP). Con reduced-motion, solo fundido (.ll-enter). */
+@media (max-width: 759.98px) {
+  .ll-home .lc-hero-mock { display: none; }
+  .ll-home .lc-hero-wrap { min-height: auto; padding-top: calc(6.5rem + env(safe-area-inset-top, 0px)); padding-bottom: 3rem; }
+  .lc-hero-ctas { display: grid; gap: 0.25rem; margin-top: 1.5rem; }
+  .ll-home .lc-hero-cta { width: 100%; }
+  .lc-hero-demo { justify-self: center; }
+}

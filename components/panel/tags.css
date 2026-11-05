@@ -1,0 +1,58 @@
+/* ------------------------------------------------------------------
+   Etiquetas y lado de los invitados (plan maestro 8-oct-2026, §3.3) y
+   «Sentar automáticamente» (§3.4). Sin animaciones de entrada: son
+   acciones repetidas. Táctil: objetivos de 44 px; ratón: 36 px.
+   ------------------------------------------------------------------ */
+
+/* Fichas elegidas del campo «Etiquetas»: texto + «x» de 44 px. */
+.pn-tag-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
+.pn-tag-chip { display: inline-flex; align-items: center; max-width: 100%; min-height: 44px; padding-left: 0.85rem; border-radius: 999px; background: var(--ink); color: var(--paper); font-size: 0.8125rem; font-weight: 600; }
+.pn-tag-chip-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pn-tag-chip-x { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; margin-left: -0.25rem; border: 0; border-radius: 999px; background: transparent; color: inherit; cursor: pointer; }
+.pn-tag-chip-x:focus-visible { outline: 2px solid var(--clay); outline-offset: -4px; }
+
+/* Campo de texto con botón «+» pegado. */
+.pn-tag-input { display: flex; gap: 0.4rem; }
+.pn-tag-input input { flex: 1 1 auto; min-width: 0; }
+.pn-tag-add { display: grid; place-items: center; width: 48px; min-height: 48px; flex-shrink: 0; border: 1px solid var(--line-strong); border-radius: var(--radius-lg); background: var(--card); color: var(--ink); cursor: pointer; }
+.pn-tag-add:disabled { opacity: 0.4; cursor: default; }
+
+/* Ficha suave de la fila de la lista y del plano de mesas. */
+.pn-tag-soft { background: transparent; border-style: dashed; font-weight: 500; max-width: 12rem; }
+
+/* El lado usa role="radio": mismo aspecto que una ficha pulsada. */
+.pn-chip--pick[aria-checked="true"] { background: var(--ciruela); border-color: var(--ciruela); color: #fff; }
+
+/* Gestionar etiquetas: una fila por etiqueta. */
+.pn-tag-admin { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.pn-tag-admin > li { display: grid; gap: 0.5rem; padding: 0.75rem; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--card); }
+.pn-tag-admin-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-height: 44px; }
+.pn-tag-admin-name { min-width: 0; overflow-wrap: anywhere; font-weight: 600; }
+.pn-tag-admin-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.pn-tag-admin form { display: flex; gap: 0.5rem; }
+.pn-tag-admin form input { flex: 1 1 auto; min-width: 0; min-height: 44px; border: 1px solid var(--line-strong); background: var(--card); padding: 0 0.75rem; font: inherit; font-size: 1rem; color: var(--ink); border-radius: var(--radius-lg); }
+
+/* «Sentar automáticamente»: opciones y vista previa. */
+.pn-auto-options { display: grid; gap: 1rem; }
+.pn-auto-options fieldset { display: grid; gap: 0.4rem; margin: 0; padding: 0; border: 0; min-width: 0; }
+.pn-auto-options legend { padding: 0; margin-bottom: 0.25rem; font-size: 0.8125rem; font-weight: 600; }
+.pn-auto-radio { display: flex; align-items: center; gap: 0.6rem; min-height: 44px; font-size: 0.9375rem; }
+.pn-auto-radio input { width: 20px; height: 20px; accent-color: var(--ink); flex-shrink: 0; }
+.pn-auto-priority { display: grid; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
+.pn-auto-priority li { display: flex; align-items: center; gap: 0.5rem; min-height: 44px; padding-left: 0.75rem; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--card); }
+.pn-auto-priority li > span { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; font-size: 0.875rem; }
+.pn-auto-preview { display: grid; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.pn-auto-preview li { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-height: 44px; padding: 0.5rem 0.75rem; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--card); font-size: 0.875rem; }
+.pn-auto-preview li[data-new] { border-style: dashed; }
+.pn-auto-preview-name { min-width: 0; overflow-wrap: anywhere; }
+.pn-auto-preview-name small { display: block; color: var(--ink-muted); font-size: 0.75rem; }
+.pn-auto-preview-count { flex-shrink: 0; font-variant-numeric: tabular-nums; font-weight: 600; }
+.pn-auto-undo { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; }
+
+@media (hover: hover) and (pointer: fine) {
+  .pn-tag-chip { min-height: 36px; }
+  .pn-tag-chip-x { width: 36px; height: 36px; }
+}
+
+/* Barra de selección con «Etiquetar…»: en 360-400 px no caben los iconos. */
+@media (max-width: 400px) { .pn-selbar { gap: 0.25rem; } .pn-selbar .pn-btn { padding: 0 0.45rem; } .pn-selbar .pn-btn svg { display: none; } }

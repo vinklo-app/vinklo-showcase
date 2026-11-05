@@ -1,0 +1,137 @@
+/* ============================================================
+   Landing v2 — coreografía (docs/design.md → "Landing v2").
+   Solo estilos de la landing; los tokens viven en globals.css.
+
+   Principio: el estado BASE de todo elemento es el estado final
+   y visible. El movimiento solo se añade bajo
+   prefers-reduced-motion: no-preference, así reduced-motion y
+   los navegadores sin scroll-driven animations ven la página
+   completa sin parpadeos.
+   ============================================================ */
+
+@keyframes lv-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Scroll choreography (animation-timeline: view())
+   Fallback limpio: sin @supports, los elementos simplemente
+   están visibles y quietos. ---------- */
+
+@keyframes lv-reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(34px);
+  }
+}
+
+@keyframes lv-reveal-scale-in {
+  from {
+    opacity: 0;
+    transform: translateY(26px) scale(0.955);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .lv-reveal {
+      animation: lv-reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 55%;
+    }
+    .lv-reveal-scale {
+      animation: lv-reveal-scale-in linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 60%;
+    }
+  }
+}
+
+/* ---------- Demo "stories" (3 escenas en bucle) ---------- */
+
+/* Barra de progreso de la escena activa: al terminar, el
+   componente avanza escuchando animationend. */
+.lv-story-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--cava);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.lv-story-fill[data-state="done"],
+.lv-story-fill[data-state="active"] {
+  /* Base (reduced-motion / sin autoplay): la barra activa marca la
+     pestaña seleccionada, llena y quieta. */
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lv-story-fill[data-state="active"] {
+    animation: lv-story-progress 5.2s linear both;
+  }
+}
+
+@keyframes lv-story-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.lv-stories[data-paused="true"] .lv-story-fill[data-state="active"] {
+  animation-play-state: paused;
+}
+
+/* Elementos de escena: visibles en base; con movimiento entran
+   escalonados como en un vídeo. */
+@media (prefers-reduced-motion: no-preference) {
+  .lv-scene {
+    animation: lv-fade-up 0.45s ease-out both;
+  }
+  .lv-scene-beat {
+    animation: lv-fade-up 0.5s ease-out both;
+    animation-delay: var(--lv-d, 0ms);
+  }
+  .lv-flap {
+    transform-origin: top;
+    animation: lv-flap-open 0.8s ease-in-out 0.9s both;
+  }
+  .lv-bote-fill {
+    transform-origin: left;
+    animation: lv-bote-grow 1.4s cubic-bezier(0.2, 0.65, 0.25, 1) 0.9s both;
+  }
+  .lv-stories[data-paused="true"] .lv-scene,
+  .lv-stories[data-paused="true"] .lv-scene-beat,
+  .lv-stories[data-paused="true"] .lv-flap,
+  .lv-stories[data-paused="true"] .lv-bote-fill {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes lv-flap-open {
+  from {
+    transform: rotateX(0deg);
+  }
+  to {
+    transform: rotateX(180deg);
+  }
+}
+
+@keyframes lv-bote-grow {
+  from {
+    transform: scaleX(0.62);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}

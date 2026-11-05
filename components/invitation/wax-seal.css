@@ -1,0 +1,28 @@
+/* Lacre (wax-seal.tsx). Colores por variables; arcilla de la marca por defecto. */
+.wax {
+  --wax: var(--wax-color, #a8432a);
+  --wax-light: var(--wax-color-light, #d4795a);
+  --wax-dark: var(--wax-color-dark, #6e2412);
+  --wax-well: var(--wax-color-well, #9c3a22);
+  --wax-ink: var(--wax-color-ink, #f6d3bf);
+  display: block;
+  overflow: visible;
+}
+.wax-stop-light { stop-color: var(--wax-light); }
+.wax-stop-base { stop-color: var(--wax); }
+.wax-stop-dark { stop-color: var(--wax-dark); }
+.wax-stop-well { stop-color: var(--wax-well); }
+.wax-rim { stroke: var(--wax-dark); stroke-opacity: 0.6; }
+.wax-ring { stroke: var(--wax-ink); stroke-opacity: 0.35; }
+.wax-initials {
+  font-family: var(--ll-serif, var(--font-script), Georgia, serif);
+  font-style: italic;
+  font-size: 22px;
+  letter-spacing: -0.5px;
+  fill: var(--wax-ink);
+}
+.wax-amp {
+  font-size: 16px;
+  fill: var(--wax-ink);
+  fill-opacity: 0.9;
+}

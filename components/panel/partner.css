@@ -1,0 +1,14 @@
+/* «Vuestra pareja» (Ajustes) y aviso de invitación en /onboarding.
+   Archivo propio para no tocar panel.css (un propietario por archivo). */
+.partner-card .pn-form-actions { flex-wrap: wrap; }
+.partner-list { display: grid; gap: 0; margin: 0.25rem 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+.partner-row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.25rem 1rem; padding: 0.75rem 0; border-bottom: 1px solid var(--line); }
+.partner-email { min-width: 0; overflow-wrap: anywhere; font-size: 0.9375rem; font-weight: 500; color: var(--ink); }
+.partner-tag { font-size: 0.8125rem; color: var(--ink-muted); white-space: nowrap; }
+.partner-tag--warn { color: var(--aviso); }
+.partner-invite { display: grid; gap: 0.75rem; max-width: 28rem; }
+
+.partner-invite-notice { position: relative; z-index: 5; margin: 0 auto; padding: 0.75rem 1rem; max-width: 44rem; background: var(--card, #fff); border: 1px solid var(--line-strong, #857A8E); border-left: 3px solid var(--olive, #2F6B45); border-radius: var(--radius-lg, 12px); font-size: 0.875rem; line-height: 1.5; color: var(--ink, #24212A); }
+.partner-invite-notice p { margin: 0; }
+@media (max-width: 639px) { .partner-invite-notice { margin: 0.75rem 1rem 0; } }
+@media (min-width: 640px) { .partner-invite-notice { margin-top: 1rem; } }

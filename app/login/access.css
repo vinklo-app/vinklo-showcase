@@ -1,0 +1,464 @@
+/* =====================================================================
+   Acceso de los novios (/login, /auth/confirm) y 404 raíz.
+   Refresh 2026-10-03, agente E. Cero colores ni fuentes nuevas: todo sale
+   de las variables de app/globals.css. Prefijo `ac-` (hoja global).
+   Movimiento (Emil Kowalski): solo opacity/transform; hover con puntero
+   fino; :active scale(.97) en --d-micro; reduced-motion sin transform.
+   ===================================================================== */
+
+.ac-page {
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  overflow-x: clip;
+}
+.ac-page :is(a, button, input):focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.ac-page ::selection {
+  background: var(--clay);
+  color: var(--paper);
+}
+
+/* --- Cabecera: solo el wordmark ------------------------------------- */
+.ac-top {
+  width: min(100% - 2rem, 72rem);
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  min-height: 4.5rem;
+}
+.ac-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+}
+.ac-wordmark svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.ac-wordmark-i {
+  color: var(--clay);
+}
+
+/* --- Centro ----------------------------------------------------------- */
+.ac-center {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  padding-block: clamp(1.5rem, 5vh, 4rem);
+}
+.ac-card {
+  width: min(100% - 2rem, 26rem);
+}
+.ac-eyebrow {
+  color: var(--ink-muted);
+}
+.ac-h1 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(2.25rem, 1.5rem + 3.6vw, 3.5rem);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  margin-top: 0.75rem;
+}
+.ac-h1 em {
+  font-style: italic;
+  color: var(--clay);
+}
+.ac-lead {
+  margin-top: 1rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+
+/* --- Formulario: lista de campos (admite una segunda fila en el futuro) */
+.ac-form {
+  margin-top: 2rem;
+}
+.ac-fields {
+  display: grid;
+  gap: 1.25rem;
+}
+.ac-field {
+  display: grid;
+  gap: 0.5rem;
+}
+.ac-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.ac-input {
+  width: 100%;
+  min-width: 0;
+  height: 3.25rem; /* 52px */
+  padding: 0 1rem;
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  font: inherit;
+  font-size: 1.0625rem;
+  line-height: 1.4;
+  caret-color: var(--clay);
+}
+.ac-input::placeholder {
+  color: var(--ink-muted);
+}
+.ac-input:focus-visible {
+  outline-offset: 2px;
+  border-color: var(--clay);
+  border-radius: var(--radius-lg);
+}
+/* Código de 6 cifras: grande, centrado y con cifras de ancho fijo (≥16px
+   para que iOS no haga zoom al enfocar). */
+.ac-input--code {
+  height: 3.5rem;
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.4em;
+  text-align: center;
+  padding-left: calc(1rem + 0.4em);
+}
+.ac-hint {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--ink-muted);
+}
+
+/* --- Botones ---------------------------------------------------------- */
+.ac-btn {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3.25rem; /* 52px */
+  padding: 0 1.25rem;
+  margin-top: 1.25rem;
+  background: var(--ciruela);
+  color: #fff;
+  border: 0;
+  border-radius: var(--radius-lg);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    opacity var(--d-ui) var(--ease-out),
+    transform var(--d-micro) var(--ease-out);
+}
+.ac-btn--inline {
+  width: auto;
+}
+@media (hover: hover) and (pointer: fine) {
+  .ac-btn:not(:disabled):not(.ac-btn--google):hover { background: var(--ciruela-hover); }
+}
+.ac-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.ac-btn:not(:disabled):active {
+  transform: scale(0.97);
+  transition-duration: 80ms;
+}
+/* «Continuar con Google» (apagado salvo NEXT_PUBLIC_GOOGLE_LOGIN=on):
+   botón claro con filete, para que el envío del correo siga siendo el principal. */
+.ac-btn--google {
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  gap: 0.65rem;
+}
+.ac-or {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--ink-muted);
+}
+.ac-or::before,
+.ac-or::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid var(--line);
+}
+.ac-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem; /* 44px */
+  padding: 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  cursor: pointer;
+}
+/* «← Volver a vuestra invitación» (desde el creador): sobre el rótulo, más discreto. */
+.ac-back {
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ac-btn:not(:disabled):hover {
+    opacity: 0.88;
+  }
+  .ac-link:hover {
+    text-decoration-color: var(--clay);
+  }
+}
+
+/* --- Estados: filete lateral, no caja -------------------------------- */
+.ac-note {
+  display: grid;
+  gap: 0.375rem;
+  margin-top: 1.5rem;
+  padding: 0.25rem 0 0.25rem 1rem;
+  border-left: 2px solid var(--line-strong);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.ac-note strong {
+  font-weight: 600;
+}
+.ac-note--ok {
+  border-left-color: var(--olive);
+}
+.ac-note--err {
+  border-left-color: var(--clay-dark);
+}
+.ac-note .ac-link {
+  justify-self: start;
+}
+.ac-status {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  color: var(--ink-muted);
+}
+
+/* --- Pie -------------------------------------------------------------- */
+.ac-foot {
+  width: min(100% - 2rem, 72rem);
+  margin-inline: auto;
+  padding-block: 1.25rem;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  font-size: 0.8125rem;
+  color: var(--ink-muted);
+}
+.ac-foot nav {
+  display: flex;
+  gap: 1.25rem;
+}
+/* Sin la etiqueta de marca (404, /auth/confirm, /login/restablecer sin
+   sesión) el <nav> es el único hijo del flex: sin esto, el space-between lo
+   deja pegado a la izquierda en vez de alineado con /login. Solo desde
+   640px: por debajo, .ac-foot envuelve a dos líneas (el pie de /login mide
+   ~265px + ~170px en 390px) y forzar el nav a la derecha lo convertía en un
+   zigzag en vez de la pila alineada a la izquierda que ya tenía /login. */
+@media (min-width: 40rem) {
+  .ac-foot nav {
+    margin-left: auto;
+  }
+}
+.ac-foot a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: inherit;
+  text-decoration: none;
+  text-underline-offset: 0.2em;
+}
+.ac-foot p {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin: 0;
+}
+@media (hover: hover) and (pointer: fine) {
+  .ac-foot a:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+}
+
+/* --- 404 ---------------------------------------------------------------- */
+.ac-code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  color: var(--ink-muted);
+}
+
+/* --- Contraseña (13-oct-2026) ------------------------------------------
+   «Crear cuenta | Entrar»: control segmentado de 44px. Campo con botón
+   «Mostrar» dentro (44px) y medidor de 4 tramos que solo cambia de color. */
+.ac-seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem;
+  margin-top: 2rem;
+  padding: 0.25rem;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+.ac-seg button {
+  min-height: 2.75rem; /* 44px */
+  padding: 0 0.75rem;
+  background: transparent;
+  color: var(--ink-muted);
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 0.25rem);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color var(--d-ui) var(--ease-out),
+    color var(--d-ui) var(--ease-out),
+    transform var(--d-micro) var(--ease-out);
+}
+.ac-seg button[aria-pressed="true"] {
+  background: var(--card);
+  color: var(--ink);
+  box-shadow:
+    0 0 0 1px var(--line-strong),
+    0 1px 2px rgb(36 33 42 / 0.08);
+}
+.ac-seg button:active {
+  transform: scale(0.97);
+  transition-duration: 80ms;
+}
+@media (hover: hover) and (pointer: fine) {
+  .ac-seg button[aria-pressed="false"]:hover {
+    color: var(--ink);
+  }
+}
+.ac-seg + .ac-form {
+  margin-top: 1.5rem;
+}
+.ac-pw {
+  position: relative;
+}
+.ac-input--pw {
+  padding-right: 5.5rem; /* deja sitio al botón «Mostrar» */
+}
+.ac-pw-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.25rem;
+  transform: translateY(-50%);
+  min-width: 2.75rem;
+  min-height: 2.75rem; /* 44px */
+  padding: 0 0.75rem;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-lg);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+  cursor: pointer;
+}
+.ac-pw-toggle:active {
+  transform: translateY(-50%) scale(0.97);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ac-pw-toggle:hover {
+    text-decoration-color: var(--clay);
+  }
+}
+.ac-meter {
+  display: grid;
+  gap: 0.375rem;
+}
+.ac-meter-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.25rem;
+}
+.ac-meter-bar i {
+  height: 0.25rem;
+  border-radius: 999px;
+  background: var(--line);
+  transition: background-color var(--d-ui) var(--ease-out);
+}
+.ac-meter[data-score="0"] .ac-meter-bar i:nth-child(-n + 1),
+.ac-meter[data-score="1"] .ac-meter-bar i:nth-child(-n + 1) {
+  background: var(--clay-dark);
+}
+.ac-meter[data-score="2"] .ac-meter-bar i:nth-child(-n + 2) {
+  background: var(--ciruela-claro);
+}
+.ac-meter[data-score="3"] .ac-meter-bar i:nth-child(-n + 3),
+.ac-meter[data-score="4"] .ac-meter-bar i:nth-child(-n + 4) {
+  background: var(--olive);
+}
+.ac-fields--after-hint {
+  margin-top: 1rem;
+}
+.ac-switch {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--line);
+}
+
+/* --- Reduced motion ---------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .ac-page .ac-btn {
+    transition-property: opacity;
+  }
+  .ac-page .ac-btn:active,
+  .ac-page .ac-seg button:active {
+    transform: none;
+  }
+  .ac-page .ac-pw-toggle:active {
+    transform: translateY(-50%);
+  }
+  .ac-page .ac-seg button,
+  .ac-page .ac-meter-bar i {
+    transition: none;
+  }
+}
+
+/* CAPTCHA (Turnstile, modo «interaction-only»): no ocupa sitio salvo cuando
+   Cloudflare pide la casilla. */
+.ac-captcha:not(:empty) {
+  margin-top: 1rem;
+}

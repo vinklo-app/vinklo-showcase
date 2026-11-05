@@ -1,0 +1,16 @@
+/* Sugerencias de lugares (components/places/place-combobox.tsx).
+   La lista va en el flujo, justo bajo el campo: en el compositor del móvil
+   (zona del pulgar) y en el panel no la recorta ningún overflow ni z-index. */
+.vk-place { position: relative; min-width: 0; }
+/* La etiqueta del creador deja .9rem debajo: la lista se arrima al campo. */
+.wb-composer .vk-place-pop { margin: -.65rem 0 .9rem; }
+.wb-composer .wb-day-fields .vk-place-pop { margin: -.15rem 0 .4rem; }
+.vk-place-pop { margin-top: .25rem; background: var(--card); border: 1px solid var(--line-strong); border-radius: var(--radius-md, .5rem); overflow: hidden; box-shadow: 0 6px 18px -10px rgb(23 19 15 / .35); }
+.vk-place-pop[hidden] { display: none; }
+.vk-place-list { list-style: none; margin: 0; padding: .25rem 0; max-height: 15.5rem; overflow-y: auto; overscroll-behavior: contain; }
+.vk-place-option { display: flex; flex-direction: column; justify-content: center; gap: .1rem; min-height: 44px; padding: .5rem .9rem; cursor: pointer; color: var(--ink); -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.vk-place-option[aria-selected="true"] { background: var(--paper-2); box-shadow: inset 3px 0 0 var(--clay); }
+@media (hover: hover) { .vk-place-option:hover { background: var(--paper-2); } }
+.vk-place-name { font-size: .9375rem; font-weight: 500; line-height: 1.35; overflow-wrap: anywhere; }
+.vk-place-address { font-size: .8125rem; font-weight: 400; line-height: 1.4; color: var(--ink-muted); overflow-wrap: anywhere; }
+.vk-place-credit { margin: 0; padding: .35rem .9rem .45rem; border-top: 1px solid var(--line); font-size: .6875rem; font-weight: 400; line-height: 1.4; color: var(--ink-muted); }

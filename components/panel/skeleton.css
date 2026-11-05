@@ -1,0 +1,16 @@
+/* Esqueletos de carga del panel (panel-skeleton.tsx). Papel sobre papel: un
+   bloque teñido que respira despacio; sin brillo que cruce (reduced-motion:
+   quieto). */
+.pn-skel { display: block; height: 0.875rem; border-radius: 6px; background: var(--paper-2); animation: pn-skel-pulse 1.4s ease-in-out infinite alternate; }
+.pn-skel[data-tall="true"] { height: 2.25rem; border-radius: 8px; }
+.pn-head > .pn-skel + .pn-skel { margin-top: 0.75rem; }
+.pn-skel-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+.pn-skel-card { height: 9rem; border-radius: var(--radius-lg); }
+.pn-skel-chips { display: flex; gap: 0.5rem; overflow: hidden; }
+.pn-skel-chip { flex: none; height: 44px; border-radius: 999px; }
+.pn-skel-rows { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.pn-skel-row { display: flex; align-items: center; gap: 0.75rem; min-height: 68px; border-bottom: 1px solid var(--line); }
+.pn-skel-avatar { flex: none; width: 44px; height: 44px; border-radius: 50%; }
+.pn-skel-lines { display: grid; flex: 1; gap: 0.5rem; min-width: 0; }
+@keyframes pn-skel-pulse { from { opacity: 1; } to { opacity: 0.55; } }
+@media (prefers-reduced-motion: reduce) { .pn-skel { animation: none; } }

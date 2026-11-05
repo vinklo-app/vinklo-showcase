@@ -1,0 +1,457 @@
+/* Creador (/crear y /onboarding). Marca v9 «Ciruela y perla» (DESIGN.md):
+   perla de fondo, ciruela en acciones, selección y foco, Playfair en los
+   títulos y Jakarta en la interfaz. La invitación conserva sus temas.
+   Escritorio (≥ 1000 px): columna de 420 px a la izquierda y el móvil a sus
+   proporciones reales sobre perla-2. Móvil y tablet: la invitación a sangre
+   arriba, el compositor y el dock abajo, los editores en una hoja.
+   Movimiento (Emil Kowalski): solo transform/opacity, --ease-out al entrar,
+   --ease-drawer en la hoja, UI ≤ 300 ms, hover solo con puntero fino y
+   reduced-motion conserva los fundidos. */
+
+.wb-shell { color: var(--texto); background: var(--perla); height: 100dvh; display: flex; flex-direction: column; }
+.wb-shell * { box-sizing: border-box; }
+.wb-shell :is(button, a, label, input, textarea) { -webkit-tap-highlight-color: transparent; }
+.wb-shell :is(button, a, .wb-photo-pick, .wb-photo-change) { touch-action: manipulation; }
+.wb-shell :is(button, .wb-photo-pick, .wb-photo-change) { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.wb-shell ::selection { background: var(--ciruela); color: var(--blanco); }
+.wb-shell :is(input, textarea) { caret-color: var(--ciruela); }
+/* El creador es una app, no un documento: sin tirar-para-recargar ni rebote. */
+html:has(.wb-app), html:has(.wb-app) body { overscroll-behavior: none; }
+/* Curva de cajón de iOS (Ionic) para la hoja; local al creador. */
+.wb-app { --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1); }
+/* :where = sin especificidad propia: los campos con su propio indicador lo pueden quitar. */
+.wb-shell :where(button, a, input, textarea, [tabindex]):focus-visible { outline: 2px solid var(--ciruela); outline-offset: 3px; }
+.wb-shell :is(h1, h2):focus:not(:focus-visible) { outline: none; }
+.wb-shell :is(button):disabled { cursor: default; }
+
+/* Visibilidad por ancho (el árbol es el mismo; manda el CSS). */
+@media (min-width: 1000px) { .wb-only-compact { display: none !important; } }
+@media (max-width: 999.98px) { .wb-only-wide { display: none !important; } }
+
+/* --- Marca y estado del borrador ------------------------------------------ */
+.wb-header { position: relative; flex-shrink: 0; min-height: 64px; padding: .75rem 2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; border-bottom: 1px solid var(--separador); }
+.wb-brand { font-size: 19px; font-weight: 700; letter-spacing: -.02em; display: inline-flex; align-items: baseline; min-height: 44px; padding-top: .7rem; color: var(--texto); }
+.wb-brand-i { color: var(--ciruela); }
+.wb-brand-mark { width: 1.25rem; height: 1.25rem; margin-right: .5rem; align-self: center; flex: none; }
+.wb-save { font-size: .75rem; line-height: 1.4; color: var(--texto-2); }
+.wb-save[data-failed="true"] { color: var(--error); }
+
+/* --- Escritorio: columna + escenario --------------------------------------- */
+.wb-app { display: grid; grid-template-columns: 420px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+.wb-side { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--perla); border-right: 1px solid var(--separador); }
+.wb-side-top { flex: none; padding: .75rem 1.75rem 1.25rem; }
+.wb-side-brand { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.wb-title { margin: 1.5rem 0 1.25rem; font-family: var(--font-serif), Georgia, serif; font-weight: 400; font-size: 2rem; line-height: 1.08; letter-spacing: -.025em; text-wrap: balance; overflow-wrap: anywhere; }
+.wb-title em { font-style: italic; color: var(--ciruela); }
+.wb-publish { width: 100%; }
+.wb-side-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--separador) transparent; padding: .25rem 1.75rem 1.5rem; display: flex; flex-direction: column; gap: 1.75rem; }
+.wb-side h2 { margin: 0; font-size: .875rem; font-weight: 600; line-height: 1.4; color: var(--texto); }
+.wb-bar { flex: none; display: grid; gap: .75rem; padding: 1rem 1.75rem 1rem; border-top: 1px solid var(--separador); background: var(--perla); }
+.wb-stage { position: relative; min-width: 0; min-height: 0; display: flex; flex-direction: column; padding: 2rem 2.5rem; background: var(--perla-2); overflow: hidden; }
+.wb-stage-note { position: absolute; z-index: 4; top: 1rem; left: 0; right: 0; width: max-content; max-width: calc(100% - 2rem); margin: 0 auto; padding: .55rem .95rem; border-radius: 999px; background: var(--blanco); box-shadow: var(--shadow-md); font-size: .8125rem; font-weight: 500; text-align: center; }
+
+/* --- Acción principal ------------------------------------------------------ */
+.wb-primary { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: .75rem; padding: .75rem 1.25rem; border: 0; border-radius: 12px; background: var(--ciruela); color: var(--blanco); font-size: .9375rem; font-weight: 600; font-variant-numeric: tabular-nums; cursor: pointer; transition: background-color 200ms var(--ease-out), transform 160ms var(--ease-out); }
+/* Sin nombres ni fecha todavía no hay nada que guardar: variante silenciosa (borde, sin relleno). */
+.wb-primary[data-quiet]:active:not(:disabled) { background: var(--perla-2); color: var(--texto); }
+@media (hover: hover) and (pointer: fine) { .wb-primary[data-quiet]:hover:not(:disabled) { background: var(--perla-2); color: var(--texto); } }
+.wb-primary[data-quiet] { background: transparent; color: var(--texto); box-shadow: none; border: 1px solid var(--borde-control); }
+.wb-primary:disabled:not([aria-busy="true"]) { opacity: .6; }
+.wb-primary[aria-busy="true"] { cursor: progress; }
+.wb-spinner { flex-shrink: 0; width: 16px; height: 16px; border-radius: 50%; border: 1.75px solid color-mix(in oklab, var(--blanco) 35%, transparent); border-top-color: var(--blanco); }
+.wb-secondary { min-height: 48px; padding: .75rem 1rem; font-size: .8125rem; font-weight: 600; color: var(--texto); border: 1px solid var(--borde-control); border-radius: 12px; background: transparent; transition: transform 160ms var(--ease-out), border-color 200ms var(--ease-out); }
+.wb-actions { display: flex; justify-content: flex-end; align-items: center; gap: .75rem; margin-top: 1rem; }
+
+/* --- Lo entendido (píldoras blancas con el check en ciruela) ---------------- */
+.wb-understood { display: flex; flex-wrap: wrap; gap: .5rem; }
+.wb-fact { display: inline-flex; align-items: center; gap: .4rem; max-width: 100%; min-width: 0; min-height: 40px; padding: 0 .9rem 0 .7rem; border: 1px solid var(--borde-control); border-radius: 999px; background: var(--blanco); color: var(--texto); font-size: .8125rem; font-weight: 600; cursor: pointer; transition: transform 160ms var(--ease-out), border-color 200ms var(--ease-out); }
+.wb-fact svg { flex: none; color: var(--ciruela); }
+.wb-fact span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* --- Os falta --------------------------------------------------------------- */
+.wb-missing { display: grid; gap: .5rem; }
+.wb-missing p { margin: 0; font-size: .8125rem; line-height: 1.55; color: var(--texto-2); }
+.wb-missing-list { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .25rem; }
+/* El mismo trazo discontinuo que los huecos de la invitación. */
+.wb-gap-btn { min-height: 44px; padding: 0 1rem; border: 1.5px dashed var(--ciruela); border-radius: 12px; background: var(--blanco); color: var(--ciruela); font-size: .875rem; font-weight: 600; cursor: pointer; transition: transform 160ms var(--ease-out), background-color 200ms var(--ease-out); }
+
+/* --- Añadir más -------------------------------------------------------------- */
+.wb-more { display: grid; gap: .5rem; }
+.wb-extras { margin: 0; padding: 0; list-style: none; display: grid; }
+.wb-extras li + li { border-top: 1px solid var(--separador); }
+.wb-extra { display: flex; align-items: center; gap: .75rem; width: 100%; min-height: 48px; padding: .25rem .25rem .25rem 0; border: 0; background: transparent; color: var(--texto); font-size: .9375rem; font-weight: 500; text-align: left; cursor: pointer; transition: transform 160ms var(--ease-out); }
+.wb-extra-mark { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--borde-control); color: var(--texto-2); }
+.wb-extra[data-done="true"] .wb-extra-mark { border-color: var(--ciruela); background: var(--ciruela); color: var(--blanco); }
+.wb-extra-label { flex: 1; min-width: 0; }
+
+/* --- Conversación de «Pedid cambios» ------------------------------------------ */
+.wb-thread { display: grid; gap: .75rem; }
+.wb-thread-toggle { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; }
+.wb-thread-toggle svg { transition: transform 200ms var(--ease-out); }
+.wb-thread-toggle[aria-expanded="false"] svg { transform: rotate(-90deg); }
+.wb-turns { display: grid; gap: 1.1rem; margin: 0; padding: 0; list-style: none; }
+.wb-thread-pill { justify-self: start; display: inline-flex; align-items: center; gap: .4rem; min-height: 36px; padding: 0 .8rem; border: 1px solid var(--borde-control); border-radius: 999px; background: var(--blanco); color: var(--texto); font-size: .8125rem; font-weight: 600; transition: transform 160ms var(--ease-out); }
+
+/* --- Avisos sobre el compositor ----------------------------------------------- */
+.wb-notes { display: grid; gap: .5rem; }
+.wb-notes:empty { display: none; }
+.wb-note { position: relative; margin: 0; padding: .65rem 2.6rem .65rem .85rem; border-radius: 12px; background: var(--perla-2); color: var(--texto); font-size: .8125rem; line-height: 1.55; text-wrap: pretty; }
+.wb-note:not(:has(.wb-note-close)) { padding-right: .85rem; }
+.wb-note-warn { color: var(--error); }
+.wb-note-close { position: absolute; top: .2rem; right: .2rem; display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 50%; background: transparent; color: var(--texto-2); cursor: pointer; }
+.wb-note-close::after { content: ""; position: absolute; inset: -4px; }
+.wb-note-link { display: inline; min-height: 0; padding: 0; border: 0; background: none; font: inherit; font-weight: 600; color: var(--ciruela); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.wb-reading { display: flex; align-items: center; gap: .6rem; }
+.wb-thinking-dots { flex-shrink: 0; display: inline-flex; gap: 4px; }
+.wb-thinking-dots span { width: 6px; height: 6px; border-radius: 50%; background: var(--ciruela); opacity: .35; }
+.wb-error { margin: 0; padding: .65rem .85rem; border-radius: 12px; background: var(--blanco); border: 1px solid var(--error); color: var(--error); font-size: .8125rem; line-height: 1.55; }
+.wb-fields .wb-error { margin-top: .75rem; }
+
+/* --- Dock de diseño ----------------------------------------------------------- */
+.wb-dock { display: flex; gap: .25rem; }
+.wb-dock-btn { flex: 1 1 auto; min-width: 0; min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .2rem; padding: .3rem .2rem; border: 0; border-radius: 12px; background: transparent; color: var(--texto); font-size: .6875rem; font-weight: 600; line-height: 1.2; cursor: pointer; transition: transform 160ms var(--ease-out), background-color 200ms var(--ease-out); }
+.wb-dock-btn svg { color: var(--ciruela); }
+.wb-dock-btn > span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wb-dock-btn[aria-pressed="true"], .wb-dock-btn[aria-expanded="true"] { background: var(--perla-2); color: var(--ciruela); }
+
+/* --- Compositor: «Contadnos vuestra boda» / «Pedid cambios» ------------------- */
+.wb-chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+/* Los ejemplos son frases (una boda entera): pueden partirse en dos líneas en vez de salirse de la pantalla. */
+.wb-chips[aria-label^="Ejemplos"] .wb-chip { flex: none; max-width: min(19rem, 82vw); padding-block: .5rem; white-space: normal; line-height: 1.3; }
+.wb-chip { display: inline-flex; align-items: center; gap: .55rem; min-height: 44px; padding: 0 .95rem; background: var(--blanco); border: 1px solid var(--borde-control); border-radius: 999px; color: var(--texto); font-size: .8125rem; font-weight: 600; text-align: left; cursor: pointer; transition: background-color 200ms var(--ease-out), border-color 200ms var(--ease-out), color 200ms var(--ease-out), transform 160ms var(--ease-out); }
+.wb-chip[aria-pressed="true"] { background: var(--ciruela); border-color: var(--ciruela); color: var(--blanco); }
+.wb-chip:disabled { opacity: .55; }
+.wb-say .sc-composer { padding: 0; border: 0; background: transparent; }
+.wb-say .sc-box { border-radius: 20px; padding: .35rem .35rem .35rem .85rem; box-shadow: 0 1px 2px rgb(36 33 42 / .06); }
+.wb-say-idea .sc-box { display: flex; align-items: flex-end; gap: .5rem; }
+.wb-say .sc-box textarea { flex: 1; min-width: 0; min-height: 0; max-height: none; margin: 0; padding: .55rem .1rem; border: 0; border-radius: 0; background: transparent; box-shadow: none; resize: none; font-size: 1rem; line-height: 1.45; overflow-y: auto; }
+.wb-say .sc-box textarea:focus-visible { outline: none; }
+.wb-say .sc-send { flex: none; width: 40px; height: 40px; border-radius: 50%; }
+.wb-say .sc-box-bar { padding: 0 0 .1rem; }
+.wb-after { margin: 0; }
+.wb-side-foot { display: grid; gap: .5rem; margin-top: auto; }
+/* Escritorio sin nombres o sin fecha: la columna empieza por «contadnos». */
+/* minmax(0,1fr): una ficha larga (nowrap) no ensancha la columna de 420 px. */
+.wb-start { display: grid; grid-template-columns: minmax(0, 1fr); gap: .75rem; min-width: 0; }
+.wb-start-lead { margin: -.5rem 0 0; font-size: .9375rem; line-height: 1.6; color: var(--texto-2); text-wrap: pretty; }
+.wb-start .wb-say .sc-box { min-height: 3.5rem; }
+.wb-app[data-start] .wb-side-scroll { gap: 1.5rem; }
+.wb-more-hint { font-weight: 500; color: var(--texto-2); }
+.wb-privacy { margin: 0; font-size: .75rem; line-height: 1.6; color: var(--texto-2); }
+/* Enlace en línea: zona táctil de 44 px sin cambiar el aspecto. */
+.wb-privacy a { color: var(--texto); text-decoration: underline; text-underline-offset: 3px; padding-block: .95rem; margin-block: -.95rem; }
+
+/* --- Editor (columna en escritorio, hoja en el móvil) --------------------------- */
+.wb-editor { display: grid; gap: 1rem; }
+.wb-editor-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.wb-editor-head h2 { margin: 0; font-family: var(--font-serif), Georgia, serif; font-weight: 400; font-size: 1.5rem; line-height: 1.15; letter-spacing: -.02em; color: var(--texto); }
+.wb-editor-head p { margin: .35rem 0 0; font-size: .8125rem; line-height: 1.55; color: var(--texto-2); text-wrap: pretty; }
+.wb-done-btn { flex: none; min-height: 40px; padding: 0 1rem; border: 1px solid var(--borde-control); border-radius: 999px; background: var(--blanco); color: var(--ciruela); font-size: .875rem; font-weight: 600; cursor: pointer; transition: transform 160ms var(--ease-out), border-color 200ms var(--ease-out); }
+.wb-done-btn::after { content: ""; position: absolute; inset: -4px; }
+.wb-done-btn { position: relative; }
+/* «Siguiente» (o «Hecho» en el último paso): abajo a la derecha del editor, 44 px. */
+.wb-done-btn.wb-next-btn { min-height: 44px; display: inline-flex; align-items: center; gap: .3rem; padding: 0 1rem 0 1.15rem; }
+.wb-step-foot { display: flex; justify-content: flex-end; }
+/* Escritorio: el editor puede ser más alto que la columna; «Siguiente» queda pegado abajo, siempre a la vista. */
+.wb-editor > .wb-step-foot { position: sticky; bottom: 0; z-index: 1; margin-top: -.5rem; padding-block: .75rem; background: var(--perla); box-shadow: 0 -1px 0 color-mix(in oklab, var(--texto) 8%, transparent); }
+/* Cerrar el editor (la X de la cabecera): 44 px, sin relleno. */
+.wb-close-btn { flex: none; position: relative; width: 44px; height: 44px; margin: -4px -6px 0 0; display: grid; place-items: center; border: 0; border-radius: 999px; background: transparent; color: var(--texto-2); cursor: pointer; transition: transform 160ms var(--ease-out), background-color 200ms var(--ease-out), color 200ms var(--ease-out); }
+.wb-fields fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.wb-composer label { display: block; color: var(--texto); font-size: .8125rem; font-weight: 500; margin-bottom: .9rem; line-height: 1.5; }
+.wb-composer input, .wb-composer textarea { width: 100%; min-width: 0; display: block; background: var(--blanco); border: 1px solid var(--borde-control); border-radius: 12px; padding: .75rem .9rem; min-height: 48px; font-family: inherit; font-size: 1rem; line-height: 1.5; margin-top: .4rem; color: var(--texto); }
+.wb-composer textarea { resize: vertical; }
+.wb-composer textarea::placeholder, .wb-composer input::placeholder { color: var(--texto-2); }
+.wb-composer input:focus-visible, .wb-composer textarea:focus-visible { outline: none; border-color: var(--ciruela); box-shadow: 0 0 0 1px var(--ciruela); }
+.wb-composer input[aria-invalid="true"] { border-color: var(--error); }
+/* iOS centra el valor de los campos de fecha/hora: alineado con el resto. */
+.wb-composer input::-webkit-date-and-time-value { text-align: left; }
+.wb-field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.wb-help { color: var(--texto-2); font-size: .8125rem; line-height: 1.6; margin: 0; }
+.wb-composer .wb-help { margin-top: .1rem; }
+/* Atajo de la IA a un apartado de la página (components/creator/ai-edit.tsx › AiActionLink). */
+.wb-link { display: inline-flex; align-items: center; min-height: 44px; margin-top: .25rem; color: var(--texto); font-size: .875rem; text-decoration: underline; text-underline-offset: 4px; }
+
+/* --- Hoja inferior (móvil y tablet) ------------------------------------------- */
+.wb-sheet-layer { position: absolute; inset: 0; z-index: 30; pointer-events: none; }
+.wb-sheet-backdrop { position: absolute; inset: 0; pointer-events: none; }
+.wb-sheet-layer[data-open="true"] .wb-sheet-backdrop { pointer-events: auto; }
+.wb-sheet-layer[data-kind="thread"] .wb-sheet-backdrop { bottom: var(--wb-bar-h, 0px); }
+/* Cerrada: fuera por abajo, invisible tras la transición (visibility espera 300 ms). */
+.wb-sheet { position: absolute; left: 0; right: 0; bottom: 0; max-height: 64%; display: flex; flex-direction: column; background: var(--perla); border-radius: 22px 22px 0 0; box-shadow: 0 -1px 0 rgb(36 33 42 / .06), 0 -16px 40px -20px rgb(36 33 42 / .45); transform: translateY(calc(100% + 24px)); visibility: hidden; pointer-events: auto; transition: transform 300ms var(--ease-drawer), visibility 0s linear 300ms; }
+.wb-sheet[data-open="true"] { transform: none; visibility: visible; transition: transform 300ms var(--ease-drawer), visibility 0s; }
+.wb-sheet[data-dragging] { transition: none; }
+.wb-sheet-layer[data-kind="thread"] .wb-sheet { bottom: var(--wb-bar-h, 0px); max-height: 52%; border-radius: 22px; margin-inline: .5rem; margin-bottom: .5rem; box-shadow: 0 16px 40px -20px rgb(36 33 42 / .45), 0 0 0 1px rgb(36 33 42 / .06); }
+.wb-app[data-keyboard="open"] .wb-sheet { max-height: 74%; }
+.wb-sheet-grab { flex: none; display: grid; place-items: center; height: 26px; touch-action: none; cursor: grab; }
+.wb-sheet-grab span { width: 40px; height: 5px; border-radius: 999px; background: color-mix(in oklab, var(--texto) 22%, transparent); }
+.wb-sheet[data-dragging] .wb-sheet-grab { cursor: grabbing; }
+.wb-sheet-head { flex: none; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: 0 1.1rem .75rem 1.25rem; }
+.wb-sheet-titles { min-width: 0; }
+.wb-sheet-head h2 { margin: 0; font-family: var(--font-serif), Georgia, serif; font-weight: 400; font-size: 1.375rem; line-height: 1.15; letter-spacing: -.02em; }
+.wb-sheet-head p { margin: .3rem 0 0; font-size: .8125rem; line-height: 1.5; color: var(--texto-2); text-wrap: pretty; }
+.wb-sheet-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; padding: .1rem 1.25rem max(1.1rem, env(safe-area-inset-bottom)); display: grid; gap: 1rem; align-content: start; }
+.wb-sheet-body::-webkit-scrollbar { display: none; }
+.wb-sheet-layer[data-kind="thread"] .wb-sheet-body { padding-bottom: 1rem; }
+.wb-sheet-body .wb-composer label:last-child { margin-bottom: 0; }
+.wb-sheet-body[data-footer] { padding-bottom: .5rem; }
+.wb-sheet-foot { flex: none; display: flex; justify-content: flex-end; padding: .5rem 1.25rem max(.75rem, env(safe-area-inset-bottom)); border-top: 1px solid color-mix(in oklab, var(--texto) 8%, transparent); }
+.wb-save-sheet { margin: 0; }
+
+/* --- Móvil de la vista previa (proporciones reales, useFitPreview) ------------- */
+.wb-phone-slot { position: relative; flex: 1 1 auto; min-width: 0; min-height: 0; }
+.wb-phone-wrap { position: absolute; inset: 0; margin: 0; }
+.wb-phone { position: absolute; left: 50%; top: 50%; width: var(--wb-w, 390px); height: var(--wb-h, 846px); overflow: hidden; background: var(--perla); border-radius: calc(26px / var(--wb-scale, .6)); transform: translate(-50%, -50%) scale(var(--wb-scale, .6)); transform-origin: center; box-shadow: 0 0 0 calc(1px / var(--wb-scale, .6)) rgb(36 33 42 / .12), 0 calc(30px / var(--wb-scale, .6)) calc(60px / var(--wb-scale, .6)) calc(-24px / var(--wb-scale, .6)) rgb(36 33 42 / .4); }
+.wb-stage[data-fit="hidden"] .wb-phone-wrap { visibility: hidden; }
+.wb-phone-screen { height: 100%; overflow: auto; overscroll-behavior: contain; scrollbar-width: none; background: var(--perla-2); overflow-wrap: anywhere; view-transition-name: wb-phone-screen; transition: opacity 200ms var(--ease-out); }
+.wb-phone-screen::-webkit-scrollbar { display: none; }
+.wb-phone-screen:focus-visible { outline-offset: -2px; }
+/* Mientras la IA prepara la propuesta, el móvil se aquieta (no se bloquea). */
+.wb-phone[data-busy="true"] .wb-phone-screen { opacity: .7; }
+.wb-phone-screen [data-invitation-mode] { min-height: 100%; }
+/* Sin View Transitions (Firefox), el color del móvil funde por CSS. */
+@supports not (view-transition-name: none) {
+  @layer base {
+    .wb-phone-screen :where([data-invitation-mode], [data-invitation-mode] *) { transition: background-color 300ms var(--ease-out), color 300ms var(--ease-out), border-color 300ms var(--ease-out); }
+  }
+}
+html:has(.wb-shell)::view-transition-old(root), html:has(.wb-shell)::view-transition-new(root) { animation: none; }
+html:has(.wb-shell)::view-transition-group(wb-phone-screen) { animation-duration: 280ms; animation-timing-function: var(--ease-out); }
+html:has(.wb-shell)::view-transition-old(wb-phone-screen), html:has(.wb-shell)::view-transition-new(wb-phone-screen) { animation-duration: 280ms; animation-timing-function: var(--ease-out); }
+
+/* --- Huecos de la invitación: lo que falta, discontinuo en ciruela, respira ----- */
+/* Dentro del preview los tokens v8 se fijan en .sp-shell; --ciruela no, pero el
+   grosor se compensa con la escala del móvil para verse igual a cualquier tamaño. */
+.wb-phone [data-edit-gap] { position: relative; cursor: pointer; outline: calc(2px / var(--wb-scale, 1)) dashed var(--ciruela); outline-offset: calc(3px / var(--wb-scale, 1)); border-radius: calc(6px / var(--wb-scale, 1)); }
+.wb-phone [data-edit-gap]::after { content: ""; position: absolute; inset: calc(-4px / var(--wb-scale, 1)); border-radius: calc(8px / var(--wb-scale, 1)); box-shadow: 0 0 calc(22px / var(--wb-scale, 1)) calc(4px / var(--wb-scale, 1)) rgb(87 59 98 / .3); opacity: .45; pointer-events: none; }
+.wb-phone [data-edit-gap]:focus-visible { outline-style: solid; }
+/* Área de toque de 44 px aunque el hueco mida 21 (la fecha): el ::after ya es el halo. */
+.wb-phone [data-edit-gap]::before { content: ""; position: absolute; inset: calc(-12px / var(--wb-scale, 1)) calc(-4px / var(--wb-scale, 1)); }
+/* Foto de relleno de la plantilla: la foto conserva su marco (a sangre o en
+   arco) y el discontinuo va por dentro con la misma forma (el contorno no se
+   ve dentro de la foto: lo dibuja ::after con el radio heredado). */
+.wb-phone .wl-hero-media[data-edit-gap] { position: absolute; outline: none; }
+.wb-phone .wl-hero-media[data-edit-gap]::before { inset: 0; }
+.wb-phone .wl-hero-media[data-edit-gap]::after { inset: calc(10px / var(--wb-scale, 1)); z-index: 1; border-radius: calc(14px / var(--wb-scale, 1)); border: calc(2px / var(--wb-scale, 1)) dashed var(--ciruela); box-shadow: none; opacity: .9; }
+.wb-phone [data-wedding-style="clasico"] .wl-hero-media[data-edit-gap]::after { border-radius: inherit; }
+/* Sobre la portada oscura (foto de relleno a sangre) el ciruela no se ve: en papel. */
+.wb-phone [data-wedding-style]:not([data-wedding-style="clasico"]) .wl-hero[data-photo] [data-edit-gap] { outline-color: color-mix(in oklab, var(--papel) 90%, transparent); }
+.wb-phone [data-wedding-style]:not([data-wedding-style="clasico"]) .wl-hero[data-photo] .wl-hero-media[data-edit-gap]::after { border-color: color-mix(in oklab, var(--papel) 85%, transparent); }
+.wb-phone .sp-date-gap, .wb-phone .wl-date-gap { font-style: italic; opacity: .7; }
+.wb-phone .wl-date-gap[data-edit-gap], .wb-phone .sp-date-gap[data-edit-gap] { margin-top: 1.5rem; }
+.wb-phone .wl-date-gap { margin: .75rem 0 0; font-size: 1.375rem; }
+
+/* Píldora en la barra (móvil): «Os falta: nombres · fecha». Vive en la
+   interfaz de vinklo, nunca encima de la invitación. */
+.wb-missing-pill { justify-self: start; max-width: 100%; display: inline-flex; align-items: center; gap: .55rem; min-height: 44px; padding: 0 1.1rem; border: 1.5px dashed var(--ciruela); border-radius: 999px; background: var(--blanco); color: var(--ciruela); font-size: .875rem; font-weight: 600; box-shadow: 0 10px 24px -14px rgb(36 33 42 / .5); cursor: pointer; transition: transform 160ms var(--ease-out), opacity 200ms var(--ease-out); }
+.wb-missing-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ciruela); }
+/* Story anclada (lista para publicar): el progreso y los controles siguen a la vista. */
+.wb-phone .sp:not([data-view="all"]) .sp-top { transform: translateY(var(--wb-chrome-top, 0px)); }
+.wb-phone .sp:not([data-view="all"]) .sp-bottom { transform: translateY(var(--wb-chrome-bottom, 0px)); }
+/* Sin nombres, el monograma derivado de los textos de relleno no significa nada. */
+.wb-phone[data-names-missing] :is(.wl-hero-mono, .sp-monogram, .wl-nav-mono > [aria-hidden]) { visibility: hidden; }
+
+/* --- Colores, letra, forma, sobre -------------------------------------------- */
+.wb-design-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: .55rem; }
+.wb-design-head p { margin: 0; font-size: .8125rem; font-weight: 600; }
+.wb-design-head .wb-design-current { font-family: var(--font-serif), Georgia, serif; font-style: italic; font-weight: 400; font-size: .95rem; color: var(--texto-2); }
+.wb-palettes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; }
+.wb-swatch { position: relative; display: block; min-height: 52px; padding: 0; border: 0; border-radius: 12px; background: transparent; cursor: pointer; transition: transform 160ms var(--ease-out); }
+.wb-swatch-card { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: .3rem; border-radius: inherit; background: var(--sw-paper); color: var(--sw-ink); border: 1px solid var(--borde-control); }
+.wb-swatch-aa { font-family: var(--font-serif), Georgia, serif; font-size: 1.05rem; line-height: 1; }
+.wb-swatch-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--sw-accent); }
+.wb-swatch::after { content: ""; position: absolute; inset: 0; border-radius: inherit; border: 2px solid var(--ciruela); opacity: 0; transform: scale(.96); transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out); pointer-events: none; }
+.wb-swatch[aria-pressed="true"]::after { opacity: 1; transform: none; }
+.wb-swatch:disabled { opacity: .45; }
+.wb-letters { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; margin-top: .8rem; }
+.wb-design[data-only] .wb-letters { margin-top: 0; }
+.wb-letters > span { font-size: .8125rem; font-weight: 600; margin-right: .35rem; }
+.wb-design[data-only] .wb-letters > span { display: none; }
+.wb-letters button { min-height: 44px; padding: 0 .95rem; border-radius: 12px; border: 1px solid var(--borde-control); background: var(--blanco); font-size: .875rem; font-weight: 500; color: var(--texto); cursor: pointer; transition: transform 160ms var(--ease-out), border-color 200ms var(--ease-out); }
+.wb-letters button[aria-pressed="true"] { border-color: var(--ciruela); box-shadow: 0 0 0 1px var(--ciruela); color: var(--ciruela); font-weight: 600; }
+
+/* --- Foto -------------------------------------------------------------------- */
+.wb-photo { display: grid; gap: .75rem; }
+.wb-photo-input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; clip-path: inset(50%); }
+.wb-composer .wb-photo-pick { margin: 0; display: flex; align-items: center; gap: .9rem; min-height: 76px; padding: .9rem 1.1rem; background: var(--blanco); border: 1px solid var(--borde-control); border-radius: 18px; cursor: pointer; transition: border-color 200ms var(--ease-out), transform 160ms var(--ease-out); }
+.wb-photo-pick svg { flex-shrink: 0; width: 44px; height: 44px; padding: 10px; border-radius: 50%; background: var(--perla-2); color: var(--ciruela); }
+.wb-photo-pick strong { display: block; font-size: .9375rem; font-weight: 600; }
+.wb-photo-pick small { display: block; font-size: .75rem; font-weight: 500; color: var(--texto-2); margin-top: .1rem; }
+.wb-photo-pick[aria-busy="true"] { cursor: progress; opacity: .7; }
+.wb-photo:has(.wb-photo-input:focus-visible) :is(.wb-photo-pick, .wb-photo-change) { outline: 2px solid var(--ciruela); outline-offset: 3px; }
+.wb-photo-chosen { display: flex; align-items: center; gap: 1rem; min-width: 0; }
+.wb-photo-thumb { flex-shrink: 0; width: 76px; height: 95px; object-fit: cover; border-radius: 12px; border: 1px solid var(--borde-control); background: var(--perla-2); }
+.wb-photo-meta { min-width: 0; }
+.wb-photo-meta p { margin: 0; font-size: .875rem; font-weight: 600; }
+.wb-photo-actions { display: flex; flex-wrap: wrap; gap: .25rem 1rem; margin-top: .35rem; }
+.wb-composer .wb-photo-change, .wb-photo-remove { margin: 0; display: inline-flex; align-items: center; min-height: 44px; padding: 0; border: 0; background: none; font-size: .8125rem; font-weight: 500; text-decoration: underline; text-underline-offset: 4px; color: var(--texto); cursor: pointer; transition: transform 160ms var(--ease-out); }
+.wb-initials { display: flex; align-items: center; gap: .75rem; min-height: 48px; width: 100%; padding: .4rem .95rem .4rem .45rem; border: 1px solid var(--borde-control); border-radius: 12px; background: transparent; font-size: .8125rem; font-weight: 600; text-align: left; color: var(--texto); cursor: pointer; transition: border-color 200ms var(--ease-out), transform 160ms var(--ease-out); }
+.wb-initials[aria-pressed="true"] { border-color: var(--ciruela); box-shadow: 0 0 0 1px var(--ciruela); }
+.wb-initials-mark { flex-shrink: 0; display: grid; place-items: center; min-width: 38px; height: 38px; padding: 0 .4rem; border-radius: 19px; background: var(--perla-2); font-family: var(--font-serif), Georgia, serif; font-style: italic; font-size: .95rem; font-weight: 400; color: var(--texto); }
+
+/* --- Invitados y módulos ----------------------------------------------------- */
+.wb-modules { margin: 1.5rem 0 0; padding: 0; border: 0; min-width: 0; }
+.wb-modules legend { padding: 0; font-weight: 600; color: var(--texto); }
+.wb-modules .wb-help { margin-top: .35rem; }
+.wb-modules .wb-chips { margin-top: .75rem; }
+.wb-subform { margin: 1.25rem 0 0; padding: 1rem 0 0; border: 0; border-top: 1px solid var(--separador); min-width: 0; }
+.wb-subform legend { padding: 0; font-weight: 600; color: var(--texto); }
+.wb-subform > .wb-help { margin: .35rem 0 .9rem; }
+.wb-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: .75rem; }
+.wb-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .5rem; align-items: start; }
+.wb-row + .wb-row { padding-top: .75rem; border-top: 1px dashed var(--separador); }
+.wb-row-fields { min-width: 0; }
+.wb-row-remove, .wb-row-move { display: inline-grid; place-items: center; width: 44px; height: 44px; margin-top: 1.4rem; border: 1px solid var(--borde-control); border-radius: 12px; background: transparent; color: var(--texto-2); transition: transform 160ms var(--ease-out); }
+.wb-add { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; margin: .25rem 0 .9rem; padding: 0 .2rem; border: 0; background: transparent; color: var(--texto); font-size: .8125rem; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; transition: transform 160ms var(--ease-out); }
+/* Filas a mano (momentos, detalles, preguntas): subir, bajar y quitar debajo, 44 px (los campos conservan todo el ancho). */
+.wb-row:has(> .wb-row-tools) { grid-template-columns: minmax(0, 1fr); }
+.wb-row-tools { display: flex; justify-content: flex-end; gap: .5rem; }
+.wb-row-tools :is(.wb-row-remove, .wb-row-move) { margin-top: 0; }
+.wb-row-move:disabled, .wb-add:disabled { opacity: .45; }
+.wb-row-fields textarea { resize: vertical; }
+/* «Vuestro día»: un momento por fila, hora estrecha y sitio ancho. */
+.wb-day-title { margin: 0 0 .1rem; font-size: .8125rem; font-weight: 600; color: var(--texto); }
+.wb-day-fields { display: grid; grid-template-columns: 8.75rem minmax(0, 1fr); gap: .75rem; }
+.wb-day-fields label { margin-bottom: .4rem; }
+.wb-day-same { margin: 0; }
+.wb-skip { margin: .75rem 0 .9rem; }
+.wb-day-adds { display: flex; flex-wrap: wrap; gap: 0 1.25rem; margin-top: .5rem; }
+.wb-day-adds .wb-add { margin-bottom: 0; }
+.wb-day-note { margin-top: .25rem; }
+.wb-day-more { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--separador); }
+
+/* --- Ver en grande ----------------------------------------------------------- */
+.wb-fullscreen { position: fixed; inset: 0; width: 100vw; height: 100svh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: var(--perla); color: var(--texto); overflow: hidden; }
+.wb-fullscreen::backdrop { background: var(--perla); }
+.wb-fullscreen-page { width: 100%; height: 100%; overflow: hidden; }
+.wb-fullscreen-close { position: fixed; z-index: 60; bottom: max(.75rem, env(safe-area-inset-bottom)); left: max(.75rem, env(safe-area-inset-left)); display: inline-flex; align-items: center; gap: .4rem; min-height: 44px; padding: 0 1rem; border: 1px solid var(--borde-control); border-radius: 999px; background: var(--blanco); color: var(--texto); font-size: .8125rem; font-weight: 600; box-shadow: 0 6px 18px -10px rgb(36 33 42 / .35); transition: transform 160ms var(--ease-out); }
+
+/* --- Pulsar, hover y movimiento ------------------------------------------------ */
+/* Pulsación: escala .97 al tocar, 160 ms (cada control declara su transform en su transición). */
+.wb-shell :is(.wb-primary, .wb-secondary, .wb-chip, .wb-fact, .wb-gap-btn, .wb-extra, .wb-dock-btn, .wb-done-btn, .wb-close-btn, .wb-thread-pill, .wb-missing-pill, .wb-swatch, .wb-letters button, .wb-photo-pick, .wb-initials, .wb-photo-change, .wb-photo-remove, .wb-row-remove, .wb-row-move, .wb-add, .wb-fullscreen-close):active:not(:disabled) { transform: scale(.97); }
+.wb-primary:active:not(:disabled) { background: var(--ciruela-hover); }
+@media (hover: hover) and (pointer: fine) {
+  .wb-primary:hover:not(:disabled) { background: var(--ciruela-hover); }
+  .wb-secondary:hover:not(:disabled), .wb-initials:hover, .wb-done-btn:hover, .wb-fact:hover:not(:disabled), .wb-letters button[aria-pressed="false"]:hover:not(:disabled), .wb-thread-pill:hover, .wb-fullscreen-close:hover { border-color: var(--ciruela); }
+  .wb-chip[aria-pressed="false"]:hover:not(:disabled), .wb-chip:not([aria-pressed]):hover:not(:disabled) { border-color: var(--ciruela); }
+  .wb-photo-pick:hover { border-color: var(--ciruela); }
+  .wb-dock-btn:hover:not(:disabled), .wb-gap-btn:hover:not(:disabled) { background: var(--perla-2); }
+  .wb-extra:hover:not(:disabled) .wb-extra-label { color: var(--ciruela); }
+  .wb-swatch[aria-pressed="false"]:hover:not(:disabled)::after { opacity: .35; transform: none; }
+  .wb-note-close:hover, .wb-row-remove:hover, .wb-row-move:hover:not(:disabled) { color: var(--texto); }
+  .wb-close-btn:hover { background: var(--perla-2); color: var(--texto); }
+  .wb-phone [data-edit-gap]:hover::after { opacity: 1; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* Respiración del hueco: la sombra vive en el ::after y solo cambia su opacidad. */
+  .wb-phone [data-edit-gap]::after { animation: wb-gap-breathe 2400ms var(--ease-in-out) infinite; }
+  .wb-missing-dot { animation: wb-gap-breathe 2400ms var(--ease-in-out) infinite; }
+  @keyframes wb-gap-breathe { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
+  /* Puntos de «leyendo»: ciclo de 750 ms, escalonados. */
+  .wb-thinking-dots span { animation: wb-dots 750ms var(--ease-in-out) infinite; }
+  .wb-thinking-dots span:nth-child(2) { animation-delay: 125ms; }
+  .wb-thinking-dots span:nth-child(3) { animation-delay: 250ms; }
+  @keyframes wb-dots { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
+  .wb-spinner { animation: wb-spin 600ms linear infinite; }
+  @keyframes wb-spin { to { transform: rotate(360deg); } }
+  /* Lo que llega (avisos, lo entendido) entra desde abajo, corto; nada desde scale(0). */
+  .wb-note, .wb-fact { animation: wb-enter 220ms var(--ease-out) both; }
+  @keyframes wb-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wb-phone [data-edit-gap]::after { opacity: .6; }
+  .wb-thinking-dots span { opacity: .7; }
+  /* La hoja aparece sin deslizar (sigue el fundido de visibilidad). */
+  .wb-sheet, .wb-sheet[data-open="true"] { transition: opacity 200ms var(--ease-out), visibility 0s linear 200ms; transform: none; opacity: 0; }
+  .wb-sheet[data-open="true"] { opacity: 1; transition: opacity 200ms var(--ease-out), visibility 0s; }
+  .wb-phone { transition: none !important; }
+  .wb-note, .wb-fact { animation: wb-fade 200ms var(--ease-out) both; }
+  @keyframes wb-fade { from { opacity: 0; } to { opacity: 1; } }
+  .wb-shell :is(.wb-primary, .wb-secondary, .wb-chip, .wb-fact, .wb-gap-btn, .wb-extra, .wb-dock-btn, .wb-done-btn, .wb-close-btn, .wb-thread-pill, .wb-missing-pill, .wb-swatch, .wb-letters button, .wb-row-remove, .wb-row-move, .wb-add):active:not(:disabled) { transform: none; }
+}
+
+/* --- Móvil y tablet (< 1000 px) ---------------------------------------------- */
+@media (max-width: 999.98px) {
+  /* Fondo blanco = el del lienzo arriba: Safari 26 tiñe la franja de la isla con este contenedor fijo. */
+  .wb-app { position: fixed; inset: 0 0 auto 0; height: 100dvh; overflow: clip; background: #fff; display: flex; flex-direction: column; }
+  /* La invitación es la superficie: de borde a borde, sin marco ni sombra,
+     bajo una franja blanca (la isla dinámica) y con la barra apoyada encima. */
+  .wb-app { display: block; }
+  .wb-stage { position: absolute; inset: 0; padding: 0; background: linear-gradient(to bottom, #fff 0%, #fff 14%, var(--perla-2) 100%); }
+  .wb-stage-top { position: absolute; z-index: 4; top: 0; left: 0; right: 0; height: calc(env(safe-area-inset-top) + 3.6rem); display: flex; align-items: flex-end; justify-content: flex-end; padding: 0 .75rem .35rem; background: #fff; box-shadow: 0 1px 0 rgb(36 33 42 / .06), 0 10px 20px -18px rgb(36 33 42 / .35); }
+  .wb-phone-slot { position: absolute; top: calc(env(safe-area-inset-top) + 3.6rem); left: 0; right: 0; bottom: 0; overflow: hidden; }
+  /* Se desplaza hacia arriba (--wb-shift) para dejar los nombres y la fecha a
+     la vista sobre la barra o la hoja; el desplazamiento se transiciona. */
+  .wb-phone { top: 0; left: 0; border-radius: 0; box-shadow: none; transform: translateY(var(--wb-shift, 0px)) scale(var(--wb-scale, 1)); transform-origin: top left; transition: transform 300ms var(--ease-drawer); }
+  .wb-side { position: absolute; z-index: 6; left: 0; right: 0; bottom: 0; border: 0; background: transparent; }
+  /* Lista para publicar: la invitación termina bajo el borde redondeado de la barra. */
+  .wb-app[data-ready] .wb-phone-slot { bottom: var(--wb-bar-h, 0px); }
+  /* Nada se lee cortado por el borde de la barra: la invitación se funde en
+     perla en los 44 px de encima (degradado sólido, sin halo). */
+  .wb-bar::before { content: ""; position: absolute; left: 0; right: 0; bottom: calc(100% - 20px); height: 64px; background: linear-gradient(to bottom, rgb(248 247 250 / 0), rgb(248 247 250 / .92) 55%, var(--perla) 80%); pointer-events: none; z-index: -1; }
+  /* Teclado abierto con un editor: la hoja se acorta (sin la frase de ayuda). */
+  .wb-app[data-keyboard="open"] .wb-sheet-head p { display: none; }
+  .wb-app[data-keyboard="open"] .wb-sheet-grab { height: 18px; }
+  .wb-side-scroll { display: none; }
+  .wb-bar { position: relative; z-index: 6; gap: .55rem; padding: .6rem .75rem max(.6rem, env(safe-area-inset-bottom)); border: 0; border-radius: 20px 20px 0 0; background: var(--perla); }
+  .wb-app[data-keyboard="open"] .wb-bar { padding-bottom: .5rem; }
+  .wb-app[data-keyboard="open"] :is(.wb-dock, .wb-chips, .wb-understood, .wb-thread-pill) { display: none; }
+  /* Filas de una línea que se deslizan (lo entendido, ejemplos). */
+  .wb-bar :is(.wb-understood, .wb-chips) { flex-wrap: nowrap; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; margin-inline: -.75rem; padding-inline: .75rem; }
+  .wb-bar :is(.wb-understood, .wb-chips)::-webkit-scrollbar { display: none; }
+  .wb-bar :is(.wb-fact, .wb-chip) { flex-shrink: 0; white-space: nowrap; min-height: 40px; }
+  .wb-bar .wb-fact span { max-width: 13rem; }
+  .wb-notes .wb-note { font-size: .78rem; }
+  /* «Guardar y publicar», arriba a la derecha, en la franja blanca. */
+  .wb-publish-pill { min-height: 44px; padding: 0 1.1rem; border-radius: 999px; font-size: .875rem; box-shadow: 0 10px 24px -12px rgb(46 35 53 / .6); }
+  .wb-stage-note { top: calc(env(safe-area-inset-top) + 4.1rem); font-size: .75rem; }
+  .wb-sheet-body .wb-extras { margin-top: -.25rem; }
+  .wb-palettes { gap: .45rem; }
+}
+@media (max-width: 400px) {
+  /* Los dos nombres siguen en una fila: la hoja se queda corta sobre el teclado. */
+  .wb-field-pair { gap: .6rem; }
+  .wb-day-fields { grid-template-columns: 7.5rem minmax(0, 1fr); gap: .5rem; }
+}
+
+/* Selección = un solo marco. El contorno de foco solo aparece con teclado
+   y, sobre una opción ya elegida, se pega al borde en vez de dibujar otro rectángulo. */
+.wb-shell :is(.wb-swatch, .wb-letters button, .wb-chip, .wb-initials)[aria-pressed="true"]:focus-visible { outline-offset: 2px; }
+.wb-shell .wb-swatch:focus-visible { outline-offset: 2px; }
+
+/* --- /onboarding/listo: la boda existe pero algo quedó pendiente --------- */
+.wb-done-shell { height: auto; min-height: 100dvh; }
+.wb-done { width: min(100% - 2rem, 36rem); margin: clamp(2.5rem, 10vh, 6rem) auto 3rem; }
+.wb-done h1 { font-family: var(--font-serif), Georgia, serif; font-weight: 400; font-size: clamp(2rem, 1.2rem + 2.4vw, 3rem); line-height: 1.06; letter-spacing: -.03em; margin: 0; text-wrap: balance; }
+.wb-done h1 em { font-style: italic; color: var(--ciruela); }
+.wb-done-mark { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; margin-bottom: 1.25rem; border-radius: 50%; border: 1px solid var(--exito); color: var(--exito); }
+@media (prefers-reduced-motion: no-preference) {
+  .wb-done > * { animation: wb-done-enter 420ms var(--ease-out) both; }
+  .wb-done > :nth-child(2) { animation-delay: 60ms; }
+  .wb-done > :nth-child(3) { animation-delay: 120ms; }
+  .wb-done > :nth-child(n + 4) { animation-delay: 180ms; }
+  @keyframes wb-done-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+}
+.wb-done-lead { margin: 1rem 0 0; color: var(--texto-2); font-size: .9375rem; line-height: 1.7; }
+.wb-done-list { margin: 1.25rem 0 0; padding: 0; list-style: none; display: grid; gap: .75rem; }
+.wb-done-list li { font-size: .9rem; line-height: 1.65; padding: .9rem 1rem; background: var(--blanco); border: 1px solid var(--separador); border-radius: 12px; text-wrap: pretty; }
+.wb-done-actions { justify-content: flex-start; margin-top: 1.5rem; flex-wrap: wrap; }
+.wb-done-actions .wb-secondary { display: inline-flex; align-items: center; justify-content: center; }
+@media (max-width: 720px) {
+  .wb-done-actions { flex-direction: column-reverse; align-items: stretch; }
+  .wb-done-actions > :is(.wb-primary, .wb-secondary) { flex: none; }
+}
+
+/* /onboarding/listo publicada: el enlace y lo que se hace con él (mismos tokens que la lista de avisos). */
+.wb-done-share { margin-top: 1.25rem; display: grid; gap: .75rem; }
+.wb-done-url { margin: 0; padding: .9rem 1rem; background: var(--blanco); border: 1px solid var(--separador); border-radius: 12px; font-size: .9rem; font-weight: 600; line-height: 1.5; overflow-wrap: anywhere; user-select: all; }
+.wb-done-copy-note { margin: 0; font-size: .85rem; color: var(--texto-2, #655E6B); }
+.wb-done-share-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.wb-done-share-actions .wb-secondary { display: inline-flex; align-items: center; justify-content: center; gap: .45rem; text-decoration: none; cursor: pointer; }
+@media (max-width: 720px) { .wb-done-share-actions > .wb-secondary { flex: 1 1 auto; } }
+
+/* «Gratis · con vuestro correo» bajo «Crear cuenta y publicar» (sin sesión).
+   En el móvil, a la izquierda del botón, en la franja blanca. */
+.wb-account-note { margin: .5rem 0 0; text-align: center; }
+@media (max-width: 999.98px) {
+  .wb-stage-top .wb-account-note { margin: 0 auto .85rem 0; text-align: left; }
+}

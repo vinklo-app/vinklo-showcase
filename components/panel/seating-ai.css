@@ -1,0 +1,55 @@
+/* ------------------------------------------------------------------
+   Mesas con IA (9-oct-2026): plano del salón, aviso proactivo,
+   explicaciones de la propuesta y acciones de mesa entera.
+   Móvil primero (360–430 px): objetivos de 44 px, campos de 16 px.
+   Marca v9: ciruela solo en acciones y selección; el aviso es una nota.
+   ------------------------------------------------------------------ */
+
+/* Plano */
+.pn-floor-map { display: grid; gap: 0.5rem; margin: 0; }
+.pn-floor-canvas { position: relative; width: 100%; aspect-ratio: 4 / 3; max-height: 22rem; border: 1px solid var(--line-strong); border-radius: var(--pn-radius); background: var(--card); overflow: hidden; }
+.pn-floor-table { position: absolute; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; transform: translate(-50%, -50%); border: 1.5px solid var(--ciruela, var(--clay)); border-radius: 999px; background: var(--perla-2, var(--paper-2)); color: var(--texto, var(--ink)); font-size: 0.75rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
+.pn-floor-table[data-shape="rectangular"] { width: 3.25rem; border-radius: 6px; }
+.pn-floor-table[data-shape="imperial"] { width: 4.5rem; height: 1.75rem; border-radius: 6px; }
+.pn-floor-table[data-shape="cuadrada"] { border-radius: 6px; }
+.pn-floor-table[data-shape="otra"] { border-style: dashed; }
+.pn-floor-table[data-warn] { border-color: var(--error, var(--clay-dark)); color: var(--error, var(--clay-dark)); }
+
+.pn-floor-drop { display: grid; justify-items: center; gap: 0.4rem; padding: 1.5rem 1rem; border: 1.5px dashed var(--borde-control, var(--line-strong)); border-radius: var(--pn-radius-xl); background: var(--card); text-align: center; font-weight: 600; cursor: pointer; }
+.pn-floor-drop small { font-weight: 400; color: var(--texto-2, var(--ink-muted)); font-size: 0.8125rem; line-height: 1.45; }
+.pn-floor-drop:focus-within { outline: 2px solid var(--ciruela, var(--clay)); outline-offset: 3px; }
+.pn-floor-drop[data-busy] { cursor: progress; opacity: 0.75; }
+
+.pn-floor-rows { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+.pn-floor-row { display: grid; grid-template-columns: minmax(0, 1fr) 5.5rem; grid-template-areas: "name name" "shape seats" "remove remove"; gap: 0.5rem 0.75rem; padding: 0.75rem; border: 1px solid var(--line); border-radius: var(--pn-radius); background: var(--card); }
+.pn-floor-name { grid-area: name; }
+.pn-floor-seats { grid-area: seats; }
+.pn-floor-shape { grid-area: shape; }
+.pn-floor-remove { grid-area: remove; justify-self: end; }
+.pn-floor-row input, .pn-floor-row select { font-size: 1rem; min-height: 44px; }
+@media (min-width: 640px) {
+  .pn-floor-row { grid-template-columns: minmax(0, 1fr) 9rem 6rem auto; grid-template-areas: "name shape seats remove"; align-items: end; }
+  .pn-floor-remove { justify-self: auto; }
+}
+
+/* Aviso proactivo */
+.pn-seat-notice { display: grid; gap: 0.75rem; padding: 1rem; border: 1px solid var(--borde-control, var(--line-strong)); border-left: 4px solid var(--ciruela, var(--clay)); border-radius: var(--pn-radius); background: var(--card); }
+.pn-seat-notice-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
+.pn-seat-notice-title { margin: 0; font-weight: 700; font-size: 0.9375rem; }
+.pn-seat-notice ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.2rem; font-size: 0.875rem; line-height: 1.45; }
+.pn-seat-notice-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.pn-seat-notice-actions .pn-btn { min-height: 44px; }
+
+/* Explicación por mesa en la vista previa */
+.pn-auto-preview li { flex-wrap: wrap; }
+.pn-auto-why { flex-basis: 100%; margin: 0; font-size: 0.8125rem; line-height: 1.45; color: var(--texto-2, var(--ink-muted)); }
+
+/* Acciones de mesa entera */
+.pn-table-ops { display: grid; gap: 1rem; }
+.pn-table-ops-list { display: grid; gap: 0.4rem; margin: 0; padding: 0; border: 0; min-width: 0; }
+.pn-table-ops-list legend { padding: 0; margin-bottom: 0.25rem; font-size: 0.8125rem; font-weight: 600; }
+.pn-table-ops-option { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 0.6rem; min-height: 44px; padding: 0.55rem 0.75rem; border: 1px solid var(--line); border-radius: var(--pn-radius); background: var(--card); font-size: 0.9375rem; cursor: pointer; }
+.pn-table-ops-option input { width: 20px; height: 20px; margin-top: 0.1rem; accent-color: var(--ciruela, var(--ink)); }
+.pn-table-ops-option small { display: block; color: var(--texto-2, var(--ink-muted)); font-size: 0.8125rem; line-height: 1.4; }
+.pn-table-ops-option:has(input:checked) { border: 2px solid var(--ciruela, var(--ink)); padding: calc(0.55rem - 1px) calc(0.75rem - 1px); }
+.pn-table-ops select { font-size: 1rem; min-height: 44px; }

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <title>Restablecer vuestra contraseña en vinklo</title>
+  </head>
+  <body style="margin:0;padding:0;background-color:#F8F7FA;">
+    <!-- Texto de vista previa (bandeja de entrada y pantalla de bloqueo). -->
+    <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Elegid una contraseña nueva para vuestra cuenta de vinklo.</div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F8F7FA;">
+      <tr>
+        <td align="center" style="padding:32px 16px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:480px;background-color:#FFFFFF;border:1px solid #DCD4E1;border-radius:16px;">
+            <tr>
+              <td align="center" style="padding:36px 32px 0 32px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;">
+                  <tr>
+                    <td valign="middle" style="padding-right:8px;"><img src="https://vinklo.es/email/vinklo-mark.png" width="22" height="22" alt="" style="display:block;border:0;outline:none;width:22px;height:22px;" /></td>
+                    <td valign="middle">
+                      <span style="font-family:'Plus Jakarta Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:19px;font-weight:700;letter-spacing:-0.3px;color:#24212A;">v<span style="color:#573B62;">ı</span>nklo</span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:24px 32px 36px 32px;">
+                <h1 style="margin:0 0 14px 0;font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-weight:400;font-size:28px;line-height:1.15;letter-spacing:-0.3px;color:#24212A;text-align:center;">Restablecer<br /><em style="font-style:italic;color:#573B62;">vuestra contrase&ntilde;a.</em></h1>
+                <p style="margin:0 0 22px 0;font-family:'Plus Jakarta Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:15px;line-height:23px;color:#655E6B;text-align:center;">
+                  Hab&eacute;is pedido cambiar la contrase&ntilde;a de vuestra cuenta de vinklo. Pulsad el bot&oacute;n para elegir una nueva:
+                </p>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;">
+                  <tr>
+                    <td align="center" style="background-color:#573B62;border-radius:10px;">
+                      <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=recovery" style="display:inline-block;color:#F8F7FA;font-family:'Plus Jakarta Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:16px;font-weight:600;line-height:1;text-decoration:none;padding:17px 32px;border-radius:10px;">Elegir contrase&ntilde;a nueva</a>
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin:24px 0 0 0;font-family:'Plus Jakarta Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:12px;line-height:18px;color:#655E6B;text-align:center;">
+                  El enlace caduca en 1 hora y sirve una sola vez.<br />Si no lo hab&eacute;is pedido vosotros, ignorad este correo: vuestra contrase&ntilde;a no cambia.
+                </p>
+              </td>
+            </tr>
+          </table>
+          <p style="margin:20px 0 0 0;font-family:'Plus Jakarta Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:11px;line-height:18px;letter-spacing:0.5px;color:#655E6B;">
+            vinklo &middot; Vuestra web de boda. Cada invitado, al d&iacute;a.
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

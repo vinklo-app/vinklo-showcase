@@ -1,0 +1,4 @@
+# Lo que `vercel deploy` (CLI, job deploy de la CI) no sube: no lo usa la
+# compilación. docs/ son capturas y vídeos de traspasos (~180 MB).
+docs/
+.impeccable/

@@ -1,0 +1,181 @@
+/*
+ * Chat del editor (marca v9 «Ciruela y perla», DESIGN.md §2). Superficies
+ * claras; el ciruela solo en la acción, la selección y el foco. Sin degradados
+ * ni sombras negras. Fuentes: las de la interfaz (heredadas).
+ */
+.sc-chat {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: var(--sc-height, auto);
+  background: var(--blanco);
+  border: 1px solid var(--separador);
+  border-radius: 16px;
+  overflow: hidden;
+  color: var(--texto);
+}
+.sc-thread { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 1rem 1rem 0.5rem; }
+.sc-thread > ol { display: grid; gap: 1.1rem; list-style: none; margin: 0; padding: 0; }
+
+.sc-turn { display: grid; gap: 0.6rem; }
+.sc-user { justify-self: end; max-width: 88%; display: grid; gap: 0.35rem; padding: 0.6rem 0.85rem; background: var(--perla-2); border-radius: 14px 14px 4px 14px; font-size: 0.9375rem; line-height: 1.45; overflow-wrap: anywhere; }
+.sc-user p { margin: 0; white-space: pre-line; }
+.sc-user-focus { justify-self: start; font-size: 0.75rem; font-weight: 600; color: var(--ciruela); }
+.sc-assistant { display: grid; grid-template-columns: 1.75rem minmax(0, 1fr); gap: 0.6rem; align-items: start; }
+.sc-mark { display: grid; place-items: center; width: 1.75rem; height: 1.75rem; border-radius: 50%; background: var(--ciruela); color: var(--blanco); font-size: 0.75rem; font-weight: 700; letter-spacing: -0.02em; }
+.sc-assistant-body { display: grid; gap: 0.55rem; min-width: 0; font-size: 0.9375rem; line-height: 1.5; }
+.sc-assistant-body p { margin: 0; }
+.sc-intro { display: grid; gap: 0.4rem; color: var(--texto); }
+.sc-intro p { margin: 0; }
+.sc-summary { color: var(--texto); }
+.sc-changes { margin: 0; padding: 0.55rem 0.75rem 0.55rem 1.6rem; list-style: disc; background: var(--perla); border: 1px solid var(--separador); border-radius: 10px; font-size: 0.875rem; color: var(--texto); }
+.sc-changes li + li { margin-top: 0.15rem; }
+.sc-meta, .sc-time { font-size: 0.75rem; color: var(--texto-2); }
+.sc-error { color: var(--error); font-size: 0.875rem; }
+.sc-notice { margin: 0 0 0.5rem; }
+.sc-saved { margin: 0 0 0.5rem; font-size: 0.8125rem; color: var(--exito); }
+.sc-help { margin: 0.5rem 0 0; font-size: 0.8125rem; color: var(--texto-2); }
+
+.sc-line { display: grid; grid-template-columns: 1rem minmax(0, 1fr); gap: 0.5rem; align-items: start; padding: 0.5rem 0.75rem; margin-left: 2.35rem; border-left: 2px solid var(--separador); font-size: 0.8125rem; color: var(--texto-2); }
+.sc-line > svg { margin-top: 0.15rem; }
+.sc-line-body { display: grid; gap: 0.35rem; }
+.sc-line-body p { margin: 0; color: var(--texto); }
+
+.sc-working { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; color: var(--texto); font-size: 0.875rem; }
+.sc-dots { display: inline-flex; gap: 4px; }
+.sc-dots span { width: 6px; height: 6px; border-radius: 50%; background: var(--ciruela); opacity: 0.35; }
+@media (prefers-reduced-motion: no-preference) {
+  .sc-dots span { animation: sc-pulse 750ms ease-in-out infinite; }
+  .sc-dots span:nth-child(2) { animation-delay: 125ms; }
+  .sc-dots span:nth-child(3) { animation-delay: 250ms; }
+  .sc-turn, .sc-line { animation: sc-in 220ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+}
+@keyframes sc-pulse { 50% { opacity: 1; } }
+@keyframes sc-in { from { opacity: 0; transform: translateY(4px); } }
+
+.sc-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.sc-chips-after { margin-left: 2.35rem; }
+.sc-chip { transition: transform 160ms var(--ease-out), border-color 200ms var(--ease-out), color 200ms var(--ease-out); min-height: 32px; padding: 0.3rem 0.75rem; border: 1px solid var(--borde-control); border-radius: 999px; background: var(--blanco); color: var(--texto); font-size: 0.8125rem; font-weight: 500; text-align: left; cursor: pointer; }
+.sc-chip:disabled { opacity: 0.55; cursor: default; }
+
+.sc-version-actions { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.sc-ghost, .sc-select { transition: transform 160ms var(--ease-out), border-color 200ms var(--ease-out); display: inline-flex; align-items: center; gap: 0.35rem; min-height: 32px; padding: 0.3rem 0.65rem; border: 1px solid var(--borde-control); border-radius: 10px; background: var(--blanco); color: var(--texto); font-size: 0.8125rem; font-weight: 600; cursor: pointer; }
+.sc-ghost:disabled, .sc-select:disabled { opacity: 0.55; cursor: default; }
+.sc-select[aria-pressed="true"] { background: var(--ciruela); border-color: var(--ciruela); color: var(--blanco); }
+.sc-link { transition: transform 160ms var(--ease-out); display: inline-flex; align-items: center; gap: 0.3rem; padding: 0; border: 0; background: none; color: var(--ciruela); font-size: 0.8125rem; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.sc-link:disabled { opacity: 0.55; cursor: default; }
+.sc-primary { transition: transform 160ms var(--ease-out), background-color 200ms var(--ease-out); min-height: 36px; padding: 0.4rem 0.9rem; border: 0; border-radius: 12px; background: var(--ciruela); color: var(--blanco); font-size: 0.875rem; font-weight: 600; cursor: pointer; }
+.sc-primary:disabled { opacity: 0.55; cursor: default; }
+
+.sc-composer { flex: 0 0 auto; padding: 0.75rem 1rem 1rem; border-top: 1px solid var(--separador); background: var(--blanco); }
+.sc-target { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.75rem; margin-bottom: 0.5rem; }
+.sc-target-chip { display: inline-flex; align-items: center; gap: 0.35rem; max-width: 100%; min-height: 30px; padding: 0.2rem 0.3rem 0.2rem 0.6rem; border-radius: 999px; background: var(--perla-2); color: var(--ciruela); font-size: 0.8125rem; font-weight: 600; }
+.sc-target-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sc-target-chip button { display: grid; place-items: center; width: 24px; height: 24px; border: 0; border-radius: 50%; background: transparent; color: var(--texto-2); cursor: pointer; }
+.sc-box { display: grid; gap: 0.4rem; padding: 0.5rem; border: 1px solid var(--borde-control); border-radius: 14px; background: var(--blanco); }
+/* Un solo marco: el foco lo señala la caja, nunca el textarea de dentro
+   (los estilos globales de foco del panel le ponían un segundo contorno). */
+.sc-box:focus-within { outline: none; border-color: var(--ciruela); box-shadow: 0 0 0 1px var(--ciruela); }
+.sc-box textarea:focus, .sc-box textarea:focus-visible { outline: none !important; box-shadow: none !important; border: 0 !important; }
+.sc-box textarea { width: 100%; min-height: 3rem; max-height: 9rem; resize: none; border: 0; outline: none; background: transparent; padding: 0.25rem 0.35rem; font: inherit; font-size: 1rem; line-height: 1.45; color: var(--texto); }
+.sc-box textarea::placeholder { color: var(--texto-2); }
+.sc-box-bar { display: flex; align-items: center; gap: 0.5rem; }
+.sc-count { margin-left: auto; font-size: 0.75rem; color: var(--texto-2); font-variant-numeric: tabular-nums; }
+.sc-send { transition: transform 160ms var(--ease-out), background-color 200ms var(--ease-out); display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 10px; background: var(--ciruela); color: var(--blanco); cursor: pointer; }
+.sc-send:disabled { opacity: 0.55; cursor: default; }
+.sc-edit { display: grid; gap: 0.45rem; padding: 0.6rem; border: 1px solid var(--borde-control); border-radius: 14px; }
+.sc-edit-label { font-size: 0.8125rem; font-weight: 600; color: var(--texto-2); }
+.sc-edit textarea, .sc-edit input { width: 100%; padding: 0.5rem 0.6rem; border: 1px solid var(--borde-control); border-radius: 10px; background: var(--blanco); font: inherit; font-size: 1rem; line-height: 1.45; color: var(--texto); }
+.sc-edit textarea { resize: vertical; }
+/* Un solo marco al escribir: borde ciruela, sin el contorno global de foco del panel. */
+.sc-edit :is(textarea, input):focus, .sc-edit :is(textarea, input):focus-visible { outline: none !important; border-color: var(--ciruela); box-shadow: 0 0 0 1px var(--ciruela); }
+.sc-edit-foot { display: flex; align-items: center; gap: 0.5rem; }
+.sc-edit-foot .sc-count { margin-right: auto; margin-left: 0; }
+
+/* «Seleccionar» sobre la vista previa: contorno ciruela con halo claro (se lee sobre fotos oscuras). */
+[data-selecting] [data-edit-path], [data-selecting] [data-edit-scene] { cursor: pointer; }
+
+/* Pulsación (160 ms) y hover solo con puntero fino. */
+:is(.sc-chip, .sc-ghost, .sc-select, .sc-primary, .sc-send, .sc-link):active:not(:disabled) { transform: scale(0.97); }
+@media (prefers-reduced-motion: reduce) {
+  :is(.sc-chip, .sc-ghost, .sc-select, .sc-primary, .sc-send, .sc-link):active:not(:disabled) { transform: none; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .sc-chip:hover:not(:disabled) { border-color: var(--ciruela); color: var(--ciruela); }
+  .sc-ghost:hover:not(:disabled), .sc-select:hover:not(:disabled) { border-color: var(--ciruela); }
+  .sc-primary:hover:not(:disabled) { background: var(--ciruela-hover); }
+  .sc-send:hover:not(:disabled) { background: var(--ciruela-hover); }
+  .sc-target-chip button:hover { background: var(--blanco); color: var(--texto); }
+  [data-selecting] [data-edit-path]:hover,
+  [data-selecting] [data-edit-scene]:hover:not(:has([data-edit-path]:hover)) {
+    outline: 2px dashed #573B62;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+[data-edit-selected] {
+  outline: 2px solid #573B62 !important;
+  outline-offset: 3px;
+  border-radius: 4px;
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.75);
+}
+
+/* Dentro del creador (/crear, /onboarding): el compositor va en su barra y los turnos en su lista. */
+.wb-say .sc-edit-label { margin: 0; }
+.wb-turns > :is(.sc-turn, .sc-line, .sc-chips-after) { list-style: none; }
+
+/*
+ * Editar desde la vista previa (escritorio con ratón, components/site-chat/live-edit.tsx).
+ * La capa vive dentro del móvil escalado del creador: los grosores y la letra
+ * de la interfaz se compensan con la escala (--lv-scale) para verse iguales.
+ */
+[data-edit-live] [data-edit-can] { cursor: pointer; }
+[data-edit-live] [data-edit-can="text"] { cursor: text; }
+[data-edit-live] [data-edit-can]:focus-visible { outline: calc(2px / var(--wb-scale, 1)) solid #573B62; outline-offset: calc(3px / var(--wb-scale, 1)); border-radius: 4px; }
+[data-edit-editing] { visibility: hidden; }
+.lv-layer { position: absolute; top: 0; left: 0; width: 0; height: 0; z-index: 40; }
+.lv-edit { position: absolute; z-index: 2; }
+.lv-field {
+  display: block; width: 100%; margin: 0; border: 0; resize: none; overflow: hidden;
+  background: color-mix(in oklab, #fff 14%, transparent);
+  outline: calc(2px / var(--lv-scale, 1)) solid #573B62; outline-offset: calc(3px / var(--lv-scale, 1));
+  box-shadow: 0 0 0 calc(5px / var(--lv-scale, 1)) rgb(255 255 255 / .75);
+  border-radius: 4px; overflow-wrap: anywhere; white-space: pre-wrap;
+}
+.lv-field:focus, .lv-field:focus-visible { outline: calc(2px / var(--lv-scale, 1)) solid #573B62 !important; }
+.lv-field[aria-invalid] { outline-color: #a3352b !important; }
+/* Ayuda, pista y avisos: interfaz de vinklo a tamaño real sobre la invitación escalada. */
+.lv-help, .lv-hint, .lv-flash {
+  position: absolute; margin: 0; white-space: nowrap; pointer-events: none;
+  font: 600 12px/1.3 var(--font-sans, ui-sans-serif, system-ui, sans-serif); letter-spacing: 0; text-transform: none; text-align: left;
+  color: #fff; background: #2e2335; border-radius: 999px; padding: 5px 10px;
+  box-shadow: 0 6px 16px -8px rgb(46 35 53 / .6);
+}
+.lv-help { top: 100%; left: 0; margin-top: calc(10px / var(--lv-scale, 1)); transform: scale(calc(1 / var(--lv-scale, 1))); transform-origin: top left; display: flex; gap: 8px; align-items: center; }
+.lv-help[data-error] { background: #a3352b; white-space: normal; max-width: 280px; border-radius: 12px; }
+/* Fallo al guardar / borrador por recuperar: texto en línea y botones (pulsables). */
+.lv-help[data-actions] { pointer-events: auto; flex-wrap: wrap; white-space: normal; max-width: 280px; border-radius: 12px; }
+.lv-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.lv-action {
+  font: inherit; color: #2e2335; background: #fff; border: 0; border-radius: 999px; padding: 4px 10px; cursor: pointer; min-height: 28px;
+}
+.lv-action:hover { background: #f1e9f5; }
+.lv-action:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.lv-count { opacity: .7; font-variant-numeric: tabular-nums; }
+.lv-hint { transform: translate(-100%, calc(-100% - 6px / var(--lv-scale, 1))) scale(calc(1 / var(--lv-scale, 1))); transform-origin: bottom right; padding: 3px 8px; font-size: 11px; background: #573B62; }
+.lv-flash { transform: scale(calc(1 / var(--lv-scale, 1))); transform-origin: top left; margin-top: calc(10px / var(--lv-scale, 1)); background: #a3352b; white-space: normal; max-width: 280px; border-radius: 12px; }
+@media (hover: hover) and (pointer: fine) {
+  [data-edit-live] [data-edit-can]:hover:not([data-edit-editing]) {
+    outline: calc(2px / var(--wb-scale, 1)) dashed #573B62;
+    outline-offset: calc(3px / var(--wb-scale, 1));
+    border-radius: 4px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .lv-hint { animation: lv-hint-in 160ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+}
+@keyframes lv-hint-in { from { opacity: 0; } to { opacity: 1; } }
+
+.sc-ai-label { display: block; grid-column: 1 / -1; padding: .75rem 1rem 0; font-size: .75rem; font-weight: 600; color: var(--ink-muted); }
+
+.wb-say-idea > .sc-ai-label { padding: 0 .35rem .5rem; }

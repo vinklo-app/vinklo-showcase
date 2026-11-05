@@ -1,0 +1,6 @@
+/* Envío en serie (invitation-series.tsx): el botón lleva el nombre de la
+   siguiente persona; con nombres largos parte en varias líneas en vez de
+   desbordar la pantalla. */
+.pn-queue-actions .pn-series-next { min-width: 0; white-space: normal; text-align: center; padding-block: 0.6rem; line-height: 1.3; }
+.pn-series-next > span { min-width: 0; }
+.pn-series-next-name { overflow-wrap: anywhere; }

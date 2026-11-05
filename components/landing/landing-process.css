@@ -1,0 +1,78 @@
+/* «Así funciona» (landing-process.tsx) y la tarjeta de WhatsApp del bento. */
+
+/* --- WhatsApp: un único mensaje editable ------------------------------- */
+.lc-wa {
+  margin-top: auto;
+  padding: 0.75rem;
+  border-radius: 1.1rem;
+  background: var(--perla-2);
+}
+.lc-wa-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.8rem;
+}
+.lc-wa-avatar {
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: #cfe3d4;
+  color: #1d5c3a;
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+.lc-wa-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--line);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+.lc-wa-bubble {
+  position: relative;
+  margin-left: 1.25rem;
+  padding: 0.65rem 0.8rem 0.45rem;
+  border-radius: 0.9rem 0.25rem 0.9rem 0.9rem;
+  background: #d9fdd3;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: #1f2a22;
+}
+.lc-wa-bubble p { margin: 0 0 0.4rem; }
+.lc-wa-bubble u { color: #1d6f9e; text-underline-offset: 2px; }
+.lc-wa-bubble small {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.65rem;
+  color: #5f7a68;
+}
+.lc-wa-bubble small svg { color: #34b7f1; }
+
+.lc-proc-list { display: grid; gap: 0.45rem; margin: 0; padding: 0; list-style: none; }
+.lc-proc-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-size: 0.85rem;
+}
+.lc-proc-avatar { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: color-mix(in srgb, var(--clay) 14%, #fff); color: var(--clay); font-weight: 700; }
+.lc-proc-name { display: grid; font-weight: 600; }
+.lc-proc-name small { font-weight: 400; color: var(--ink-muted); font-size: 0.72rem; }
+

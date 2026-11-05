@@ -1,0 +1,295 @@
+/* «El vuelo» (landing-flight.tsx): escena fija + texto por tramo. */
+.lc-flight {
+  --flight-h: 100svh;
+  position: relative;
+  height: 420vh;
+  padding: 0;
+  overflow: visible;
+  background: var(--perla);
+}
+.lc-flight-sticky {
+  position: sticky;
+  top: 0;
+  height: var(--flight-h);
+  overflow: hidden;
+  padding: calc(5rem + env(safe-area-inset-top, 0px)) var(--lc-gutter) calc(4.5rem + env(safe-area-inset-bottom, 0px));
+}
+.lc-flight-inner {
+  display: grid;
+  grid-template-rows: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 1rem;
+  height: 100%;
+  max-width: calc(var(--lc-max) - 2 * var(--lc-gutter));
+  margin: 0 auto;
+}
+@media (min-width: 900px) {
+  .lc-flight-inner {
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: 3rem;
+  }
+}
+.lc-flight-copies {
+  position: relative;
+  display: grid;
+  min-height: 12rem;
+}
+.lc-flight-copy {
+  grid-area: 1 / 1;
+  align-self: center;
+  will-change: transform, opacity;
+}
+.lc-flight-copy .lc-kicker { color: var(--lc-clay-light); margin-bottom: 1rem; }
+.lc-flight-title {
+  margin: 0;
+  font-size: min(clamp(2.1rem, 1.2rem + 2.6vw, 3.75rem), 10.5vw);
+  color: var(--lc-on-dark);
+  max-width: 14ch;
+}
+.lc-flight-body {
+  max-width: 30rem;
+  margin: 1rem 0 0;
+  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.15rem);
+  line-height: 1.6;
+  color: var(--lc-on-dark-muted);
+}
+.lc-flight-cta { margin-top: 1.5rem; }
+
+/* Escena */
+.lc-flight-stage {
+  position: relative;
+  min-height: 0;
+  height: 100%;
+}
+.lc-flight-layer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  will-change: transform, opacity;
+}
+.lc-flight-env .lc-browser {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: min(100%, 34rem);
+}
+.lc-flight-env .lc-env-card { z-index: 2; }
+.lc-flight-seal {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  top: 50%;
+  width: 25%;
+  translate: -50% -50%;
+  filter: drop-shadow(0 0.35rem 0.4rem rgba(70, 20, 5, 0.45));
+}
+.lc-flight-seal .lc-env-seal { position: static; width: 100%; translate: none; filter: none; }
+/* Con scroll, mandan los valores de framer: ni bucle ni lacre en CSS. */
+.lc-env[data-scrub] .lc-env-stage,
+.lc-env[data-scrub] .lc-env-stage * { animation: none !important; }
+.lc-env[data-scrub] .lc-env-flap { transform-origin: 50% 0; }
+.lc-flight-phone {
+  width: min(16.5rem, 62vw);
+  aspect-ratio: 16.5 / 34;
+  padding: 0.55rem;
+  border-radius: 2.4rem;
+  background: #0e0b09;
+  box-shadow: 0 3rem 5rem -2rem rgba(0, 0, 0, 0.8);
+}
+.lc-flight-phone .ll-phone-screen { height: 100%; border-radius: 1.9rem; overflow: hidden; }
+.lc-flight-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  display: flex;
+  gap: 0.6rem;
+  translate: -50% 0;
+}
+.lc-flight-dots span {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, #fff 30%, transparent);
+  transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
+}
+.lc-flight-dots span[data-palette="editorial"] { background: #9e3b22; }
+.lc-flight-dots span[data-palette="terracota"] { background: #a0432a; }
+.lc-flight-dots span[data-palette="mar"] { background: #2f5f78; }
+.lc-flight-dots span[data-on] { transform: scale(1.25); box-shadow: 0 0 0 2px var(--lc-dark), 0 0 0 3.5px var(--lc-on-dark); }
+.lc-flight-list { justify-items: end; }
+.lc-flight-card {
+  width: min(100%, 24rem);
+  padding: 1rem;
+  border-radius: 1.125rem;
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  box-shadow: 0 2.5rem 5rem -2.5rem rgba(36, 33, 42, 0.35);
+}
+.lc-flight-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+.lc-flight-card-head .lc-kicker { margin: 0; }
+.lc-flight-card-head b { font-weight: 400; font-size: 1.5rem; }
+.lc-flight-card .lc-proc-list li { background: var(--lc-paper); }
+.lc-flight-state {
+  margin-left: auto;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--ink-muted);
+  background: color-mix(in srgb, var(--ink) 6%, #fff);
+  transition: background-color 260ms ease, color 260ms ease;
+}
+.lc-flight-state[data-s="abierta"] { background: color-mix(in srgb, var(--clay) 14%, #fff); color: var(--clay); }
+.lc-flight-state[data-s="viene"] { background: color-mix(in srgb, var(--exito) 12%, #fff); color: var(--exito); }
+.lc-flight-track {
+  position: absolute;
+  left: var(--lc-gutter);
+  right: var(--lc-gutter);
+  bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
+  height: 2px;
+  background: color-mix(in srgb, #fff 14%, transparent);
+}
+.lc-flight-track i {
+  display: block;
+  height: 100%;
+  background: var(--lc-clay-light);
+  transform-origin: left;
+}
+@media (max-width: 899.98px) {
+  .lc-flight-sticky { padding-top: calc(4.75rem + env(safe-area-inset-top, 0px)); padding-bottom: calc(6.5rem + env(safe-area-inset-bottom, 0px)); }
+  .lc-flight-copy { align-self: start; }
+  .lc-flight-copy .lc-kicker { margin-bottom: 0.6rem; font-size: 0.75rem; }
+  .lc-flight-body { font-size: 0.95rem; margin-top: 0.6rem; }
+  .lc-flight-cta { margin-top: 1rem; }
+  /* Móvil: alto de la escena calculado (el texto va debajo); el móvil se
+     dimensiona por ese alto. */
+  .lc-flight {
+    --flight-phone-h: clamp(12rem, calc(100svh - 25rem - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)), 24rem);
+  }
+  .lc-flight-inner { display: flex; flex-direction: column; gap: 0.75rem; }
+  .lc-flight-copies { order: 2; flex: 1 1 auto; min-height: 0; }
+  .lc-flight-stage { order: 1; flex: none; height: calc(var(--flight-phone-h) + 1.8rem); }
+  /* La píldora de la cabecera ya lleva «Crear» siempre a la vista. */
+  .lc-flight-copy .lc-flight-cta { display: none; }
+  .lc-flight-title { font-size: min(clamp(2rem, 1.2rem + 3.6vw, 4.6rem), 10vw); }
+  .lc-flight-layer { align-items: start; }
+  /* El hero esconde .lc-browser en móvil; aquí es la escena. */
+  .lc-flight-env .lc-browser { display: block; position: relative; width: min(100%, 22rem); top: auto; }
+  .lc-flight-env .lc-browser-body { aspect-ratio: 16 / 11; }
+  .lc-flight-phone-wrap { align-items: start; }
+  .lc-flight-phone { height: var(--flight-phone-h); width: auto; }
+  .lc-flight-dots { bottom: 0; }
+  .lc-flight-card { padding: 0.75rem; max-height: calc(var(--flight-phone-h) + 1.4rem); overflow: hidden; }
+  .lc-flight-card-head b { font-size: 1.25rem; }
+  .lc-flight-card .lc-proc-list { gap: 0.35rem; }
+  .lc-flight-card .lc-proc-list li { padding: 0.4rem 0.55rem; }
+  .lc-flight-card .lc-proc-avatar { width: 1.6rem; height: 1.6rem; font-size: 0.75rem; }
+  .lc-flight-card .lc-proc-name small { display: none; }
+  .lc-flight-list { justify-items: center; }
+  .lc-flight-card { width: min(100%, 22rem); }
+  .lc-flight-title { max-width: none; }
+}
+/* Reduced motion: tres escenas apiladas, sin sticky. */
+.lc-flight--static {
+  height: auto;
+  display: grid;
+  gap: 4rem;
+  padding: clamp(5rem, 10vw, 8rem) var(--lc-gutter);
+}
+.lc-flight-static {
+  display: grid;
+  gap: 2rem;
+  max-width: calc(var(--lc-max) - 2 * var(--lc-gutter));
+  margin: 0 auto;
+}
+@media (min-width: 900px) { .lc-flight-static { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); align-items: center; gap: 3rem; } }
+.lc-flight-static .lc-flight-stage { min-height: 32rem; }
+
+/* Móvil, pasos apilados (13-oct-2026): cada escena mide lo que su capa
+   (sin capas absolutas ni alto fijo, nada se monta sobre el texto). El sobre
+   deja aire arriba para la solapa y la tarjeta que sale; los puntos de
+   paleta van bajo el móvil. */
+@media (max-width: 899.98px) {
+  .lc-flight--static .lc-flight-stage[data-scene] { height: auto; min-height: 0; }
+  .lc-flight--static .lc-flight-stage[data-scene] .lc-flight-layer { position: relative; inset: auto; }
+  .lc-flight--static .lc-flight-stage[data-scene="0"] .lc-flight-layer { padding-top: 5.5rem; justify-items: center; }
+  .lc-flight--static .lc-flight-stage[data-scene="1"] .lc-flight-layer { padding-bottom: 2.25rem; justify-items: center; }
+}
+
+/* v9 (9-oct-2026): superficie muy tenue en perla-2 detrás de la muestra de
+   invitación, con una esquina más curva. Decorativa; en móvil se retira. */
+@media (min-width: 900px) {
+  .lc-home .lc-flight-stage { isolation: isolate; }
+  .lc-home .lc-flight-stage::before {
+    content: "";
+    position: absolute;
+    inset: 4% 0 10%;
+    z-index: -1;
+    border-radius: 1.25rem 9rem 1.25rem 1.25rem;
+    background: var(--perla-2);
+    pointer-events: none;
+  }
+}
+
+/* --- Móvil de la escena como un iPhone Pro Max (9-oct-2026) ---------------
+   Marco fino de titanio oscuro, isla dinámica y pantalla a sangre (sin el
+   margen de papel de la maqueta web). En un teléfono ocupa casi todo el ancho. */
+.lc-flight-phone {
+  position: relative;
+  aspect-ratio: 9 / 19.5;
+  padding: 0.3rem;
+  border-radius: 3.1rem;
+  background: linear-gradient(145deg, #3a3440 0%, #1b1820 45%, #2c2731 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 0 0 1.5px #6f6676,
+    0 2.5rem 4.5rem -1.5rem rgba(36, 33, 42, 0.45);
+}
+.lc-flight-phone .ll-phone-screen { border-radius: 2.8rem; background: #000; }
+/* Isla dinámica */
+.lc-flight-phone::before {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  top: 3.2%;
+  left: 50%;
+  width: 31%;
+  height: 3.6%;
+  translate: -50% 0;
+  border-radius: 999px;
+  background: #050407;
+  pointer-events: none;
+}
+/* La foto llega al borde de la pantalla: sin el filete de papel de la maqueta web. */
+.lc-flight-phone .wl { --wl-gap: 0px; }
+.lc-flight-phone .wl-hero { border-radius: 0; }
+@media (max-width: 899.98px) {
+  .lc-flight {
+    --flight-phone-h: clamp(20rem, calc(100svh - 17rem - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)), 46rem);
+  }
+  /* min-width: 0: con aspect-ratio, el mínimo automático es el min-content
+     de la invitación y ensanchaba (achataba) el móvil. */
+  .lc-flight-phone { height: var(--flight-phone-h); width: auto; min-width: 0; max-width: 92vw; padding: 0.22rem; border-radius: 2.6rem; }
+  .lc-flight-phone .ll-phone-screen { border-radius: 2.4rem; }
+}
+/* Como en un iPhone real: la barra de la invitación empieza bajo la isla dinámica. */
+.lc-flight-phone .wl-nav-bar { margin-top: 2.6rem; }
+
+/* Portadas del móvil (una por paleta, pintadas en el servidor): apiladas a
+   toda la pantalla y fundidas por opacidad (landing-flight.tsx, CoverLayer). */
+.lc-flight-phone .ll-phone-screen { position: relative; isolation: isolate; }
+.lc-flight-cover { position: absolute; inset: 0; overflow: hidden; }
+.lc-flight-cover[data-layer] { will-change: opacity; }
+.lc-flight-cover > * { height: 100%; }

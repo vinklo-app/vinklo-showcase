@@ -1,0 +1,1323 @@
+/* =====================================================================
+   Maqueta «Como una web» (components/invitation/web-layout.tsx), prefijo `wl-`.
+
+   Sin colores ni fuentes nuevas: --papel/--tinta/--cava/--rubor del tema
+   (renderer) y los tokens de movimiento v8 (--ease-out). Movimiento: solo
+   transform y opacity. Todo es visible y quieto hasta que el componente
+   monta y pone `data-motion` ("full" | "reduce"): sin JS, se lee entera.
+   Contraste: el acento en texto pequeño solo sobre papel (sobre --rubor
+   algunas paletas bajan de 4.5:1); en los tramos «surface» las etiquetas
+   van en tinta.
+   ===================================================================== */
+
+.wl {
+  --wl-vh: 100svh;
+  --wl-gap: 10px;
+  --wl-pad-x: 1.25rem;
+  --wl-rule: color-mix(in oklab, var(--tinta) 14%, transparent);
+  position: relative;
+  container-type: inline-size;
+  color: var(--tinta);
+  background: var(--papel);
+  -webkit-tap-highlight-color: transparent;
+}
+/* Preview (creador, panel): la propia maqueta es el contenedor de scroll del
+   marco del móvil; su alto es la «pantalla» (cqh). */
+.wl[data-mode="preview"] {
+  --wl-vh: 100cqh;
+  container-type: size;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+.wl[data-mode="preview"]::-webkit-scrollbar {
+  display: none;
+}
+.sp-shell-preview[data-layout="web"] > .sp-seal-content {
+  height: 100%;
+}
+/* Con el sobre cerrado, el preview no se desplaza por debajo. */
+.sp-shell-preview[data-layout="web"]:has([data-sealed]) .wl {
+  overflow: hidden;
+}
+
+/* --- Fondo que cambia de tono por sección ------------------------------
+   Una capa fija a la pantalla (sticky, ocupa 0 px en el flujo) con el tono
+   «surface»; su opacidad sigue a la sección que cruza el centro. */
+.wl-wash {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  display: block;
+  height: var(--wl-vh);
+  margin-bottom: calc(-1 * var(--wl-vh));
+  pointer-events: none;
+}
+.wl-wash > span {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 700ms var(--ease-out);
+}
+.wl-wash-surface {
+  background: var(--rubor);
+}
+.wl[data-motion][data-tone="surface"] .wl-wash-surface {
+  opacity: 1;
+}
+/* Sin JS (o antes de montar) cada tramo pinta su propio tono. */
+.wl:not([data-motion]) .wl-section[data-tone="surface"] {
+  background: var(--rubor);
+}
+
+.wl-section,
+.wl-hero,
+.wl-footer {
+  position: relative;
+  z-index: 1;
+}
+.wl-section {
+  padding: clamp(4.5rem, 2.5rem + 7cqi, 8rem) var(--wl-pad-x);
+}
+.wl-inner {
+  width: 100%;
+  max-width: 64rem;
+  margin: 0 auto;
+}
+.wl-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.wl-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  margin-right: -0.3em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--tinta) 78%, transparent);
+}
+.wl-h2 {
+  margin-top: 1rem;
+  font-size: clamp(2.5rem, 1rem + 9cqi, 5.5rem);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+  padding-bottom: 0.04em;
+}
+
+/* --- Navegación flotante ---------------------------------------------- */
+.wl-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: 0;
+}
+.wl-nav-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: min(100% - 2 * (var(--wl-gap) + 0.625rem), 52rem);
+  margin: calc(var(--wl-gap) + 0.625rem) auto 0;
+  padding: 0.375rem 0.375rem 0.375rem 1rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--papel) 88%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--tinta) 8%, transparent),
+    0 10px 30px -18px color-mix(in oklab, var(--tinta) 55%, transparent);
+}
+.wl-nav-mono {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 0.25rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--tinta);
+  text-decoration: none;
+  border-radius: 999px;
+  outline: none;
+}
+.wl-nav-amp {
+  margin: 0 0.08em;
+  color: var(--cava);
+}
+.wl-nav-links {
+  display: none;
+  margin: 0 0 0 auto;
+  padding: 0;
+  list-style: none;
+  gap: 0.25rem;
+}
+@container (min-width: 44rem) {
+  .wl-nav-links {
+    display: flex;
+  }
+  .wl-nav-links + .wl-nav-cta {
+    margin-left: 0.25rem;
+  }
+}
+.wl-nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 0.75rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  color: color-mix(in oklab, var(--tinta) 82%, transparent);
+  text-decoration: none;
+  outline: none;
+  transition: color var(--d-ui, 200ms) ease;
+}
+@media (hover: hover) {
+  .wl-nav-link:hover {
+    color: var(--tinta);
+  }
+}
+.wl-nav-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin-left: auto;
+  padding: 0 1.125rem;
+  border-radius: 999px;
+  background: var(--cava);
+  color: var(--papel);
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  outline: none;
+  touch-action: manipulation;
+  transition: transform 160ms var(--ease-out);
+}
+.wl-nav-cta:active {
+  transform: scale(0.97);
+}
+.wl-nav-mono:focus-visible,
+.wl-nav-link:focus-visible,
+.wl-nav-cta:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--cava) 45%, transparent);
+}
+.wl-nav :is(a, button) {
+  font: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  border: 0;
+  background-color: transparent;
+}
+.wl-nav .wl-nav-cta {
+  background-color: var(--cava);
+}
+
+/* --- Portada ---------------------------------------------------------- */
+.wl-hero {
+  height: var(--wl-vh);
+  min-height: 30rem;
+  padding: var(--wl-gap);
+}
+.wl[data-mode="preview"] .wl-hero {
+  min-height: 0;
+}
+.wl-hero-frame {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+  --wl-radius: clamp(18px, 1rem + 1cqi, 28px);
+  overflow: hidden;
+  border-radius: var(--wl-radius);
+  /* Recorte explícito: con la foto transformada dentro, Chrome a veces deja
+     escalones en el borde redondeado si solo hay overflow + radius. */
+  clip-path: inset(0 round var(--wl-radius));
+  background: var(--rubor);
+  text-align: center;
+  transform-origin: 50% 0%;
+}
+.wl-hero[data-photo] .wl-hero-frame {
+  background: var(--tinta);
+  color: var(--papel);
+}
+.wl-hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  transform-origin: 50% 30%;
+}
+.wl-hero-media .sp-cover-img {
+  object-fit: cover;
+}
+.wl-hero-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--tinta) 30%, transparent) 0%,
+    color-mix(in oklab, var(--tinta) 0%, transparent) 22%,
+    color-mix(in oklab, var(--tinta) 6%, transparent) 46%,
+    color-mix(in oklab, var(--tinta) 62%, transparent) 78%,
+    color-mix(in oklab, var(--tinta) 78%, transparent) 100%
+  );
+}
+.wl-hero-mono {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  translate: -50% -88%;
+  margin: 0;
+  font-size: min(clamp(8rem, 50cqi, 26rem), 42cqh);
+  line-height: 1;
+  white-space: nowrap;
+  color: color-mix(in oklab, var(--cava) 13%, transparent);
+}
+.wl-hero-body {
+  width: 100%;
+  max-width: 82rem;
+  padding: 0 1.25rem clamp(4.5rem, 3rem + 5cqi, 7rem);
+}
+.wl-hero .wl-eyebrow {
+  color: color-mix(in oklab, var(--tinta) 78%, transparent);
+}
+.wl-hero[data-photo] .wl-eyebrow {
+  color: color-mix(in oklab, var(--papel) 88%, transparent);
+}
+/* Nombres a escala de cartel. `--sp-word` (palabra más larga) evita partir
+   una palabra en móvil; en ancho los dos nombres van en una línea y
+   `--wl-chars` limita la cifra a lo que cabe. */
+.wl-names {
+  --wl-fit: calc(100cqi / (var(--sp-word, 6) * 0.56));
+  margin-top: 1rem;
+  font-size: min(clamp(3.5rem, 1rem + 16cqi, 13rem), var(--wl-fit));
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+  overflow-wrap: anywhere;
+  padding-bottom: 0.08em;
+  color: var(--tinta);
+  text-wrap: balance;
+}
+.wl-hero[data-photo] .wl-names {
+  color: var(--papel);
+}
+.wl-names .sp-name {
+  display: block;
+}
+@container (min-width: 48rem) {
+  .wl-names {
+    font-size: min(clamp(3.5rem, 1rem + 13cqi, 13rem), calc(96cqi / (var(--wl-chars, 12) * 0.5)));
+  }
+  .wl-names .sp-name {
+    display: inline;
+  }
+}
+.wl-names[data-long="xl"] {
+  font-size: min(clamp(2.5rem, 1rem + 8cqi, 6rem), var(--wl-fit));
+}
+.wl-hero-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  translate: -50% 0;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: color-mix(in oklab, var(--tinta) 72%, transparent);
+}
+.wl-hero[data-photo] .wl-hero-hint {
+  color: color-mix(in oklab, var(--papel) 82%, transparent);
+}
+.wl-hero-hint-line {
+  width: 2.5rem;
+  height: 1px;
+  background: currentColor;
+}
+
+/* --- Bienvenida (cita) ------------------------------------------------ */
+.wl-welcome-text {
+  max-width: 26ch;
+  margin: 0 auto;
+  font-size: clamp(1.75rem, 0.9rem + 4.4cqi, 4rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-align: center;
+  text-wrap: balance;
+  white-space: pre-line;
+}
+
+/* --- Fecha como cartel ------------------------------------------------ */
+.wl-date-poster {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+}
+.wl-date-weekday {
+  font-size: clamp(1.75rem, 1rem + 3.5cqi, 3rem);
+  line-height: 1;
+  color: var(--cava-texto);
+}
+.wl-date-day {
+  display: block;
+  font-size: clamp(9rem, 4rem + 32cqi, 22rem);
+  line-height: 0.82;
+  letter-spacing: -0.05em;
+  padding: 0.04em 0 0.02em;
+}
+.wl-date-month {
+  font-size: clamp(1.75rem, 1rem + 4cqi, 3.75rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.wl-count {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--wl-rule);
+}
+.wl-count p {
+  font-size: clamp(1.125rem, 1rem + 0.8cqi, 1.5rem);
+}
+.wl-count-num {
+  font-size: 1.6em;
+  margin-right: 0.15em;
+}
+
+/* --- Lugar ------------------------------------------------------------ */
+.wl-venue-name {
+  margin-top: 1.5rem;
+  max-width: 18ch;
+  font-size: clamp(2.75rem, 1rem + 9cqi, 7rem);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+.wl-venue-name[data-long] {
+  max-width: 26ch;
+  font-size: clamp(2rem, 1rem + 5cqi, 4.25rem);
+}
+.wl-venue-address {
+  max-width: 34rem;
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: color-mix(in oklab, var(--tinta) 78%, transparent);
+}
+.wl-venue-time {
+  margin-top: 1rem;
+  font-size: clamp(1.375rem, 1rem + 1.6cqi, 2rem);
+  color: var(--cava-texto);
+}
+.wl-venue .sp-actions {
+  margin-top: 2rem;
+}
+
+/* --- Programa: raíl --------------------------------------------------- */
+.wl-agenda-grid {
+  display: grid;
+  gap: 3rem;
+}
+@container (min-width: 52rem) {
+  .wl-agenda-grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 4rem;
+  }
+  .wl-agenda-head {
+    align-self: start;
+    position: sticky;
+    top: 7rem;
+  }
+}
+.wl-rail {
+  position: relative;
+  padding-left: 2.25rem;
+}
+.wl-rail-track,
+.wl-rail-fill {
+  position: absolute;
+  top: 0.75rem;
+  bottom: 0.75rem;
+  left: 0.4375rem;
+  width: 1px;
+  background: var(--wl-rule);
+}
+.wl-rail-fill {
+  width: 2px;
+  left: calc(0.4375rem - 0.5px);
+  background: var(--tinta);
+  transform-origin: 50% 0%;
+}
+.wl-rail-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.wl-rail-item {
+  position: relative;
+  padding: 0.5rem 0 2.25rem;
+}
+.wl-rail-item:last-child {
+  padding-bottom: 0;
+}
+.wl-rail-dot {
+  position: absolute;
+  top: 0.85rem;
+  left: -2.25rem;
+  width: 0.9375rem;
+  height: 0.9375rem;
+  border: 1.5px solid var(--tinta);
+  border-radius: 999px;
+  background: var(--rubor);
+}
+.wl-rail-time {
+  font-size: clamp(1.5rem, 1.1rem + 1.4cqi, 2rem);
+  line-height: 1;
+  color: var(--tinta);
+}
+.wl-rail-title {
+  margin-top: 0.375rem;
+  font-size: clamp(1.5rem, 1rem + 2cqi, 2.25rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  overflow-wrap: break-word;
+}
+.wl-rail-place {
+  margin-top: 0.375rem;
+  font-size: 0.9375rem;
+  color: color-mix(in oklab, var(--tinta) 80%, transparent);
+}
+.wl-rail-notes {
+  margin-top: 0.375rem;
+  max-width: 34rem;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: color-mix(in oklab, var(--tinta) 72%, transparent);
+}
+.wl-rail-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--tinta);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  outline: none;
+}
+.wl-rail-link:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--cava) 45%, transparent);
+}
+
+/* --- Bloques (asistencia, «el sobre») y pie --------------------------- */
+.wl-block .sp-rsvp {
+  margin: 0 auto;
+}
+.wl-footer {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* --- Movimiento --------------------------------------------------------
+   Entradas con transición (interrumpibles), no keyframes. Con
+   reduced-motion solo fundido; el parallax lo quita el componente. */
+.wl[data-motion] [data-reveal] {
+  transition:
+    opacity 760ms var(--ease-out) var(--wl-delay, 0ms),
+    transform 900ms var(--ease-out) var(--wl-delay, 0ms);
+}
+.wl[data-motion="full"] [data-reveal]:not([data-shown]) {
+  opacity: 0;
+  transform: translate3d(0, 2.25rem, 0);
+}
+.wl[data-motion="reduce"] [data-reveal]:not([data-shown]) {
+  opacity: 0;
+}
+.wl [data-reveal][data-shown] {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wl[data-motion] [data-reveal] {
+    transition: opacity 400ms ease var(--wl-delay, 0ms);
+  }
+  .wl[data-motion] [data-reveal]:not([data-shown]) {
+    transform: none;
+  }
+  .wl-wash > span {
+    transition-duration: 300ms;
+  }
+}
+
+/* =====================================================================
+   Escenas v2 (web-scenes.tsx): galería, historia, detalles, preguntas y la
+   cuenta atrás en directo. Mismos tokens; solo transform y opacity.
+   ===================================================================== */
+
+/* Fotos: marco compartido con scenes/content.css (.sp-photo-frame). */
+.wl-collage {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.75rem, 2cqi, 1.5rem);
+  align-items: start;
+}
+.wl-collage[data-cols="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.wl-collage-col {
+  display: grid;
+  gap: clamp(0.75rem, 2cqi, 1.5rem);
+  will-change: transform;
+}
+.wl-collage-col:nth-child(2) {
+  padding-top: clamp(2rem, 8cqi, 6rem);
+}
+.wl-collage-col:nth-child(3) {
+  padding-top: clamp(1rem, 4cqi, 3rem);
+}
+.wl-collage-frame {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: clamp(0.5rem, 1.5cqi, 1rem);
+  background: var(--rubor);
+}
+.wl-collage-caption {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  color: color-mix(in oklab, var(--tinta) 68%, transparent);
+}
+.wl-tint {
+  padding-top: clamp(3rem, 8cqi, 6rem);
+}
+.wl-tint-text {
+  max-width: 24ch;
+  margin: 0 auto;
+  font-size: clamp(1.75rem, 0.9rem + 4.4cqi, 4rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* Historia */
+.wl-story-title {
+  margin-top: 1rem;
+  font-size: clamp(3.5rem, 1rem + 14cqi, 9rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  text-align: center;
+  text-wrap: balance;
+}
+.wl-chapter {
+  margin-top: clamp(3rem, 6cqi, 5rem);
+}
+/* Con movimiento y en dos columnas, el capítulo es alto (una «pantalla» por
+   foto) y su contenido se queda fijo mientras las fotos se retiran. En una
+   columna (móvil) no hay sticky (las fotos pasarían por encima del texto):
+   el montón se anima con su propio scroll y cada foto se retira hacia un
+   lado, girando y fundiéndose, sin subir sobre el texto (web-scenes.tsx,
+   `compact`; el desborde lateral lo recorta el overflow-x: clip de .wl). */
+@container (min-width: 48rem) {
+  .wl[data-motion="full"] .wl-chapter[data-photos] {
+    min-height: calc(var(--wl-vh) * (0.4 + 0.55 * var(--wl-photos, 1)));
+  }
+  .wl[data-motion="full"] .wl-chapter-sticky {
+    position: sticky;
+    top: clamp(4rem, 10cqh, 7rem);
+  }
+}
+.wl-chapter-sticky {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+}
+@container (min-width: 48rem) {
+  .wl-chapter-sticky {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 4rem;
+  }
+  .wl-chapter-text {
+    text-align: right;
+  }
+}
+.wl-chapter-kicker {
+  font-size: clamp(1.5rem, 1rem + 2.2cqi, 2.25rem);
+  line-height: 1.1;
+  color: var(--tinta);
+}
+.wl-chapter-title {
+  color: var(--cava-texto);
+}
+.wl-chapter-body {
+  margin-top: 0.75rem;
+  max-width: 30rem;
+  font-size: clamp(1rem, 0.95rem + 0.4cqi, 1.125rem);
+  line-height: 1.6;
+  color: color-mix(in oklab, var(--tinta) 80%, transparent);
+  white-space: pre-line;
+}
+@container (min-width: 48rem) {
+  .wl-chapter-body {
+    margin-left: auto;
+  }
+}
+.wl-stack {
+  position: relative;
+  display: grid;
+  width: min(100%, 28rem);
+  margin: 0 auto;
+  padding-top: 1.25rem;
+}
+.wl-polaroid {
+  grid-area: 1 / 1;
+  margin: 0;
+  padding: 0.75rem 0.75rem 1rem;
+  border-radius: 0.4rem;
+  background: var(--papel);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--tinta) 8%, transparent),
+    0 1.5rem 3rem -1.5rem color-mix(in oklab, var(--tinta) 55%, transparent);
+  transform-origin: 50% 60%;
+  will-change: transform, opacity;
+}
+/* Sin movimiento: abanico quieto (la primera encima). */
+.wl-polaroid[data-static] {
+  transform: translate(calc(var(--wl-fan, 0) * 0.5rem), calc(var(--wl-fan, 0) * -0.5rem)) rotate(var(--wl-tilt, 0deg));
+}
+.wl-polaroid-frame {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 0.2rem;
+  background: var(--rubor);
+}
+.wl-polaroid-caption {
+  margin-top: 0.75rem;
+  font-size: 0.9375rem;
+  text-align: center;
+  color: color-mix(in oklab, var(--tinta) 76%, transparent);
+}
+
+/* Fecha: frase de entrada y reloj */
+.wl-date-lead {
+  margin-top: 1rem;
+  font-size: clamp(1.5rem, 1rem + 2.6cqi, 2.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.wl-clock {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.25rem 0;
+  margin: 1.25rem 0 0;
+}
+.wl-clock-part {
+  display: inline-flex;
+  align-items: flex-start;
+}
+.wl-clock-sep {
+  margin: 0 clamp(0.5rem, 1.5cqi, 1rem);
+  font-size: clamp(1.75rem, 1rem + 3cqi, 3rem);
+  line-height: 1.1;
+  color: color-mix(in oklab, var(--tinta) 40%, transparent);
+}
+.wl-clock-unit {
+  display: grid;
+  justify-items: center;
+  min-width: 2.5ch;
+}
+.wl-clock-num {
+  font-size: clamp(1.75rem, 1rem + 3cqi, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.wl-clock-label {
+  margin-top: 0.1rem;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--tinta) 68%, transparent);
+}
+
+/* Detalles: tarjetas */
+.wl-details-title {
+  margin-top: 0;
+}
+.wl-details-intro {
+  max-width: 34rem;
+  margin-top: 1rem;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: color-mix(in oklab, var(--tinta) 76%, transparent);
+}
+.wl-cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.875rem;
+  width: 100%;
+  margin: 2.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+@container (min-width: 40rem) {
+  .wl-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@container (min-width: 60rem) {
+  .wl-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.wl-card-reveal {
+  height: 100%;
+}
+.wl-card,
+.wl-faq-item {
+  border-radius: 1.25rem;
+  background: var(--papel);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--tinta) 8%, transparent),
+    0 1rem 2rem -1.5rem color-mix(in oklab, var(--tinta) 40%, transparent);
+}
+.wl-card {
+  height: 100%;
+}
+.wl-card-summary,
+.wl-faq-q {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.35rem 1rem;
+  min-height: 3.5rem;
+  padding: 1.25rem 1.25rem;
+  cursor: pointer;
+  list-style: none;
+  outline: none;
+  border-radius: 1.25rem;
+}
+.wl-card-summary::-webkit-details-marker,
+.wl-faq-q::-webkit-details-marker {
+  display: none;
+}
+.wl-card-summary:focus-visible,
+.wl-faq-q:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--cava) 45%, transparent);
+}
+.wl-card-title {
+  font-size: clamp(1.375rem, 1rem + 1.4cqi, 1.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
+.wl-card-teaser {
+  grid-column: 1;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: color-mix(in oklab, var(--tinta) 70%, transparent);
+}
+.wl-plus {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  position: relative;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--tinta) 22%, transparent);
+  transition: transform 240ms var(--ease-out), background-color 240ms ease;
+}
+.wl-plus::before,
+.wl-plus::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.8rem;
+  height: 1.5px;
+  background: var(--tinta);
+  translate: -50% -50%;
+}
+.wl-plus::after {
+  rotate: 90deg;
+}
+details[open] > summary .wl-plus {
+  transform: rotate(45deg);
+  background: color-mix(in oklab, var(--tinta) 8%, transparent);
+}
+.wl-card-body,
+.wl-faq-a {
+  padding: 0 1.25rem 1.25rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: color-mix(in oklab, var(--tinta) 84%, transparent);
+  white-space: pre-line;
+  animation: wl-open 320ms var(--ease-out) both;
+}
+@keyframes wl-open {
+  from { opacity: 0; transform: translateY(-0.25rem); }
+}
+.wl-card-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin-top: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--tinta);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  outline: none;
+}
+.wl-card-link:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--cava) 45%, transparent);
+}
+
+/* Preguntas */
+.wl-faq-grid {
+  display: grid;
+  gap: 2.5rem;
+}
+@container (min-width: 52rem) {
+  .wl-faq-grid {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: 4rem;
+  }
+  .wl-faq-head {
+    position: sticky;
+    top: 7rem;
+    align-self: start;
+  }
+}
+.wl-faq-head .wl-h2 {
+  margin-top: 0;
+}
+.wl-faq-contact {
+  margin-top: 1rem;
+  max-width: 26rem;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: color-mix(in oklab, var(--tinta) 76%, transparent);
+}
+.wl-faq-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.wl-faq-q > span:first-child {
+  font-size: clamp(1.125rem, 1rem + 0.8cqi, 1.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--tinta);
+}
+
+/* Navegación: más enlaces en una sola fila. */
+.wl-nav-links {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.wl-nav-links::-webkit-scrollbar {
+  display: none;
+}
+.wl-nav-link {
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wl-plus,
+  .wl-card-body,
+  .wl-faq-a {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* Ajustes tras la primera revisión en Chrome (6-oct-2026) */
+/* Las polaroids giradas asoman por los lados en móvil: la página no debe
+   desplazarse en horizontal (clip no crea contenedor de scroll: el sticky
+   de los capítulos sigue funcionando). */
+.wl[data-mode="public"] {
+  overflow-x: clip;
+}
+/* Título de las preguntas en su columna estrecha: sin partir palabras. */
+.wl-faq-head .wl-h2 {
+  font-size: clamp(2.25rem, 1rem + 4.5cqi, 4rem);
+  overflow-wrap: normal;
+}
+.wl-details-intro {
+  margin-inline: auto;
+  text-align: center;
+}
+/* Más secciones en la barra: más ancha y enlaces más compactos. */
+.wl-nav-bar {
+  width: min(100% - 2 * (var(--wl-gap) + 0.625rem), 62rem);
+}
+.wl-nav-link {
+  padding: 0 0.6rem;
+}
+/* En una columna (móvil) la foto que se retira pasa por detrás del texto. */
+.wl-chapter-text {
+  position: relative;
+  z-index: 10;
+}
+
+/* A sangre en iPhone (6-oct-2026): la portada sube detrás de la Dynamic
+   Island; la navegación y el pie se separan con los safe-area. */
+.wl[data-mode="public"] .wl-hero {
+  height: 100svh;
+}
+.wl[data-mode="public"] .wl-nav-bar {
+  margin-top: calc(var(--wl-gap) + 0.625rem + env(safe-area-inset-top, 0px));
+}
+.wl[data-mode="public"] .wl-footer {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+}
+/* La barra flotante tiene alto 0: sin esto su margen superior «colapsa» a
+   través del nav y empuja la portada hacia abajo (franja de papel bajo la
+   Dynamic Island). */
+.wl-nav {
+  display: flow-root;
+}
+
+/* =====================================================================
+   Pasada «cordially.io/demo» (6-oct-2026): barra transparente sobre la
+   portada con foto, nombres gigantes en cursiva, mosaico asimétrico y
+   el título de la historia a escala de cartel con la polaroid encima.
+   ===================================================================== */
+/* Barra: sobre la foto, sin píldora y en papel; al bajar, la píldora. */
+.wl-nav-bar {
+  transition: background-color 280ms ease, box-shadow 280ms ease, width 360ms var(--ease-out), margin 360ms var(--ease-out);
+}
+.wl[data-over-hero] .wl-nav-bar {
+  width: calc(100% - 2 * (var(--wl-gap) + 0.625rem));
+  max-width: none;
+  background: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.wl[data-over-hero] .wl-nav-mono,
+.wl[data-over-hero] .wl-nav-link {
+  color: var(--papel);
+}
+.wl[data-over-hero] .wl-nav-amp { color: var(--papel); }
+/* Portada en mosaico (fotos sobre papel, sin foto a sangre): el papel sobre
+   papel no se ve; el monograma y los enlaces vuelven a tinta. */
+.wl[data-over-hero]:has(.wl-hero[data-orbit]) .wl-nav-mono,
+.wl[data-over-hero]:has(.wl-hero[data-orbit]) .wl-nav-link {
+  color: var(--tinta);
+}
+.wl[data-over-hero]:has(.wl-hero[data-orbit]) .wl-nav-amp { color: var(--cava); }
+.wl[data-over-hero] .wl-nav-mono { font-size: 1.75rem; }
+@container (min-width: 44rem) {
+  .wl[data-over-hero] .wl-nav-link { font-size: 1.0625rem; }
+}
+
+/* Nombres: cursiva de cartel sobre la foto, tamaño enorme. */
+/* Con o sin foto, la letra de los nombres es la de la plantilla (task 6,
+   13-oct-2026): sin foto solo cambia el fondo (papel y monograma). */
+.wl-hero .wl-names {
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+}
+.wl-hero[data-photo] .wl-names {
+  text-shadow: 0 0.04em 0.5em rgba(0, 0, 0, 0.18);
+}
+@container (min-width: 48rem) {
+  .wl-hero[data-photo] .wl-names {
+    font-size: min(clamp(4rem, 1rem + 15cqi, 15rem), calc(98cqi / (var(--wl-chars, 12) * 0.44)));
+  }
+}
+.wl-hero[data-photo] .wl-hero-body {
+  padding-bottom: clamp(5.5rem, 4rem + 4cqi, 8rem);
+}
+/* Pista: filete de lado a lado, flecha a la izquierda y texto a la derecha. */
+.wl-hero-hint {
+  left: clamp(1.25rem, 4cqi, 3rem);
+  right: clamp(1.25rem, 4cqi, 3rem);
+  translate: none;
+  bottom: clamp(1.25rem, 3cqi, 2rem);
+  gap: 0;
+  justify-content: space-between;
+  min-width: 0;
+  white-space: normal;
+  line-height: 1.4;
+  padding-top: 1.1rem;
+  border-top: 1px solid currentColor;
+  border-top-color: color-mix(in oklab, currentColor 45%, transparent);
+}
+.wl-hero-hint-line { display: none; }
+.wl-hero-hint-arrow { font-size: 14px; letter-spacing: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .wl[data-motion="full"] .wl-hero-hint-arrow { animation: wl-nudge 2.4s ease-in-out infinite; }
+  @keyframes wl-nudge { 50% { transform: translateY(4px); } }
+}
+
+/* Mosaico (5 fotos): grande en el centro, dos a cada lado. */
+.wl-inner--wide { max-width: 78rem; }
+.wl-mosaic {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.55fr) minmax(0, 0.95fr);
+  grid-template-rows: auto auto;
+  gap: clamp(0.6rem, 1.2cqi, 1rem);
+  align-items: start;
+}
+.wl-mo { margin: 0; will-change: transform; }
+.wl-mo-frame { position: relative; display: block; overflow: hidden; border-radius: clamp(0.75rem, 2cqi, 1.75rem); background: var(--rubor); }
+.wl-mo-img { position: absolute; inset: 0; display: block; }
+.wl-mo-a { grid-column: 1; grid-row: 1; }
+.wl-mo-a .wl-mo-frame { aspect-ratio: 1.05; }
+.wl-mo-b { grid-column: 1; grid-row: 2; width: 78%; justify-self: end; }
+.wl-mo-b .wl-mo-frame { aspect-ratio: 1.4; }
+.wl-mo-main { grid-column: 2; grid-row: 1 / span 2; margin-top: 2.5rem; }
+.wl-mo-main .wl-mo-frame { aspect-ratio: 0.82; }
+.wl-mo-c { grid-column: 3; grid-row: 1; width: 78%; margin-top: 10rem; }
+.wl-mo-c .wl-mo-frame { aspect-ratio: 1.4; }
+.wl-mo-d { grid-column: 3; grid-row: 2; }
+.wl-mo-d .wl-mo-frame { aspect-ratio: 1.05; }
+@container (max-width: 40rem) {
+  .wl-mosaic { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .wl-mo-main { grid-column: 1 / span 2; grid-row: 1; margin-top: 0; }
+  .wl-mo-a { grid-column: 1; grid-row: 2; }
+  .wl-mo-b { grid-column: 2; grid-row: 2; width: 100%; margin-top: 2rem; }
+  .wl-mo-c { grid-column: 1; grid-row: 3; width: 100%; margin-top: 0; }
+  .wl-mo-d { grid-column: 2; grid-row: 3; margin-top: -2rem; }
+}
+
+/* Historia: título de cartel y la primera polaroid montada encima. */
+.wl-story-title {
+  font-size: clamp(4rem, 1rem + 15cqi, 11rem);
+  line-height: 0.86;
+  position: relative;
+  z-index: 0;
+}
+.wl-story .wl-chapter[data-first] { margin-top: 2rem; position: relative; z-index: 1; }
+.wl-chapter-text .wl-chapter-kicker { font-size: clamp(1.4rem, 1rem + 1.4cqi, 2rem); letter-spacing: -0.01em; }
+.wl-chapter-title { color: var(--tinta); }
+.wl-polaroid { background: color-mix(in oklab, var(--papel) 70%, var(--rubor)); }
+.wl-polaroid-caption { font-family: var(--font-display, Georgia, serif); font-size: 1.05rem; }
+.wl-chapter-text .wl-chapter-kicker { font-style: normal; font-weight: 500; letter-spacing: -0.02em; }
+@container (min-width: 48rem) {
+  /* Solo la polaroid sube y se monta sobre el título; el texto queda debajo. */
+  .wl-story .wl-chapter[data-first] { margin-top: 1.5rem; }
+  .wl-story .wl-chapter[data-first] .wl-chapter-sticky { align-items: start; }
+  .wl-story .wl-chapter[data-first] .wl-stack { margin-top: -4.5rem; margin-left: 12%; }
+  .wl-story .wl-chapter[data-first] .wl-chapter-text { padding-top: 1rem; }
+}
+
+/* --- Portada → mosaico (6-oct-2026, cordially.io/demo) -----------------
+   La portada se fija (sticky) mientras se recorre su tramo; el marco se
+   recorta hacia el centro (clip-path) y cuatro fotos entran desde los lados. */
+.wl-hero-pin { position: relative; height: 100%; }
+.wl-hero-sentinel { position: absolute; inset: 0 0 auto; height: 100%; pointer-events: none; }
+.wl-hero[data-orbit] {
+  height: calc(var(--wl-vh) * 2.6);
+  min-height: 0;
+}
+.wl-hero[data-orbit] .wl-hero-sentinel { height: calc(var(--wl-vh) * 0.45); }
+.wl-hero[data-orbit] .wl-hero-pin {
+  position: sticky;
+  top: var(--wl-gap);
+  height: calc(var(--wl-vh) - 2 * var(--wl-gap));
+}
+.wl-hero[data-orbit] .wl-hero-frame { will-change: clip-path; transform-origin: 50% 50%; }
+.wl-orbits { position: absolute; inset: 0; pointer-events: none; }
+.wl-orbit {
+  position: absolute;
+  margin: 0;
+  will-change: transform, opacity;
+}
+.wl-orbit-frame {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: clamp(0.75rem, 2cqi, 1.75rem);
+  background: var(--rubor);
+  box-shadow: 0 1.5rem 3rem -1.75rem color-mix(in oklab, var(--tinta) 55%, transparent);
+}
+.wl-orbit-frame .sp-cover-img { object-fit: cover; }
+/* Marcos estrechos (móviles de muestra, móvil pequeño): el botón cabe. */
+@container (max-width: 22rem) {
+  .wl-nav-bar { padding-left: 0.75rem; gap: 0.25rem; }
+  .wl-nav-mono { font-size: 1rem; }
+  .wl[data-over-hero] .wl-nav-mono { font-size: 1.25rem; }
+  .wl-nav-cta { padding: 0 0.75rem; font-size: 0.75rem; min-height: 2.25rem; }
+}
+/* En un botón flex el espacio inicial del span se pierde: margen en su lugar. */
+.wl-nav-cta-long { margin-left: 0.28em; }
+@container (max-width: 26rem) {
+  .wl-nav-cta-long { display: none; }
+}
+
+/* =====================================================================
+   Clásico «como una web» = plantilla «Hora dorada» (7-oct-2026): papel
+   rosado, foto en arco con doble filete, nombres en caligrafía, capitales
+   finas muy espaciadas y fotos con remate en arco. Todo con los tokens de
+   la paleta; la caligrafía es --font-calligraphy (Pinyon Script).
+   ===================================================================== */
+[data-wedding-style="clasico"] .wl {
+  --wl-script: var(--font-calligraphy), "Snell Roundhand", cursive;
+  --wl-arch: 999px 999px 0.75rem 0.75rem;
+  background: color-mix(in oklab, var(--rubor) 45%, var(--papel));
+}
+/* Portada: papel, foto en arco centrada y nombres en caligrafía debajo. */
+[data-wedding-style="clasico"] .wl-hero[data-photo] .wl-hero-frame {
+  background: color-mix(in oklab, var(--rubor) 55%, var(--papel));
+  color: var(--tinta);
+  justify-content: flex-end;
+}
+[data-wedding-style="clasico"] .wl-hero[data-photo] .wl-hero-media {
+  inset: auto;
+  left: 50%;
+  top: clamp(5.5rem, 12cqh, 8rem);
+  bottom: clamp(11rem, 30cqh, 17rem);
+  width: min(30rem, 74cqi);
+  translate: -50% 0;
+  overflow: hidden;
+  border-radius: var(--wl-arch);
+  box-shadow: 0 1.5rem 3rem -2rem color-mix(in oklab, var(--tinta) 55%, transparent);
+}
+/* Doble filete alrededor del arco. */
+[data-wedding-style="clasico"] .wl-hero[data-photo] .wl-hero-frame::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: calc(clamp(5.5rem, 12cqh, 8rem) - 0.9rem);
+  bottom: calc(clamp(11rem, 30cqh, 17rem) - 0.9rem);
+  width: calc(min(30rem, 74cqi) + 1.8rem);
+  translate: -50% 0;
+  border: 1px solid color-mix(in oklab, var(--cava) 45%, transparent);
+  border-radius: var(--wl-arch);
+  pointer-events: none;
+}
+[data-wedding-style="clasico"] .wl-hero[data-photo] .wl-hero-scrim { display: none; }
+[data-wedding-style="clasico"] .wl-hero[data-photo] .wl-hero-body { padding-bottom: clamp(3.5rem, 2.5rem + 3cqi, 5rem); }
+[data-wedding-style="clasico"] .wl-hero .wl-names {
+  font-family: var(--wl-script);
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1;
+  color: var(--tinta);
+  text-shadow: none;
+  font-size: min(clamp(3.4rem, 1rem + 10cqi, 8.5rem), var(--wl-fit));
+}
+[data-wedding-style="clasico"] .wl-hero .wl-names .sp-name { display: inline; }
+[data-wedding-style="clasico"] .wl-hero[data-photo] .wl-names .sp-amp,
+[data-wedding-style="clasico"] .wl-names .sp-amp { color: var(--cava); }
+[data-wedding-style="clasico"] .wl-hero[data-photo] .wl-eyebrow,
+[data-wedding-style="clasico"] .wl-eyebrow {
+  color: color-mix(in oklab, var(--tinta) 70%, transparent);
+  letter-spacing: 0.42em;
+  margin-right: -0.42em;
+}
+[data-wedding-style="clasico"] .wl-hero[data-photo] .wl-hero-hint { color: color-mix(in oklab, var(--tinta) 60%, transparent); }
+/* Barra sobre la portada: en tinta (ya no hay foto detrás). */
+[data-wedding-style="clasico"] .wl[data-over-hero] .wl-nav-mono,
+[data-wedding-style="clasico"] .wl[data-over-hero] .wl-nav-link,
+[data-wedding-style="clasico"] .wl[data-over-hero] .wl-nav-amp { color: var(--tinta); }
+[data-wedding-style="clasico"] .wl-nav-mono { font-family: var(--wl-script); font-size: 1.6rem; }
+@container (max-width: 47.99rem) {
+  [data-wedding-style="clasico"] .wl-hero .wl-names .sp-name { display: block; }
+}
+
+/* Títulos de sección en caligrafía. */
+[data-wedding-style="clasico"] :is(.wl-story-title, .wl-h2, .wl-tint-text) {
+  font-family: var(--wl-script);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.05;
+}
+[data-wedding-style="clasico"] .wl-story-title { font-size: clamp(4rem, 1rem + 12cqi, 9rem); }
+[data-wedding-style="clasico"] .wl-welcome-text { font-style: italic; }
+/* Fotos con remate en arco: mosaico, galería y polaroids. */
+[data-wedding-style="clasico"] :is(.wl-mo-frame, .wl-collage-frame) { border-radius: var(--wl-arch); }
+[data-wedding-style="clasico"] .wl-polaroid {
+  padding: 0.6rem 0.6rem 0.9rem;
+  border-radius: 999px 999px 0.6rem 0.6rem;
+  background: var(--papel);
+}
+[data-wedding-style="clasico"] .wl-polaroid-frame { border-radius: 999px 999px 0.35rem 0.35rem; aspect-ratio: 4 / 5 !important; }
+[data-wedding-style="clasico"] .wl-polaroid-caption { font-family: var(--wl-script); font-size: 1.5rem; }
+[data-wedding-style="clasico"] .wl-chapter-kicker { font-family: var(--wl-script); font-size: clamp(1.8rem, 1.2rem + 2cqi, 2.6rem); font-weight: 400; }
+/* Fecha: número en caligrafía. */
+[data-wedding-style="clasico"] .wl-date-day { font-family: var(--wl-script); letter-spacing: 0; }
+[data-wedding-style="clasico"] :is(.wl-card, .wl-faq-item) { border-radius: 1.75rem; }
+/* La pareja de la portada en arco: encuadre a la derecha (donde suele estar
+   en fotos apaisadas) y el titular pequeño fuera de la foto. */
+[data-wedding-style="clasico"] .wl-hero[data-photo] .wl-hero-media .sp-cover-img { object-position: 62% 60%; }
+[data-wedding-style="clasico"] .wl-hero[data-photo] .wl-hero-body .wl-eyebrow { margin-top: 1.25rem; }
+[data-wedding-style="clasico"] .wl-hero[data-photo] .wl-hero-media { bottom: clamp(12.5rem, 33cqh, 19rem); }
+[data-wedding-style="clasico"] .wl-hero[data-photo] .wl-hero-frame::before { bottom: calc(clamp(12.5rem, 33cqh, 19rem) - 0.9rem); }
+
+/* =====================================================================
+   Natural «como una web» = plantilla «Viñedo» (7-oct-2026): remix de
+   «Origen» (portada a sangre que se recoge en mosaico) y «Hora dorada»
+   (caligrafía, capitales espaciadas, arcos). Papel salvia.
+   ===================================================================== */
+[data-wedding-style="natural"] .wl {
+  --wl-script: var(--font-calligraphy), "Snell Roundhand", cursive;
+  --wl-arch: 999px 999px 1rem 1rem;
+}
+[data-wedding-style="natural"] .wl-hero .wl-names {
+  font-family: var(--wl-script);
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1;
+}
+[data-wedding-style="natural"] .wl-hero .wl-names .sp-name { display: inline; }
+[data-wedding-style="natural"] .wl-hero .wl-eyebrow { letter-spacing: 0.42em; margin-right: -0.42em; }
+[data-wedding-style="natural"] .wl-nav-mono { font-family: var(--wl-script); font-size: 1.6rem; }
+[data-wedding-style="natural"] :is(.wl-story-title, .wl-tint-text, .wl-date-day) { font-family: var(--wl-script); font-weight: 400; letter-spacing: 0; }
+[data-wedding-style="natural"] .wl-chapter-kicker { font-family: var(--wl-script); font-size: clamp(1.8rem, 1.2rem + 2cqi, 2.6rem); font-weight: 400; }
+/* Arcos en el mosaico de la portada y en las polaroids; la foto grande, recta. */
+[data-wedding-style="natural"] :is(.wl-orbit-frame, .wl-mo-frame, .wl-collage-frame) { border-radius: var(--wl-arch); }
+[data-wedding-style="natural"] .wl-polaroid { border-radius: 999px 999px 0.6rem 0.6rem; }
+[data-wedding-style="natural"] .wl-polaroid-frame { border-radius: 999px 999px 0.35rem 0.35rem; aspect-ratio: 4 / 5 !important; }
+[data-wedding-style="natural"] .wl-polaroid-caption { font-family: var(--wl-script); font-size: 1.5rem; }
+@container (max-width: 47.99rem) {
+  [data-wedding-style="natural"] .wl-hero .wl-names .sp-name { display: block; }
+}
+/* Móvil: el mosaico de la portada sin sombras pesadas mientras se mueve. */
+@media (pointer: coarse) {
+  .wl-orbit-frame { box-shadow: none; }
+  .wl-nav-bar { -webkit-backdrop-filter: none; backdrop-filter: none; background: color-mix(in oklab, var(--papel) 96%, transparent); }
+}
+
+/* Bloques fijos centrados en la pantalla (8-oct-2026): capítulos de la
+   historia y cabeceras laterales de programa y preguntas se quedan en el
+   centro vertical mientras se recorren, nunca por debajo de la barra
+   flotante. --wl-h lo mide web-layout.tsx; sin él, el comportamiento
+   anterior (arriba). */
+.wl {
+  --wl-nav-clear: 5.5rem;
+}
+.wl[data-motion="full"] .wl-chapter-sticky[data-wl-center],
+.wl .wl-agenda-head[data-wl-center],
+.wl .wl-faq-head[data-wl-center] {
+  top: max(var(--wl-nav-clear), calc((var(--wl-vh) - var(--wl-h, 0px)) / 2 + var(--wl-nav-clear) / 3));
+}

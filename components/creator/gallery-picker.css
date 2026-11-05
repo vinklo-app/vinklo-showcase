@@ -1,0 +1,16 @@
+/* «Más fotos» del creador (components/creator/gallery-picker.tsx). */
+.wb-gallery { display: grid; gap: .5rem; padding-top: .25rem; }
+.wb-gallery .wb-help { margin: 0; }
+.wb-composer .wb-gallery-title { margin: 0; font-size: .875rem; font-weight: 600; }
+.wb-gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: .5rem; margin: 0; padding: 0; list-style: none; max-width: 26rem; }
+.wb-gallery-item { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border-radius: var(--radius-md); border: 1px solid var(--line-strong); background: var(--paper-2); }
+.wb-gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.wb-gallery-item[data-busy="true"] { animation: wb-gallery-pulse 1.2s ease-in-out infinite alternate; }
+@keyframes wb-gallery-pulse { from { opacity: .5; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .wb-gallery-item[data-busy="true"] { animation: none; } }
+.wb-gallery-remove { position: absolute; top: .25rem; right: .25rem; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: color-mix(in oklab, var(--paper) 90%, transparent); color: var(--ink); }
+/* Área táctil de 44px sin agrandar el círculo. */
+.wb-gallery-remove::after { content: ""; position: absolute; inset: -8px; }
+.wb-composer .wb-gallery-pick { justify-self: start; margin: 0; display: inline-flex; align-items: center; min-height: 44px; padding: 0 1rem; border: 1px dashed var(--line-strong); border-radius: 999px; background: transparent; font-size: .8125rem; font-weight: 600; color: var(--ink); cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+.wb-gallery:has(.wb-photo-input:focus-visible) .wb-gallery-pick { outline: 2px solid var(--clay); outline-offset: 3px; }
+.wb-gallery:has(.wb-photo-input:disabled) .wb-gallery-pick { opacity: .5; cursor: default; }
