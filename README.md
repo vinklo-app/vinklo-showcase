@@ -82,7 +82,8 @@ language of the product.
 
 ## Team
 
-Built by Cristina Otero and José Luis García Benito.
+Designed and built from scratch by Cristina Otero, with José Luis García
+Benito.
 
 ## License
 
